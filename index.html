@@ -1223,9 +1223,10 @@
         <p style="margin-bottom:12px;">No hocus pocus. Here's exactly how we score your readiness:</p>
         <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Two dimensions, weighted 60/40:</strong> Business Readiness (60%) evaluates 14 items across three pillars. Materials Readiness (40%) checks 17 deliverables investors expect to see.</p>
         <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Pillar weights reflect what early-stage investors prioritize:</strong></p>
-        <div id="weight-tune-toggle" style="margin-bottom:12px;">
+        <div id="weight-tune-toggle" style="margin-bottom:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
           <button onclick="toggleWeightTuning()" class="btn-customize-weights" style="font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(74,222,128,0.3);border-radius:6px;padding:5px 14px;cursor:pointer;font-family:inherit;-webkit-appearance:none;">&#x2699; Customize Weights</button>
-          <span class="weight-hint-text" style="font-size:11px;color:var(--text-muted);margin-left:8px;">Use &minus;/+ buttons to adjust how weightings affect your score</span>
+          <button id="btn-reset-inline" class="btn-reset" onclick="resetWeights()" style="display:none;">&#x21BA; Reset to Defaults</button>
+          <span class="weight-hint-text" style="font-size:11px;color:var(--text-muted);">Use &minus;/+ buttons to adjust how weightings affect your score</span>
         </div>
         <table class="weight-table" id="methodology-table">
           <thead>
@@ -1234,7 +1235,6 @@
           <tbody id="methodology-tbody"></tbody>
         </table>
         <div class="weight-controls" id="weight-controls" style="display:none;">
-          <button class="btn-reset" onclick="resetWeights()">&#x21BA; Reset to Defaults</button>
           <span class="weight-status" id="weight-status">Using default weights</span>
         </div>
         <p style="margin-top:12px;margin-bottom:8px;font-size:12px;color:var(--text-muted);">Weights derived from: Angel Capital Association Scorecard Method, Precursor Ventures, Hustle Fund, YC application criteria, and Evolution Accelerator&#39;s investment philosophy. The specific numbers are judgment calls &mdash; they&#39;re transparent so you can evaluate the methodology yourself.</p>
@@ -3510,11 +3510,15 @@ function toggleWeightTuning() {
   weightTuningActive = !weightTuningActive;
   document.getElementById('weight-controls').style.display = weightTuningActive ? 'flex' : 'none';
   buildMethodologyTable();
-  const btn = document.querySelector('#weight-tune-toggle button');
+  const btn = document.querySelector('.btn-customize-weights');
   if (btn) {
     btn.textContent = weightTuningActive ? '\u2715 Close Customizer' : '\u2699 Customize Weights';
     btn.style.borderColor = weightTuningActive ? 'rgba(245,158,11,0.4)' : 'rgba(74,222,128,0.3)';
     btn.style.color = weightTuningActive ? 'var(--amber)' : 'var(--green)';
+  }
+  const resetBtn = document.getElementById('btn-reset-inline');
+  if (resetBtn) {
+    resetBtn.style.display = weightTuningActive ? 'inline-block' : 'none';
   }
 }
 
