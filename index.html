@@ -1114,6 +1114,7 @@
     .explainer-body, .explainer-arrow { display: none !important; }
     .section-summary { page-break-inside: avoid; }
     .roadmap-phase { page-break-inside: avoid; }
+    .card-tip-content { display: block !important; }
     .print-header { display: block !important; text-align: center; margin-bottom: 20px; }
     .print-header h2 { font-size: 20px; color: #111; }
     .print-header p { font-size: 12px; color: #666; }
@@ -1668,6 +1669,8 @@
   <div class="footer">
     <p>&copy; 2026 Evolution Accelerator &middot; <a href="https://www.evolutionacceleration.com" target="_blank">evolutionacceleration.com</a> &middot; <a href="mailto:info@evolutionacceleration.com">info@evolutionacceleration.com</a></p>
     <p style="margin-top:6px;">Capital. Community. Culture.</p>
+    <p style="margin-top:8px;font-size:11px;color:var(--text-muted);">v2.1 &middot; Benchmarks: Carta Q3 2025, Arc 2025, Zeni 2026</p>
+    <p style="margin-top:8px;"><button onclick="if(confirm('Clear all saved assessment data? This cannot be undone.')){localStorage.removeItem('fra_v2_state');location.reload();}" style="font-size:11px;color:var(--text-muted);background:transparent;border:1px solid var(--dark-border);border-radius:4px;padding:4px 10px;cursor:pointer;font-family:inherit;">Clear Saved Data</button></p>
   </div>
 
 </div>
@@ -2090,15 +2093,13 @@ function toggleTip(el) {
 // SCORING
 // ============================================================
 function calcScore(items, answers) {
-  const totalWeight = items.reduce((s, i) => s + i.weight, 0);
   let weightedSum = 0;
   let maxSum = 0;
 
   items.forEach(item => {
-    const relWeight = item.weight / totalWeight;
     const score = answers[item.id] ? answers[item.id].score : 0;
-    weightedSum += item.weight * relWeight * score;
-    maxSum += item.weight * relWeight * 3;
+    weightedSum += item.weight * score;
+    maxSum += item.weight * 3;
   });
 
   return maxSum > 0 ? (weightedSum / maxSum) : 0;
@@ -2339,7 +2340,41 @@ function validateCap() {
   validateRaise();
 }
 
+function validateStep1() {
+  const name = (document.getElementById('company_name') || {}).value.trim();
+  const ceoName = (document.getElementById('ceo_name') || {}).value.trim();
+  const ceoEmail = (document.getElementById('ceo_email') || {}).value.trim();
+  const missing = [];
+  if (!name) missing.push('Company Name');
+  if (!ceoName) missing.push('CEO / Lead Founder Name');
+  if (!ceoEmail) missing.push('CEO Email');
+  if (missing.length > 0) {
+    const msg = 'Please fill in the following required fields before continuing:\n\n• ' + missing.join('\n• ');
+    alert(msg);
+    // Focus first missing field
+    if (!name) document.getElementById('company_name').focus();
+    else if (!ceoName) document.getElementById('ceo_name').focus();
+    else if (!ceoEmail) document.getElementById('ceo_email').focus();
+    return false;
+  }
+  // Basic email validation
+  if (ceoEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ceoEmail)) {
+    alert('Please enter a valid email address for the CEO / Lead Founder.');
+    document.getElementById('ceo_email').focus();
+    return false;
+  }
+  return true;
+}
+
 function goToStep(step) {
+  // Validate Step 1 before allowing navigation forward from it
+  if (currentStep === 1 && step > 1) {
+    if (!validateStep1()) return;
+  }
+  // Warn about unanswered questions when going to results
+  if (step === 4 && currentStep !== 4) {
+    if (!checkUnanswered()) return;
+  }
   currentStep = step;
   for (let i = 1; i <= 4; i++) {
     document.getElementById(`section-${i}`).classList.toggle('visible', i === step);
@@ -2355,6 +2390,17 @@ function goToStep(step) {
 
   if (step === 3) refreshStep3Context();
   if (step === 4) buildSummary();
+}
+
+function checkUnanswered() {
+  const unansweredFund = FUNDRAISING_ITEMS.filter(i => !fundAnswers[i.id]);
+  const unansweredMat = MATERIALS_ITEMS.filter(i => !matAnswers[i.id]);
+  if (unansweredFund.length === 0 && unansweredMat.length === 0) return true;
+  let msg = 'You have unanswered questions that will be scored as "Not Started":\n\n';
+  if (unansweredFund.length > 0) msg += '• ' + unansweredFund.length + ' Business Readiness question' + (unansweredFund.length > 1 ? 's' : '') + '\n';
+  if (unansweredMat.length > 0) msg += '• ' + unansweredMat.length + ' Materials Readiness question' + (unansweredMat.length > 1 ? 's' : '') + '\n';
+  msg += '\nContinue to results anyway?';
+  return confirm(msg);
 }
 
 function refreshStep3Context() {
@@ -3344,10 +3390,10 @@ function saveState() {
     });
     // Save form fields from Step 1
     const fields = ['company_name','company_website','company_description','company_sector',
-      'hq_location','ceo_name','ceo_email','ceo_phone','cofounder_count','months_fulltime',
+      'company_location','ceo_name','ceo_email','ceo_phone','num_cofounders','months_fulltime',
       'revenue_status','org_form','date_founded','raise_amount','instrument','safe_type',
       'safe_cap','safe_discount','safe_prorata','cn_cap','cn_discount','cn_interest',
-      'cn_maturity','priced_premoney','priced_pps','prior_raised','prior_source'];
+      'cn_maturity','priced_valuation','priced_pps','prior_raised','prior_source'];
     fields.forEach(id => {
       const el = document.getElementById(id);
       if (el) state.formFields[id] = el.value;
