@@ -1012,6 +1012,7 @@
     background: var(--dark-border);
     outline: none;
     cursor: pointer;
+    touch-action: none;
   }
   .weight-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
@@ -1030,6 +1031,34 @@
     background: var(--green);
     cursor: pointer;
     border: 2px solid var(--dark-card);
+  }
+  /* Stepper buttons for touch devices */
+  .weight-stepper {
+    display: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+    background: var(--dark-card);
+    color: var(--text-secondary);
+    font-size: 18px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    flex-shrink: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: all 0.15s;
+    line-height: 1;
+    text-align: center;
+    padding: 0;
+  }
+  .weight-stepper:active {
+    background: var(--green-muted);
+    border-color: var(--green);
+    color: var(--green);
   }
   .weight-value {
     font-size: 12px;
@@ -1050,18 +1079,25 @@
     border-top: 1px solid var(--dark-border);
   }
   .weight-controls .btn-reset {
-    font-size: 11px;
-    color: var(--text-muted);
-    background: transparent;
-    border: 1px solid var(--dark-border);
-    border-radius: 6px;
-    padding: 4px 12px;
+    font-size: 12px;
+    color: var(--amber);
+    background: var(--amber-muted);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 8px;
+    padding: 8px 16px;
     cursor: pointer;
     transition: all 0.2s;
+    font-weight: 600;
+    font-family: inherit;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
   }
-  .weight-controls .btn-reset:hover {
+  .weight-controls .btn-reset:hover, .weight-controls .btn-reset:active {
     border-color: var(--amber);
     color: var(--amber);
+    background: rgba(245, 158, 11, 0.2);
   }
   .weight-status {
     font-size: 11px;
@@ -1090,8 +1126,13 @@
     .weight-table { font-size: 12px; }
     .weight-table .weight-bar { max-width: 40px; }
     .methodology-section { padding: 16px; }
-    .weight-slider { width: 70px; }
-    .weight-slider-cell { gap: 4px; }
+    .weight-slider { width: 70px; height: 8px; border-radius: 4px; }
+    .weight-slider::-webkit-slider-thumb { width: 28px; height: 28px; }
+    .weight-slider::-moz-range-thumb { width: 28px; height: 28px; }
+    .weight-slider-cell { gap: 6px; }
+    .weight-stepper { display: flex; align-items: center; justify-content: center; min-height: 36px; min-width: 36px; }
+    .weight-controls { flex-wrap: wrap; gap: 10px; }
+    .weight-controls .btn-reset { padding: 10px 20px; font-size: 13px; min-height: 44px; }
   }
   @media (max-width: 480px) {
     .container { padding: 12px 10px 70px; }
@@ -1181,7 +1222,7 @@
         <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Pillar weights reflect what early-stage investors prioritize:</strong></p>
         <div id="weight-tune-toggle" style="margin-bottom:12px;">
           <button onclick="toggleWeightTuning()" class="btn-reset" style="font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(74,222,128,0.3);border-radius:6px;padding:5px 14px;cursor:pointer;">&#x2699; Customize Weights</button>
-          <span style="font-size:11px;color:var(--text-muted);margin-left:8px;">Drag sliders to see how different weightings affect your score</span>
+          <span style="font-size:11px;color:var(--text-muted);margin-left:8px;">Use sliders or &minus;/+ buttons to adjust how different weightings affect your score</span>
         </div>
         <table class="weight-table" id="methodology-table">
           <thead>
@@ -3498,7 +3539,9 @@ function buildMethodologyTable() {
     if (weightTuningActive) {
       html += '<tr><td style="padding-left:20px;" class="' + modClass + '">' + item.label + '</td>';
       html += '<td><div class="weight-slider-cell">';
+      html += '<button type="button" class="weight-stepper" onclick="stepWeight(\'' + item.id + '\', -5)" aria-label="Decrease weight">&minus;</button>';
       html += '<input type="range" class="weight-slider" min="10" max="200" step="5" value="' + item.weight + '" data-weight-id="' + item.id + '" oninput="updateItemWeight(this)">';
+      html += '<button type="button" class="weight-stepper" onclick="stepWeight(\'' + item.id + '\', 5)" aria-label="Increase weight">+</button>';
       html += '<span class="weight-value' + modClass + '" id="wv-' + item.id + '">' + item.weight + '</span>';
       html += '</div></td>';
       html += '<td><span class="weight-bar" style="width:' + barWidth + 'px;"></span> <span class="' + modClass + '">' + pct + '%</span></td></tr>';
@@ -3533,6 +3576,17 @@ function updateItemWeight(slider) {
     // Recalculate live scores
     recalcAllScores();
     // Save custom weights
+    saveCustomWeights();
+  }
+}
+
+function stepWeight(id, delta) {
+  const item = FUNDRAISING_ITEMS.find(i => i.id === id);
+  if (item) {
+    const newWeight = Math.max(10, Math.min(200, item.weight + delta));
+    item.weight = newWeight;
+    buildMethodologyTable();
+    recalcAllScores();
     saveCustomWeights();
   }
 }
