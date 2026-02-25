@@ -19,7 +19,7 @@ The FRA walks founders through four steps:
 ## Features
 
 - **Single HTML file** — no build system, no dependencies, no server required. Open it in any browser.
-- **Tunable weights** — open the methodology section to customize how each item is weighted. Drag sliders to see how different investor priorities change your score.
+- **Tunable weights** — open the methodology section to customize how each item is weighted. Use sliders (desktop) or +/− buttons (mobile) to see how different investor priorities change your score.
 - **Benchmark validation** — raise amounts and SAFE/CN caps are checked against real early pre-seed market data with visual range comparisons.
 - **Save & resume** — progress auto-saves to localStorage with 7-day expiry. Come back later and pick up where you left off.
 - **Accessibility** — colorblind mode (Okabe-Ito palette), high contrast, large text, reduced motion, full keyboard navigation, ARIA roles.
@@ -55,7 +55,7 @@ Sources: Carta State of Pre-Seed Q3 2025, SEC investor type guidelines, Arc 2025
 
 ```bash
 # Just open the HTML file
-open "20260225 Evolution Accelerator Funding Readiness Assessment v2.html"
+open index.html
 
 # Or serve it
 python3 -m http.server 8000
@@ -64,7 +64,7 @@ python3 -m http.server 8000
 
 ## Testing
 
-A 200-test math verification suite validates all scoring, weighting, benchmarks, dilution calculations (post-money SAFE, pre-money SAFE, convertible note, uncapped/MFN), and roadmap logic:
+A 212-test math verification suite validates all scoring, weighting, benchmarks, dilution calculations (post-money SAFE, pre-money SAFE, convertible note, uncapped/MFN), currency parsing (including k/m shorthand), and roadmap logic:
 
 ```bash
 node test_fra_math.js
@@ -88,4 +88,3 @@ MIT License — see [LICENSE](LICENSE).
 Built by [Evolution Accelerator](https://evolutionacceleration.com) · [EVFM](https://evfm.co)
 
 Created with Claude (Anthropic) as an AI copilot experiment.
-

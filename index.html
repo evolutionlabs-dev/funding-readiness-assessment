@@ -1393,17 +1393,19 @@
     <div class="form-row">
       <div class="form-group">
         <label>Amount Being Raised ($) *</label>
-        <input type="text" id="raise_amount" placeholder="150,000" oninput="formatCurrency(this); validateRaise(); validateCap();">
+        <input type="text" id="raise_amount" placeholder="150,000" oninput="formatCurrency(this); validateRaise(); validateCap(); clearFieldError(this);">
+        <div class="field-error-msg">Please enter a raise amount</div>
       </div>
       <div class="form-group">
         <label>Security Instrument *</label>
-        <select id="instrument" onchange="toggleTermsFields()">
+        <select id="instrument" onchange="toggleTermsFields(); clearFieldError(this);">
           <option value="">Select...</option>
           <option value="SAFE">SAFE (Simple Agreement for Future Equity)</option>
           <option value="Convertible Note">Convertible Note</option>
           <option value="Priced Round">Priced Round (Equity)</option>
           <option value="Unknown">Not sure yet</option>
         </select>
+        <div class="field-error-msg">Please select an instrument</div>
       </div>
     </div>
 
@@ -1914,6 +1916,115 @@ const MAT_OPTIONS = [
   { label: 'Not Started', value: 'Not Started', score: 0, cls: 'selected-notstarted' },
 ];
 
+// ============================================================
+// ROADMAP ACTIONS — 30/60/90-day plan content
+// ============================================================
+const ROADMAP_ACTIONS = {
+  // Business readiness items
+  team_trinity: {
+    critical: "Map your Trinity of Management gaps (Product, Market, Finance). Identify at least one candidate for each missing role within 30 days.",
+    priority: "Formalize advisory or co-founder conversations for unfilled Trinity roles. Get commitments in writing.",
+    polish: "Document each team member's role clarity and decision-making authority. Prepare team slide for pitch deck.",
+    effort: 'significant'
+  },
+  coachable: {
+    critical: "Schedule 5 honest feedback conversations with mentors, customers, or peers this month. Document what you learn.",
+    priority: "Join a founder peer group or accelerator that provides regular structured feedback.",
+    polish: "Prepare 2-3 specific examples of how feedback changed your approach — you'll need these in investor meetings.",
+    effort: 'moderate'
+  },
+  commitment: {
+    critical: "Define your transition-to-full-time plan with a specific date. If you're already full-time, document how long you've been working on this and what personal capital you've invested.",
+    priority: "Go full-time if you haven't yet. Invest personal capital (even a modest amount). Build your 'why now, why me' narrative around your commitment level.",
+    polish: "Prepare to answer: 'What have you sacrificed to pursue this?' and 'What's your personal financial stake?' Investors ask these — often indirectly.",
+    effort: 'quick'
+  },
+  advisors: {
+    critical: "Identify your top 3 knowledge gaps and reach out to 5 potential advisors with specific asks.",
+    priority: "Formalize advisory agreements (standard 0.25-1% equity for advisors). Get bios and LinkedIn profiles ready.",
+    polish: "Brief advisors on your fundraise so they can make warm introductions to investors.",
+    effort: 'moderate'
+  },
+  pmf: {
+    critical: "Talk to 20 target customers this month. Document demand signals: willingness to pay, frequency of problem, current workarounds.",
+    priority: "Run a structured pilot or beta with at least 5 paying customers. Measure retention, not just sign-ups.",
+    polish: "Build your PMF evidence slide with hard numbers: NPS, retention rate, revenue growth, or signed LOIs.",
+    effort: 'significant'
+  },
+  revenue: {
+    critical: "Write your revenue model on one page: who pays, how much, how often. Test pricing with 10 potential customers.",
+    priority: "Generate your first dollar of revenue (or if pre-revenue, get a signed LOI or paid pilot agreement).",
+    polish: "Model 12-month revenue projections with assumptions documented. Be ready to defend every number.",
+    effort: 'significant'
+  },
+  gtm: {
+    critical: "Pick your #1 customer acquisition channel and run a 30-day test. Measure cost per lead and conversion rate.",
+    priority: "Document results from channel testing. Build a 6-month GTM plan with milestones and budget.",
+    polish: "Prepare a GTM summary showing CAC by channel, conversion rates, and scaling plan.",
+    effort: 'moderate'
+  },
+  unit_econ: {
+    critical: "Build a basic unit economics model: CAC, LTV, gross margin, payback period — even with estimates.",
+    priority: "Validate unit economics with real data from your first customers. Identify path to LTV/CAC > 3x.",
+    polish: "Prepare a unit economics slide showing current state and projected improvement as you scale.",
+    effort: 'moderate'
+  },
+  trend: {
+    critical: "Research your market wave: find 3 credible data points (market size, growth rate, regulatory tailwinds) that prove your timing.",
+    priority: "Frame your company narrative around the trend — 'Because of X macro shift, Y is now possible for the first time.'",
+    polish: "Add trend/timing data to your pitch deck market slide. Reference specific reports or data sources.",
+    effort: 'quick'
+  },
+  moats: {
+    critical: "Answer honestly: if a well-funded competitor copied your product, why would customers stay? Document your answer.",
+    priority: "Identify which moat type you're building (data, network effects, switching costs, brand, regulatory) and invest in strengthening it.",
+    polish: "Prepare your competitive defensibility story for investor meetings. Include a competitive landscape slide.",
+    effort: 'moderate'
+  },
+  ip_brand: {
+    critical: "Run a trademark search on USPTO.gov for your company name and key product names. Secure your domain. Get all founders and contractors to sign IP assignment agreements.",
+    priority: "File federal trademark applications for your company name and primary product ($250-350/class via TEAS). Consult a patent attorney if you have novel technology. Document your trade secret strategy.",
+    polish: "Prepare an IP summary slide for investor due diligence. Show trademarks filed/granted, patent strategy (if applicable), and IP assignment status.",
+    effort: 'moderate'
+  },
+  corp: {
+    critical: "Incorporate properly (usually Delaware C-Corp for VC-backed companies). Consult a startup attorney.",
+    priority: "Clean up your cap table, ensure all IP is assigned to the company, and get founder agreements signed.",
+    polish: "Get your corporate documents organized in a virtual data room so they're ready for due diligence.",
+    effort: 'significant'
+  },
+  package: {
+    critical: "Draft your pitch deck (10-15 slides, standard structure). Get feedback from 5 people before sending to any investor.",
+    priority: "Create your executive summary (1-2 pages) and ensure numbers are consistent with your deck and financial model.",
+    polish: "Have your materials reviewed by a mentor or advisor who's seen hundreds of decks. Refine based on feedback.",
+    effort: 'moderate'
+  },
+  valuation: {
+    critical: "Research recent comparable deals at your stage and sector. Understand SAFE vs. Note vs. Priced Round trade-offs.",
+    priority: "Set your terms (valuation cap, discount, raise amount) and be able to explain how you arrived at them.",
+    polish: "Practice explaining your terms and dilution impact in investor-friendly language. Know your walkaway number.",
+    effort: 'quick'
+  },
+  // Materials items
+  pitch_deck: { critical: "Your pitch deck is your #1 fundraising tool. Draft 10-15 slides with clean visuals and a clear story arc.", priority: "Get 5 rounds of feedback and iterate. Test it in low-stakes meetings first.", polish: "Finalize and prepare appendix slides for deep-dive questions.", effort: 'moderate' },
+  exec_summary: { critical: "Write a 1-2 page summary investors can forward internally. This is often how you get introduced.", priority: "Align numbers and narrative with your pitch deck.", polish: "Have it reviewed by an advisor who's seen hundreds.", effort: 'quick' },
+  video_pitch: { critical: "Record a 2-5 minute video pitch or product demo. In 2026, investors expect to see you present before they take a meeting.", priority: "Polish your delivery — practice until it feels natural, not scripted. Include a live product walkthrough if possible.", polish: "Host it on a dedicated page (not just YouTube) and include it in your outreach emails.", effort: 'moderate' },
+  web_social: { critical: "Get a professional website live and claim all social media handles. Your online presence is the first thing investors check.", priority: "Ensure consistent branding and messaging across all platforms. Your website should tell the same story as your deck.", polish: "Add social proof: logos, testimonials, press mentions, team photos.", effort: 'moderate' },
+  founder_bios: { critical: "Write professional bios and update LinkedIn profiles for all founders. Investors will search you before they respond.", priority: "Add relevant accomplishments, social proof, and a clear narrative about why you're the right team for this problem.", polish: "Cross-link between company site and personal profiles. Get recommendations from credible connections.", effort: 'quick' },
+  demo_proto: { critical: "Build a working demo or clickable prototype. Investors in 2026 expect to see the product, not just hear about it.", priority: "Make the demo self-serve — investors should be able to try it without hand-holding. Focus on the 'aha moment.'", polish: "Record a polished demo video as backup for meetings where live demos might fail.", effort: 'significant' },
+  financials: { critical: "Build a financial model with P&L and 12-18 month projections. Keep assumptions visible and defensible. At early pre-seed, long-range projections are guesswork — focus on your next 4-6 quarters.", priority: "Pressure-test with an accountant or CFO advisor. Model your burn rate and runway at current raise amount.", polish: "Prepare to walk through line-by-line in due diligence. Know your unit economics cold.", effort: 'significant' },
+  customer_proof: { critical: "Gather evidence of customer demand: signed LOIs, paid pilots, waitlist numbers, testimonials, or usage data.", priority: "Organize proof by type (revenue, intent, engagement) and present the strongest evidence first.", polish: "Build a customer evidence slide for your deck with specific numbers and named customers (with permission).", effort: 'moderate' },
+  market_research: { critical: "Size your market (TAM/SAM/SOM) and map your competitive landscape. Use credible sources.", priority: "Identify your unique positioning versus competitors. Be honest about who else is in the space.", polish: "Prepare a competitive matrix slide and a market sizing slide backed by data sources investors can verify.", effort: 'moderate' },
+  cap_table: { critical: "Build a cap table showing all equity, options, warrants, and SAFEs. Use Carta or equivalent.", priority: "Verify with legal counsel. Model dilution at your target raise amount.", polish: "Prepare a waterfall analysis showing post-money ownership.", effort: 'moderate' },
+  founders_agr: { critical: "Draft and sign founder agreements with vesting, IP assignment, roles, and departure terms.", priority: "Have legal counsel review. Standard 4-year vest with 1-year cliff.", polish: "Ensure agreements are in your data room and current.", effort: 'significant' },
+  safe_kiss: { critical: "Choose your investment instrument (SAFE is most common at pre-seed). Have it drafted or reviewed by counsel.", priority: "Understand your terms vs. market standards. Know the implications of valuation caps and discounts.", polish: "Have final documents ready to send immediately when an investor commits. Speed matters.", effort: 'moderate' },
+  ip_filings: { critical: "File trademark applications for company name and primary product names. Ensure domain is secured.", priority: "Get IP assignment agreements signed by all founders and contractors. Consult patent attorney if you have novel technology.", polish: "Prepare an IP summary for due diligence: marks filed, patents (if any), trade secret strategy, domain portfolio.", effort: 'moderate' },
+  corp_docs: { critical: "Incorporate properly (usually Delaware C-Corp). File articles, draft bylaws.", priority: "Have legal review all corporate documents. Ensure EIN, state registrations, and annual filings are current.", polish: "Organize in your virtual data room.", effort: 'moderate' },
+  data_room: { critical: "Set up a virtual data room (Google Drive, Notion, or dedicated tool like DocSend). Organize all fundraising materials in one place.", priority: "Structure folders logically: Corporate, Financial, Product, Team, Legal. Set permissions so you can share selectively.", polish: "Add an index document. Test the experience — have someone navigate it cold and give feedback.", effort: 'quick' },
+  legal_team: { critical: "Engage a startup attorney. Don't DIY your fundraising legal docs.", priority: "Get referrals from other founders or your local startup community. Confirm they know startup instruments (SAFEs, etc.).", polish: "Confirm counsel is available for your fundraising timeline and responsive to quick turnarounds.", effort: 'moderate' },
+  acct_team: { critical: "Engage a bookkeeper or accountant. Clean books are table stakes for due diligence.", priority: "Get books current and reconciled. Set up proper chart of accounts.", polish: "Schedule a pre-fundraise review to catch any issues before investors see your numbers.", effort: 'quick' },
+};
+
 // State
 const fundAnswers = {};
 const matAnswers = {};
@@ -2366,11 +2477,14 @@ function validateStep1() {
   const nameEl = document.getElementById('company_name');
   const ceoNameEl = document.getElementById('ceo_name');
   const ceoEmailEl = document.getElementById('ceo_email');
+  const raiseEl = document.getElementById('raise_amount');
+  const instrEl = document.getElementById('instrument');
+  const allEls = [nameEl, ceoNameEl, ceoEmailEl, raiseEl, instrEl];
   let valid = true;
   let firstBad = null;
 
   // Clear previous errors
-  [nameEl, ceoNameEl, ceoEmailEl].forEach(el => setFieldError(el, false));
+  allEls.forEach(el => setFieldError(el, false));
 
   if (!nameEl.value.trim()) { setFieldError(nameEl, true); valid = false; firstBad = firstBad || nameEl; }
   if (!ceoNameEl.value.trim()) { setFieldError(ceoNameEl, true); valid = false; firstBad = firstBad || ceoNameEl; }
@@ -2378,6 +2492,12 @@ function validateStep1() {
     setFieldError(ceoEmailEl, true); valid = false; firstBad = firstBad || ceoEmailEl;
   } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ceoEmailEl.value.trim())) {
     setFieldError(ceoEmailEl, true); valid = false; firstBad = firstBad || ceoEmailEl;
+  }
+  if (!raiseEl.value.trim() || parseCurrency(raiseEl.value) <= 0) {
+    setFieldError(raiseEl, true); valid = false; firstBad = firstBad || raiseEl;
+  }
+  if (!instrEl.value) {
+    setFieldError(instrEl, true); valid = false; firstBad = firstBad || instrEl;
   }
 
   if (firstBad) {
@@ -2677,112 +2797,6 @@ function buildStrengths() {
 // ============================================================
 // ROADMAP — prioritized actions + 30/60/90 timeline
 // ============================================================
-const ROADMAP_ACTIONS = {
-  // Business readiness items
-  team_trinity: {
-    critical: "Map your Trinity of Management gaps (Product, Market, Finance). Identify at least one candidate for each missing role within 30 days.",
-    priority: "Formalize advisory or co-founder conversations for unfilled Trinity roles. Get commitments in writing.",
-    polish: "Document each team member's role clarity and decision-making authority. Prepare team slide for pitch deck.",
-    effort: 'significant'
-  },
-  coachable: {
-    critical: "Schedule 5 honest feedback conversations with mentors, customers, or peers this month. Document what you learn.",
-    priority: "Join a founder peer group or accelerator that provides regular structured feedback.",
-    polish: "Prepare 2-3 specific examples of how feedback changed your approach — you'll need these in investor meetings.",
-    effort: 'moderate'
-  },
-  commitment: {
-    critical: "Define your transition-to-full-time plan with a specific date. If you're already full-time, document how long you've been working on this and what personal capital you've invested.",
-    priority: "Go full-time if you haven't yet. Invest personal capital (even a modest amount). Build your 'why now, why me' narrative around your commitment level.",
-    polish: "Prepare to answer: 'What have you sacrificed to pursue this?' and 'What's your personal financial stake?' Investors ask these — often indirectly.",
-    effort: 'quick'
-  },
-  advisors: {
-    critical: "Identify your top 3 knowledge gaps and reach out to 5 potential advisors with specific asks.",
-    priority: "Formalize advisory agreements (standard 0.25-1% equity for advisors). Get bios and LinkedIn profiles ready.",
-    polish: "Brief advisors on your fundraise so they can make warm introductions to investors.",
-    effort: 'moderate'
-  },
-  pmf: {
-    critical: "Talk to 20 target customers this month. Document demand signals: willingness to pay, frequency of problem, current workarounds.",
-    priority: "Run a structured pilot or beta with at least 5 paying customers. Measure retention, not just sign-ups.",
-    polish: "Build your PMF evidence slide with hard numbers: NPS, retention rate, revenue growth, or signed LOIs.",
-    effort: 'significant'
-  },
-  revenue: {
-    critical: "Write your revenue model on one page: who pays, how much, how often. Test pricing with 10 potential customers.",
-    priority: "Generate your first dollar of revenue (or if pre-revenue, get a signed LOI or paid pilot agreement).",
-    polish: "Model 12-month revenue projections with assumptions documented. Be ready to defend every number.",
-    effort: 'significant'
-  },
-  gtm: {
-    critical: "Pick your #1 customer acquisition channel and run a 30-day test. Measure cost per lead and conversion rate.",
-    priority: "Document results from channel testing. Build a 6-month GTM plan with milestones and budget.",
-    polish: "Prepare a GTM summary showing CAC by channel, conversion rates, and scaling plan.",
-    effort: 'moderate'
-  },
-  unit_econ: {
-    critical: "Build a basic unit economics model: CAC, LTV, gross margin, payback period — even with estimates.",
-    priority: "Validate unit economics with real data from your first customers. Identify path to LTV/CAC > 3x.",
-    polish: "Prepare a unit economics slide showing current state and projected improvement as you scale.",
-    effort: 'moderate'
-  },
-  trend: {
-    critical: "Research your market wave: find 3 credible data points (market size, growth rate, regulatory tailwinds) that prove your timing.",
-    priority: "Frame your company narrative around the trend — 'Because of X macro shift, Y is now possible for the first time.'",
-    polish: "Add trend/timing data to your pitch deck market slide. Reference specific reports or data sources.",
-    effort: 'quick'
-  },
-  moats: {
-    critical: "Answer honestly: if a well-funded competitor copied your product, why would customers stay? Document your answer.",
-    priority: "Identify which moat type you're building (data, network effects, switching costs, brand, regulatory) and invest in strengthening it.",
-    polish: "Prepare your competitive defensibility story for investor meetings. Include a competitive landscape slide.",
-    effort: 'moderate'
-  },
-  ip_brand: {
-    critical: "Run a trademark search on USPTO.gov for your company name and key product names. Secure your domain. Get all founders and contractors to sign IP assignment agreements.",
-    priority: "File federal trademark applications for your company name and primary product ($250-350/class via TEAS). Consult a patent attorney if you have novel technology. Document your trade secret strategy.",
-    polish: "Prepare an IP summary slide for investor due diligence. Show trademarks filed/granted, patent strategy (if applicable), and IP assignment status.",
-    effort: 'moderate'
-  },
-  corp: {
-    critical: "Incorporate properly (usually Delaware C-Corp for VC-backed companies). Consult a startup attorney.",
-    priority: "Clean up your cap table, ensure all IP is assigned to the company, and get founder agreements signed.",
-    polish: "Get your corporate documents organized in a virtual data room so they're ready for due diligence.",
-    effort: 'significant'
-  },
-  package: {
-    critical: "Draft your pitch deck (10-15 slides, standard structure). Get feedback from 5 people before sending to any investor.",
-    priority: "Create your executive summary (1-2 pages) and ensure numbers are consistent with your deck and financial model.",
-    polish: "Have your materials reviewed by a mentor or advisor who's seen hundreds of decks. Refine based on feedback.",
-    effort: 'moderate'
-  },
-  valuation: {
-    critical: "Research recent comparable deals at your stage and sector. Understand SAFE vs. Note vs. Priced Round trade-offs.",
-    priority: "Set your terms (valuation cap, discount, raise amount) and be able to explain how you arrived at them.",
-    polish: "Practice explaining your terms and dilution impact in investor-friendly language. Know your walkaway number.",
-    effort: 'quick'
-  },
-  // Materials items
-  pitch_deck: { critical: "Your pitch deck is your #1 fundraising tool. Draft 10-15 slides with clean visuals and a clear story arc.", priority: "Get 5 rounds of feedback and iterate. Test it in low-stakes meetings first.", polish: "Finalize and prepare appendix slides for deep-dive questions.", effort: 'moderate' },
-  exec_summary: { critical: "Write a 1-2 page summary investors can forward internally. This is often how you get introduced.", priority: "Align numbers and narrative with your pitch deck.", polish: "Have it reviewed by an advisor who's seen hundreds.", effort: 'quick' },
-  video_pitch: { critical: "Record a 2-5 minute video pitch or product demo. In 2026, investors expect to see you present before they take a meeting.", priority: "Polish your delivery — practice until it feels natural, not scripted. Include a live product walkthrough if possible.", polish: "Host it on a dedicated page (not just YouTube) and include it in your outreach emails.", effort: 'moderate' },
-  web_social: { critical: "Get a professional website live and claim all social media handles. Your online presence is the first thing investors check.", priority: "Ensure consistent branding and messaging across all platforms. Your website should tell the same story as your deck.", polish: "Add social proof: logos, testimonials, press mentions, team photos.", effort: 'moderate' },
-  founder_bios: { critical: "Write professional bios and update LinkedIn profiles for all founders. Investors will search you before they respond.", priority: "Add relevant accomplishments, social proof, and a clear narrative about why you're the right team for this problem.", polish: "Cross-link between company site and personal profiles. Get recommendations from credible connections.", effort: 'quick' },
-  demo_proto: { critical: "Build a working demo or clickable prototype. Investors in 2026 expect to see the product, not just hear about it.", priority: "Make the demo self-serve — investors should be able to try it without hand-holding. Focus on the 'aha moment.'", polish: "Record a polished demo video as backup for meetings where live demos might fail.", effort: 'significant' },
-  financials: { critical: "Build a financial model with P&L and 12-18 month projections. Keep assumptions visible and defensible. At early pre-seed, long-range projections are guesswork — focus on your next 4-6 quarters.", priority: "Pressure-test with an accountant or CFO advisor. Model your burn rate and runway at current raise amount.", polish: "Prepare to walk through line-by-line in due diligence. Know your unit economics cold.", effort: 'significant' },
-  customer_proof: { critical: "Gather evidence of customer demand: signed LOIs, paid pilots, waitlist numbers, testimonials, or usage data.", priority: "Organize proof by type (revenue, intent, engagement) and present the strongest evidence first.", polish: "Build a customer evidence slide for your deck with specific numbers and named customers (with permission).", effort: 'moderate' },
-  market_research: { critical: "Size your market (TAM/SAM/SOM) and map your competitive landscape. Use credible sources.", priority: "Identify your unique positioning versus competitors. Be honest about who else is in the space.", polish: "Prepare a competitive matrix slide and a market sizing slide backed by data sources investors can verify.", effort: 'moderate' },
-  cap_table: { critical: "Build a cap table showing all equity, options, warrants, and SAFEs. Use Carta or equivalent.", priority: "Verify with legal counsel. Model dilution at your target raise amount.", polish: "Prepare a waterfall analysis showing post-money ownership.", effort: 'moderate' },
-  founders_agr: { critical: "Draft and sign founder agreements with vesting, IP assignment, roles, and departure terms.", priority: "Have legal counsel review. Standard 4-year vest with 1-year cliff.", polish: "Ensure agreements are in your data room and current.", effort: 'significant' },
-  safe_kiss: { critical: "Choose your investment instrument (SAFE is most common at pre-seed). Have it drafted or reviewed by counsel.", priority: "Understand your terms vs. market standards. Know the implications of valuation caps and discounts.", polish: "Have final documents ready to send immediately when an investor commits. Speed matters.", effort: 'moderate' },
-  ip_filings: { critical: "File trademark applications for company name and primary product names. Ensure domain is secured.", priority: "Get IP assignment agreements signed by all founders and contractors. Consult patent attorney if you have novel technology.", polish: "Prepare an IP summary for due diligence: marks filed, patents (if any), trade secret strategy, domain portfolio.", effort: 'moderate' },
-  corp_docs: { critical: "Incorporate properly (usually Delaware C-Corp). File articles, draft bylaws.", priority: "Have legal review all corporate documents. Ensure EIN, state registrations, and annual filings are current.", polish: "Organize in your virtual data room.", effort: 'moderate' },
-  data_room: { critical: "Set up a virtual data room (Google Drive, Notion, or dedicated tool like DocSend). Organize all fundraising materials in one place.", priority: "Structure folders logically: Corporate, Financial, Product, Team, Legal. Set permissions so you can share selectively.", polish: "Add an index document. Test the experience — have someone navigate it cold and give feedback.", effort: 'quick' },
-  legal_team: { critical: "Engage a startup attorney. Don't DIY your fundraising legal docs.", priority: "Get referrals from other founders or your local startup community. Confirm they know startup instruments (SAFEs, etc.).", polish: "Confirm counsel is available for your fundraising timeline and responsive to quick turnarounds.", effort: 'moderate' },
-  acct_team: { critical: "Engage a bookkeeper or accountant. Clean books are table stakes for due diligence.", priority: "Get books current and reconciled. Set up proper chart of accounts.", polish: "Schedule a pre-fundraise review to catch any issues before investors see your numbers.", effort: 'quick' },
-};
-
 function buildRoadmap() {
   const container = document.getElementById('roadmap-section');
 
