@@ -1110,8 +1110,80 @@
     color: var(--amber);
   }
 
+  /* Example report modal */
+  .example-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 2000;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .example-modal-overlay.open { display: block; }
+  .example-modal {
+    max-width: 840px;
+    margin: 40px auto;
+    padding: 0 24px 80px;
+    position: relative;
+  }
+  .example-modal-banner {
+    position: sticky;
+    top: 0;
+    z-index: 2001;
+    background: rgba(245, 158, 11, 0.12);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .example-modal-banner span {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--amber);
+  }
+  .example-modal-close {
+    background: transparent;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    color: var(--amber);
+    padding: 6px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .example-modal-close:hover {
+    background: rgba(245, 158, 11, 0.15);
+    border-color: var(--amber);
+  }
+  .example-modal-cta {
+    text-align: center;
+    padding: 32px 24px;
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(74, 222, 128, 0.03) 100%);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    border-radius: 14px;
+    margin-top: 24px;
+  }
+  .example-modal-cta h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .example-modal-cta p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+  @media (max-width: 600px) {
+    .example-modal { margin: 20px auto; padding: 0 12px 60px; }
+    .example-modal-banner { flex-direction: column; text-align: center; gap: 8px; }
+  }
+
   /* Print enhancements */
   @media print {
+    .example-modal-overlay { display: none !important; }
+    .example-report-btn { display: none !important; }
     .a11y-toolbar, .save-indicator, .bench-bar-legend, .methodology-section,
     .progress-bar-container, .btn-row, .email-section, .cta-section,
     .explainer-body, .explainer-arrow { display: none !important; }
@@ -1245,6 +1317,12 @@
         <p style="margin-bottom:0;font-size:12px;color:var(--text-muted);">Benchmark data sourced from Carta State of Pre-Seed Q3 2025, SEC investor type guidelines, and industry surveys.</p>
       </div>
     </div>
+  </div>
+
+  <!-- Example Report CTA -->
+  <div class="example-report-btn" style="text-align:center;margin-bottom:28px;">
+    <button onclick="showExampleReport()" class="btn btn-outline-green" style="font-size:14px;padding:12px 28px;">See an Example Report</button>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Preview what your personalized report will look like</p>
   </div>
 
   <!-- Progress -->
@@ -1682,6 +1760,22 @@
   </div>
 
 </main>
+
+<!-- Example Report Modal -->
+<div class="example-modal-overlay" id="example-modal-overlay" role="dialog" aria-label="Example Report Preview" aria-modal="true">
+  <div class="example-modal">
+    <div class="example-modal-banner">
+      <span>SAMPLE REPORT — Your results will be personalized based on your answers</span>
+      <button class="example-modal-close" onclick="closeExampleReport()">Close Preview</button>
+    </div>
+    <div id="example-report-content"></div>
+    <div class="example-modal-cta">
+      <h3>Ready to See Your Own Report?</h3>
+      <p>Complete the assessment to get your personalized funding readiness score, strengths analysis, and 90-day roadmap.</p>
+      <button class="btn btn-primary" onclick="closeExampleReport()" style="display:inline-block;">Start My Assessment</button>
+    </div>
+  </div>
+</div>
 
 <script>
 // ============================================================
@@ -3886,6 +3980,156 @@ function downloadTextReport() {
   // Conditional tips are now handled dynamically by refreshStep3Context()
   // which is called every time the user enters Step 3 via goToStep(3).
 })();
+
+// ============================================================
+// EXAMPLE REPORT — sample data + modal rendering
+// ============================================================
+function showExampleReport() {
+  // Sample company data for a realistic fictional startup
+  var sampleCompany = {
+    company_name: 'TaskFlow AI',
+    company_website: 'https://taskflowai.com',
+    company_description: 'AI-powered project management for distributed engineering teams',
+    company_sector: 'B2B SaaS',
+    company_location: 'Austin, TX',
+    ceo_name: 'Sarah Chen',
+    ceo_email: 'sarah@taskflowai.com',
+    ceo_phone: '(512) 555-0142',
+    num_cofounders: '2',
+    months_fulltime: '8',
+    revenue_status: 'Pre-revenue with LOIs',
+    org_form: 'Delaware C-Corp',
+    date_founded: '2025-06',
+    raise_amount: '250,000',
+    instrument: 'SAFE',
+    safe_type: 'Post-Money',
+    safe_cap: '3,000,000',
+    safe_discount: '',
+    safe_prorata: 'Yes',
+    prior_raised: '25,000',
+    prior_source: 'Personal savings'
+  };
+
+  // Sample business readiness answers (mix of scores for a realistic report)
+  var sampleFundAnswers = {
+    team_trinity:  { score: 2, value: 'Developing' },
+    commitment:    { score: 3, value: 'Strong' },
+    coachable:     { score: 3, value: 'Strong' },
+    advisors:      { score: 1, value: 'Early' },
+    pmf:           { score: 2, value: 'Developing' },
+    revenue:       { score: 1, value: 'Early' },
+    gtm:           { score: 2, value: 'Developing' },
+    unit_econ:     { score: 1, value: 'Early' },
+    trend:         { score: 3, value: 'Strong' },
+    moats:         { score: 2, value: 'Developing' },
+    corp:          { score: 3, value: 'Strong' },
+    package:       { score: 1, value: 'Early' },
+    ip_brand:      { score: 1, value: 'Early' },
+    valuation:     { score: 2, value: 'Developing' }
+  };
+
+  // Sample materials answers
+  var sampleMatAnswers = {
+    pitch_deck:      { score: 1, value: 'Started' },
+    exec_summary:    { score: 0, value: 'Not Started' },
+    video_pitch:     { score: 0, value: 'Not Started' },
+    web_social:      { score: 3, value: 'Done' },
+    founder_bios:    { score: 3, value: 'Done' },
+    demo_proto:      { score: 3, value: 'Done' },
+    financials:      { score: 1, value: 'Started' },
+    customer_proof:  { score: 1, value: 'Started' },
+    market_research: { score: 3, value: 'Done' },
+    cap_table:       { score: 3, value: 'Done' },
+    founders_agr:    { score: 3, value: 'Done' },
+    safe_kiss:       { score: 0, value: 'Not Started' },
+    ip_filings:      { score: 1, value: 'Started' },
+    corp_docs:       { score: 3, value: 'Done' },
+    data_room:       { score: 0, value: 'Not Started' },
+    legal_team:      { score: 1, value: 'Started' },
+    acct_team:       { score: 3, value: 'Done' }
+  };
+
+  // Save current real state
+  var savedFundAnswers = {};
+  var savedMatAnswers = {};
+  var savedFormValues = {};
+  Object.keys(fundAnswers).forEach(function(k) { savedFundAnswers[k] = fundAnswers[k]; });
+  Object.keys(matAnswers).forEach(function(k) { savedMatAnswers[k] = matAnswers[k]; });
+
+  var formFields = [
+    'company_name', 'company_website', 'company_description', 'company_sector',
+    'company_location', 'ceo_name', 'ceo_email', 'ceo_phone', 'num_cofounders',
+    'months_fulltime', 'revenue_status', 'org_form', 'date_founded',
+    'raise_amount', 'instrument', 'safe_type', 'safe_cap', 'safe_discount',
+    'safe_prorata', 'prior_raised', 'prior_source'
+  ];
+  formFields.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) savedFormValues[id] = el.value;
+  });
+
+  // Inject sample data
+  Object.keys(fundAnswers).forEach(function(k) { delete fundAnswers[k]; });
+  Object.keys(matAnswers).forEach(function(k) { delete matAnswers[k]; });
+  Object.keys(sampleFundAnswers).forEach(function(k) { fundAnswers[k] = sampleFundAnswers[k]; });
+  Object.keys(sampleMatAnswers).forEach(function(k) { matAnswers[k] = sampleMatAnswers[k]; });
+
+  formFields.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el && sampleCompany[id] !== undefined) el.value = sampleCompany[id];
+  });
+
+  // Build the summary using existing logic (renders into section-4 DOM)
+  buildSummary();
+
+  // Clone the rendered report HTML into the modal
+  var section4 = document.getElementById('section-4');
+  var modalContent = document.getElementById('example-report-content');
+  // Clone everything except the email section and button rows
+  var clone = section4.cloneNode(true);
+  clone.removeAttribute('id');
+  clone.style.display = 'block';
+  clone.classList.add('visible');
+  // Remove interactive elements that don't belong in the preview
+  var emailSections = clone.querySelectorAll('.email-section, .btn-row');
+  emailSections.forEach(function(el) { el.remove(); });
+  // Remove the CTA section (we have our own modal CTA)
+  var ctaSection = clone.querySelector('#cta-section');
+  if (ctaSection) ctaSection.remove();
+  modalContent.innerHTML = '';
+  modalContent.appendChild(clone);
+
+  // Restore real state
+  Object.keys(fundAnswers).forEach(function(k) { delete fundAnswers[k]; });
+  Object.keys(matAnswers).forEach(function(k) { delete matAnswers[k]; });
+  Object.keys(savedFundAnswers).forEach(function(k) { fundAnswers[k] = savedFundAnswers[k]; });
+  Object.keys(savedMatAnswers).forEach(function(k) { matAnswers[k] = savedMatAnswers[k]; });
+
+  formFields.forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.value = savedFormValues[id] || '';
+  });
+
+  // Show modal
+  var overlay = document.getElementById('example-modal-overlay');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  overlay.scrollTop = 0;
+
+  // Close on Escape key
+  document.addEventListener('keydown', exampleModalEscHandler);
+}
+
+function exampleModalEscHandler(e) {
+  if (e.key === 'Escape') closeExampleReport();
+}
+
+function closeExampleReport() {
+  var overlay = document.getElementById('example-modal-overlay');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+  document.removeEventListener('keydown', exampleModalEscHandler);
+}
 
 </script>
 
