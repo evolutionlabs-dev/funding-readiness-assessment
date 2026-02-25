@@ -424,6 +424,9 @@
     margin-top: 4px;
     line-height: 1.4;
   }
+  .field-error input, .field-error select { border-color: var(--red) !important; box-shadow: 0 0 0 1px var(--red); }
+  .field-error-msg { font-size: 11px; color: var(--red); margin-top: 4px; display: none; }
+  .field-error .field-error-msg { display: block; }
   .raise-ok { background: var(--green-muted); border: 1px solid rgba(74,222,128,0.3); color: var(--green); }
   .raise-high { background: var(--amber-muted); border: 1px solid rgba(245,158,11,0.3); color: var(--amber); }
   .raise-very-high { background: var(--red-muted); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
@@ -1272,7 +1275,8 @@
     <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:8px;">Company Basics</div>
     <div class="form-group">
       <label>Company Name *</label>
-      <input type="text" id="company_name" placeholder="Acme Technologies, Inc." required>
+      <input type="text" id="company_name" placeholder="Acme Technologies, Inc." required oninput="clearFieldError(this)">
+      <div class="field-error-msg">Company name is required</div>
     </div>
     <div class="form-group">
       <label>Company Website</label>
@@ -1312,11 +1316,13 @@
     <div class="form-row">
       <div class="form-group">
         <label>CEO / Lead Founder Name *</label>
-        <input type="text" id="ceo_name" placeholder="Jane Smith" required>
+        <input type="text" id="ceo_name" placeholder="Jane Smith" required oninput="clearFieldError(this)">
+        <div class="field-error-msg">Founder name is required</div>
       </div>
       <div class="form-group">
         <label>Email *</label>
-        <input type="email" id="ceo_email" placeholder="jane@yourcompany.com" required>
+        <input type="email" id="ceo_email" placeholder="jane@yourcompany.com" required oninput="clearFieldError(this)">
+        <div class="field-error-msg">Valid email is required</div>
       </div>
     </div>
     <div class="form-row">
@@ -1429,7 +1435,7 @@
         <div class="form-row" id="safe-details-row" style="display:none;">
           <div class="form-group" id="safe-discount-group" style="display:none;">
             <label>Discount (%)</label>
-            <input type="number" id="safe_discount" placeholder="20" min="0" max="50">
+            <input type="number" id="safe_discount" placeholder="20" min="0" max="50" onchange="clampNumber(this)">
             <div class="field-hint">Standard is 20%. Leave blank if no discount.</div>
           </div>
           <div class="form-group" id="safe-prorata-group">
@@ -1460,19 +1466,19 @@
           </div>
           <div class="form-group">
             <label>Discount (%)</label>
-            <input type="number" id="cn_discount" placeholder="20" min="0" max="50">
+            <input type="number" id="cn_discount" placeholder="20" min="0" max="50" onchange="clampNumber(this)">
             <div class="field-hint">Standard is 15-25%.</div>
           </div>
         </div>
         <div class="form-row">
           <div class="form-group">
             <label>Interest Rate (%)</label>
-            <input type="number" id="cn_interest" placeholder="7" min="0" max="15" step="0.5">
+            <input type="number" id="cn_interest" placeholder="7" min="0" max="15" step="0.5" onchange="clampNumber(this)">
             <div class="field-hint">Median is 7%. Range: 4-8%.</div>
           </div>
           <div class="form-group">
             <label>Maturity (months)</label>
-            <input type="number" id="cn_maturity" placeholder="24" min="6" max="60">
+            <input type="number" id="cn_maturity" placeholder="24" min="6" max="60" onchange="clampNumber(this)">
             <div class="field-hint">Standard: 18-24 months.</div>
           </div>
         </div>
@@ -2214,7 +2220,14 @@ function toggleSafeCapFields() {
 
 function parseCurrency(str) {
   if (!str) return 0;
-  return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
+  // Support k/m shorthand (e.g., "25k" → 25000, "1.5m" → 1500000)
+  const cleaned = str.replace(/[,$\s]/g, '').trim().toLowerCase();
+  const kmMatch = cleaned.match(/^(\d+(?:\.\d+)?)\s*(k|m)$/);
+  if (kmMatch) {
+    const num = parseFloat(kmMatch[1]);
+    return Math.round(kmMatch[2] === 'k' ? num * 1000 : num * 1000000);
+  }
+  return parseInt(cleaned.replace(/[^0-9]/g, ''), 10) || 0;
 }
 
 // Single source of truth for dilution calculation
@@ -2340,30 +2353,38 @@ function validateCap() {
   validateRaise();
 }
 
+function setFieldError(el, show) {
+  const group = el.closest('.form-group');
+  if (group) {
+    if (show) group.classList.add('field-error');
+    else group.classList.remove('field-error');
+  }
+}
+function clearFieldError(el) { setFieldError(el, false); }
+
 function validateStep1() {
-  const name = (document.getElementById('company_name') || {}).value.trim();
-  const ceoName = (document.getElementById('ceo_name') || {}).value.trim();
-  const ceoEmail = (document.getElementById('ceo_email') || {}).value.trim();
-  const missing = [];
-  if (!name) missing.push('Company Name');
-  if (!ceoName) missing.push('CEO / Lead Founder Name');
-  if (!ceoEmail) missing.push('CEO Email');
-  if (missing.length > 0) {
-    const msg = 'Please fill in the following required fields before continuing:\n\n• ' + missing.join('\n• ');
-    alert(msg);
-    // Focus first missing field
-    if (!name) document.getElementById('company_name').focus();
-    else if (!ceoName) document.getElementById('ceo_name').focus();
-    else if (!ceoEmail) document.getElementById('ceo_email').focus();
-    return false;
+  const nameEl = document.getElementById('company_name');
+  const ceoNameEl = document.getElementById('ceo_name');
+  const ceoEmailEl = document.getElementById('ceo_email');
+  let valid = true;
+  let firstBad = null;
+
+  // Clear previous errors
+  [nameEl, ceoNameEl, ceoEmailEl].forEach(el => setFieldError(el, false));
+
+  if (!nameEl.value.trim()) { setFieldError(nameEl, true); valid = false; firstBad = firstBad || nameEl; }
+  if (!ceoNameEl.value.trim()) { setFieldError(ceoNameEl, true); valid = false; firstBad = firstBad || ceoNameEl; }
+  if (!ceoEmailEl.value.trim()) {
+    setFieldError(ceoEmailEl, true); valid = false; firstBad = firstBad || ceoEmailEl;
+  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ceoEmailEl.value.trim())) {
+    setFieldError(ceoEmailEl, true); valid = false; firstBad = firstBad || ceoEmailEl;
   }
-  // Basic email validation
-  if (ceoEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(ceoEmail)) {
-    alert('Please enter a valid email address for the CEO / Lead Founder.');
-    document.getElementById('ceo_email').focus();
-    return false;
+
+  if (firstBad) {
+    firstBad.focus();
+    firstBad.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
-  return true;
+  return valid;
 }
 
 function goToStep(step) {
@@ -3086,7 +3107,8 @@ function sendEmail() {
       to_name: document.getElementById('ceo_name').value || 'Founder',
       company_name: document.getElementById('company_name').value || 'Your Company',
       report_body: report,
-      reply_to: 'info@evolutionacceleration.com'
+      reply_to: 'info@evolutionacceleration.com',
+      cc_email: 'info@evolutionacceleration.com'
     }).then(() => {
       status.className = 'email-status success';
       status.textContent = 'Report sent! Check your inbox (and spam folder).';
@@ -3269,6 +3291,15 @@ function formatCurrency(input) {
   let val = input.value.replace(/[^0-9]/g, '');
   if (val) input.value = parseInt(val).toLocaleString();
   else input.value = '';
+}
+
+function clampNumber(input) {
+  const min = parseFloat(input.min);
+  const max = parseFloat(input.max);
+  let val = parseFloat(input.value);
+  if (isNaN(val)) return;
+  if (!isNaN(min) && val < min) input.value = min;
+  if (!isNaN(max) && val > max) input.value = max;
 }
 
 // ============================================================

@@ -153,7 +153,13 @@ function calcGroupScore(groupId, items, answers) {
 
 function parseCurrency(str) {
   if (!str) return 0;
-  return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
+  const cleaned = str.replace(/[,$\s]/g, '').trim().toLowerCase();
+  const kmMatch = cleaned.match(/^(\d+(?:\.\d+)?)\s*(k|m)$/);
+  if (kmMatch) {
+    const num = parseFloat(kmMatch[1]);
+    return Math.round(kmMatch[2] === 'k' ? num * 1000 : num * 1000000);
+  }
+  return parseInt(cleaned.replace(/[^0-9]/g, ''), 10) || 0;
 }
 
 // ============================================================
@@ -332,7 +338,7 @@ console.log('\n=== TEST SUITE 5: parseCurrency ===');
 assert(parseCurrency('500,000') === 500000, 'parseCurrency "500,000" = 500000');
 assert(parseCurrency('$1,000,000') === 1000000, 'parseCurrency "$1,000,000" = 1000000');
 assert(parseCurrency('150000') === 150000, 'parseCurrency "150000" = 150000');
-assert(parseCurrency('$25K') === 25, 'parseCurrency "$25K" strips non-numeric = 25');  // K is not a number
+assert(parseCurrency('$25K') === 25000, 'parseCurrency "$25K" parses shorthand = 25000');  // K suffix support
 assert(parseCurrency('') === 0, 'parseCurrency empty = 0');
 assert(parseCurrency(null) === 0, 'parseCurrency null = 0');
 assert(parseCurrency(undefined) === 0, 'parseCurrency undefined = 0');
@@ -832,6 +838,24 @@ assert(dil.low < dil.median, 'Dilution: low < median');
 assert(dil.median < dil.high, 'Dilution: median < high');
 assert(dil.low >= 0, 'Dilution: low ≥ 0');
 assert(dil.high <= 1, 'Dilution: high ≤ 1');
+
+// ============================================================
+// TEST SUITE 12: parseCurrency SHORTHAND
+// ============================================================
+console.log('\n=== TEST SUITE 12: parseCurrency SHORTHAND ===');
+
+assert(parseCurrency('25k') === 25000, 'parseCurrency: 25k = 25000');
+assert(parseCurrency('25K') === 25000, 'parseCurrency: 25K = 25000');
+assert(parseCurrency('1.5m') === 1500000, 'parseCurrency: 1.5m = 1500000');
+assert(parseCurrency('1.5M') === 1500000, 'parseCurrency: 1.5M = 1500000');
+assert(parseCurrency('500k') === 500000, 'parseCurrency: 500k = 500000');
+assert(parseCurrency('4m') === 4000000, 'parseCurrency: 4m = 4000000');
+assert(parseCurrency('$25,000') === 25000, 'parseCurrency: $25,000 = 25000');
+assert(parseCurrency('150000') === 150000, 'parseCurrency: 150000 = 150000');
+assert(parseCurrency('') === 0, 'parseCurrency: empty = 0');
+assert(parseCurrency(null) === 0, 'parseCurrency: null = 0');
+assert(parseCurrency('0') === 0, 'parseCurrency: 0 = 0');
+assert(parseCurrency('$5,000,000') === 5000000, 'parseCurrency: $5,000,000 = 5000000');
 
 // ============================================================
 // RESULTS
