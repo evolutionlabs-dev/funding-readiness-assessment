@@ -2,7 +2,7 @@
 
 A free, self-contained web tool for early pre-seed founders to evaluate their startup's readiness to raise first institutional capital. Built by [Evolution Accelerator](https://evolutionacceleration.com).
 
-**[Try it live →](https://evolutionacceleration.com/fra)** *(coming soon)*
+**[Try it live →](https://evolutionlabs-dev.github.io/funding-readiness-assessment/)**
 
 ## What It Does
 
@@ -88,3 +88,4 @@ MIT License — see [LICENSE](LICENSE).
 Built by [Evolution Accelerator](https://evolutionacceleration.com) · [EVFM](https://evfm.co)
 
 Created with Claude (Anthropic) as an AI copilot experiment.
+
