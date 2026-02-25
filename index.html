@@ -1126,13 +1126,16 @@
     .weight-table { font-size: 12px; }
     .weight-table .weight-bar { max-width: 40px; }
     .methodology-section { padding: 16px; }
-    .weight-slider { width: 70px; height: 8px; border-radius: 4px; }
-    .weight-slider::-webkit-slider-thumb { width: 28px; height: 28px; }
-    .weight-slider::-moz-range-thumb { width: 28px; height: 28px; }
+    /* Hide sliders on mobile — steppers only */
+    .weight-slider { display: none; }
     .weight-slider-cell { gap: 6px; }
-    .weight-stepper { display: flex; align-items: center; justify-content: center; min-height: 36px; min-width: 36px; }
+    .weight-stepper { display: flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; font-size: 22px; border-radius: 10px; }
     .weight-controls { flex-wrap: wrap; gap: 10px; }
     .weight-controls .btn-reset { padding: 10px 20px; font-size: 13px; min-height: 44px; }
+    /* Bigger customize button on mobile */
+    .btn-customize-weights { padding: 10px 18px !important; font-size: 14px !important; min-height: 44px; border-radius: 10px !important; }
+    .weight-hint-text { display: block !important; margin-left: 0 !important; margin-top: 8px; }
+    .weight-value { font-size: 14px; min-width: 36px; font-weight: 600; }
   }
   @media (max-width: 480px) {
     .container { padding: 12px 10px 70px; }
@@ -1221,8 +1224,8 @@
         <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Two dimensions, weighted 60/40:</strong> Business Readiness (60%) evaluates 14 items across three pillars. Materials Readiness (40%) checks 17 deliverables investors expect to see.</p>
         <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Pillar weights reflect what early-stage investors prioritize:</strong></p>
         <div id="weight-tune-toggle" style="margin-bottom:12px;">
-          <button onclick="toggleWeightTuning()" class="btn-reset" style="font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(74,222,128,0.3);border-radius:6px;padding:5px 14px;cursor:pointer;">&#x2699; Customize Weights</button>
-          <span style="font-size:11px;color:var(--text-muted);margin-left:8px;">Use sliders or &minus;/+ buttons to adjust how different weightings affect your score</span>
+          <button onclick="toggleWeightTuning()" class="btn-customize-weights" style="font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(74,222,128,0.3);border-radius:6px;padding:5px 14px;cursor:pointer;font-family:inherit;-webkit-appearance:none;">&#x2699; Customize Weights</button>
+          <span class="weight-hint-text" style="font-size:11px;color:var(--text-muted);margin-left:8px;">Use &minus;/+ buttons to adjust how weightings affect your score</span>
         </div>
         <table class="weight-table" id="methodology-table">
           <thead>
