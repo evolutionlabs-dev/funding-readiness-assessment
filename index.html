@@ -1,0 +1,3705 @@
+<!DOCTYPE html>
+<html lang="en" id="html-root">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Free self-assessment tool for early pre-seed founders. Evaluate your startup's readiness to raise first institutional capital with a personalized report and 90-day roadmap.">
+<meta name="author" content="Evolution Accelerator">
+<meta property="og:title" content="Early Pre-Seed Funding Readiness Assessment | Evolution Accelerator">
+<meta property="og:description" content="Free self-assessment for early pre-seed founders. Get your personalized funding readiness score and 90-day roadmap.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://evolutionacceleration.com/fra">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Funding Readiness Assessment | Evolution Accelerator">
+<meta name="twitter:description" content="Free tool for early pre-seed founders to evaluate their readiness for first institutional capital.">
+<title>Early Pre-Seed Funding Readiness Assessment | Evolution Accelerator</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+  :root {
+    --green: #4ADE80;
+    --green-dark: #22C55E;
+    --green-muted: rgba(74, 222, 128, 0.15);
+    --green-glow: rgba(74, 222, 128, 0.3);
+    --dark: #0A0A0F;
+    --dark-card: #12121A;
+    --dark-border: #1E1E2E;
+    --dark-hover: #1A1A28;
+    --text-primary: #F1F1F3;
+    --text-secondary: #9CA3AF;
+    --text-muted: #6B7280;
+    --amber: #F59E0B;
+    --amber-muted: rgba(245, 158, 11, 0.15);
+    --red: #EF4444;
+    --red-muted: rgba(239, 68, 68, 0.15);
+    --purple: #8B5CF6;
+    --purple-muted: rgba(139, 92, 246, 0.15);
+    --blue: #3B82F6;
+    --blue-muted: rgba(59, 130, 246, 0.15);
+  }
+
+  /* Colorblind-safe palette (Okabe-Ito inspired) */
+  .cb-mode {
+    --green: #0072B2;          /* Blue replaces green */
+    --green-dark: #005A8C;
+    --green-muted: rgba(0, 114, 178, 0.15);
+    --green-glow: rgba(0, 114, 178, 0.3);
+    --amber: #E69F00;          /* Orange (unchanged, CB-safe) */
+    --amber-muted: rgba(230, 159, 0, 0.15);
+    --red: #CC79A7;            /* Pink replaces red */
+    --red-muted: rgba(204, 121, 167, 0.15);
+    --purple: #56B4E9;         /* Sky blue replaces purple */
+    --purple-muted: rgba(86, 180, 233, 0.15);
+    --blue: #009E73;           /* Teal replaces blue */
+    --blue-muted: rgba(0, 158, 115, 0.15);
+  }
+
+  /* High contrast mode */
+  .hc-mode {
+    --dark: #000000;
+    --dark-card: #0A0A0A;
+    --dark-border: #444444;
+    --dark-hover: #222222;
+    --text-primary: #FFFFFF;
+    --text-secondary: #CCCCCC;
+    --text-muted: #999999;
+  }
+  .hc-mode .assessment-card,
+  .hc-mode .option-btn {
+    border-width: 2px;
+  }
+  .hc-mode .score-pill,
+  .hc-mode .phase-header {
+    border-width: 2px;
+  }
+
+  /* Large text mode */
+  .lg-text body, .lg-text .assessment-card, .lg-text p, .lg-text label,
+  .lg-text .card-label, .lg-text .option-btn, .lg-text input, .lg-text select {
+    font-size: 110% !important;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
+  }
+  .reduced-motion * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+
+  /* Accessibility toolbar */
+  .a11y-toolbar {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+  }
+  .a11y-toggle {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-family: inherit;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .a11y-toggle:hover, .a11y-toggle:focus {
+    border-color: var(--green);
+    color: var(--green);
+    outline: none;
+  }
+  .a11y-toggle.active {
+    background: var(--green-muted);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .a11y-panel {
+    display: none;
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+    padding: 16px;
+    width: 220px;
+  }
+  .a11y-panel.open { display: block; }
+  .a11y-panel h4 {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  /* Focus visible for keyboard navigation */
+  *:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
+  .option-btn:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 4px var(--green-muted);
+  }
+
+  /* Pattern overlays for colorblind score pills */
+  .cb-mode .score-pill.pill-green::after { content: ' \2713'; }
+  .cb-mode .score-pill.pill-amber::after { content: ' \25B2'; }
+  .cb-mode .score-pill.pill-red::after { content: ' \25CF'; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--dark);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 20% 0%, rgba(74, 222, 128, 0.04) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 100%, rgba(139, 92, 246, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 36px;
+  }
+  .logo-mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 14px;
+  }
+  .dragonfly { display: inline-block; }
+  .dragonfly img { height: 28px; width: auto; vertical-align: middle; }
+  .header h1 {
+    font-size: 34px;
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: 10px;
+  }
+  .header p {
+    font-size: 15px;
+    color: var(--text-secondary);
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* Progress */
+  .progress-bar-container { margin-bottom: 32px; }
+  .progress-steps {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  .progress-step {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--dark-border);
+    transition: background 0.3s;
+  }
+  .progress-step.active { background: var(--green); }
+  .progress-step.complete { background: var(--green-dark); }
+  .progress-labels {
+    display: flex;
+    justify-content: space-between;
+  }
+  .progress-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: color 0.2s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .progress-label.active { color: var(--green); font-weight: 600; }
+
+  /* Sections */
+  .section { display: none; }
+  .section.visible { display: block; }
+  .section-header { margin-bottom: 24px; }
+  .section-header h2 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+  .section-header p { font-size: 14px; color: var(--text-secondary); }
+  .step-badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 8px;
+  }
+
+  /* Form */
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-secondary);
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid var(--dark-border);
+    background: var(--dark-card);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none;
+    border-color: var(--green);
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+
+  /* Pillar headers */
+  .pillar-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    margin: 24px 0 12px;
+    border-radius: 12px;
+    border: 1px solid var(--dark-border);
+  }
+  .pillar-header:first-child { margin-top: 0; }
+  .pillar-header .pillar-icon {
+    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+  }
+  .pillar-header .pillar-info h3 {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .pillar-header .pillar-info p {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .pillar-team { background: rgba(139, 92, 246, 0.06); }
+  .pillar-team .pillar-icon { background: var(--purple-muted); color: var(--purple); }
+  .pillar-team .pillar-info h3 { color: var(--purple); }
+  .pillar-business { background: rgba(74, 222, 128, 0.04); }
+  .pillar-business .pillar-icon { background: var(--green-muted); color: var(--green); }
+  .pillar-business .pillar-info h3 { color: var(--green); }
+  .pillar-corporate { background: rgba(59, 130, 246, 0.06); }
+  .pillar-corporate .pillar-icon { background: var(--blue-muted); color: var(--blue); }
+  .pillar-corporate .pillar-info h3 { color: var(--blue); }
+
+  /* Assessment cards */
+  .assessment-card {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 10px;
+    transition: border-color 0.2s;
+  }
+  .assessment-card:hover { border-color: rgba(255,255,255,0.08); }
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .card-label { font-size: 14px; font-weight: 600; }
+  .card-weight { font-size: 11px; color: var(--text-muted); }
+  .card-options {
+    display: flex;
+    gap: 8px;
+  }
+  .option-btn {
+    flex: 1;
+    padding: 9px 6px;
+    border-radius: 8px;
+    border: 1px solid var(--dark-border);
+    background: transparent;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .option-btn:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .option-btn.selected-strong {
+    background: var(--green-muted);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .option-btn.selected-developing {
+    background: var(--amber-muted);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .option-btn.selected-early {
+    background: var(--purple-muted);
+    border-color: var(--purple);
+    color: var(--purple);
+  }
+  .option-btn.selected-notstarted {
+    background: var(--red-muted);
+    border-color: var(--red);
+    color: var(--red);
+  }
+  /* Materials cards keep original classes */
+  .option-btn.selected-done {
+    background: var(--green-muted);
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .option-btn.selected-started {
+    background: var(--amber-muted);
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+
+  /* Expandable tips */
+  .card-tip-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+  }
+  .card-tip-toggle:hover { color: var(--text-secondary); }
+  .card-tip-toggle .arrow { transition: transform 0.2s; display: inline-block; }
+  .card-tip-toggle.open .arrow { transform: rotate(90deg); }
+  .field-hint {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+  .raise-ok { background: var(--green-muted); border: 1px solid rgba(74,222,128,0.3); color: var(--green); }
+  .raise-high { background: var(--amber-muted); border: 1px solid rgba(245,158,11,0.3); color: var(--amber); }
+  .raise-very-high { background: var(--red-muted); border: 1px solid rgba(239,68,68,0.3); color: var(--red); }
+  .raise-low { background: var(--blue-muted); border: 1px solid rgba(59,130,246,0.3); color: var(--blue); }
+  .explainer-arrow.open { transform: rotate(90deg); }
+  .explainer-open .explainer-body { max-height: 1200px !important; }
+  .card-tip-content {
+    display: none;
+    margin-top: 12px;
+    padding: 14px;
+    background: rgba(255,255,255,0.02);
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .card-tip-content.open { display: block; }
+  .card-tip-content h4 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+    margin-top: 10px;
+  }
+  .card-tip-content h4:first-child { margin-top: 0; }
+  .card-tip-content p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* Live score gauge */
+  .live-score {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 14px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+  }
+  .score-ring {
+    width: 72px; height: 72px;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .score-ring svg { transform: rotate(-90deg); }
+  .score-ring .ring-bg { fill: none; stroke: var(--dark-border); stroke-width: 5; }
+  .score-ring .ring-fill {
+    fill: none; stroke: var(--green); stroke-width: 5;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 0.6s ease, stroke 0.3s;
+  }
+  .score-ring .score-text {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .score-detail h3 { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+  .score-detail p { font-size: 12px; color: var(--text-muted); }
+
+  /* Summary / results */
+  .summary-section {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .summary-section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .summary-section h3 .score-pill {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: auto;
+  }
+  .score-pill.high { background: var(--green-muted); color: var(--green); }
+  .score-pill.mid { background: var(--amber-muted); color: var(--amber); }
+  .score-pill.low { background: var(--red-muted); color: var(--red); }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 14px;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-row .label { color: var(--text-secondary); }
+  .summary-row .value { font-weight: 600; }
+  .summary-row .value.strong { color: var(--green); }
+  .summary-row .value.developing { color: var(--amber); }
+  .summary-row .value.early { color: var(--purple); }
+  .summary-row .value.weak, .summary-row .value.not-started { color: var(--red); }
+  .summary-row .value.medium { color: var(--amber); }
+  .summary-row .value.not-set { color: var(--text-muted); font-style: italic; font-weight: 400; }
+
+  .company-info-summary .summary-row .value {
+    color: var(--text-primary);
+    max-width: 60%;
+    text-align: right;
+  }
+
+  /* Overall score */
+  .overall-score-card {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.08) 0%, rgba(139, 92, 246, 0.05) 100%);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    border-radius: 16px;
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 24px;
+  }
+  .overall-score-card .big-score {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .overall-score-card .big-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+  }
+  .overall-sub-scores {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+  }
+  .overall-sub-scores .sub { text-align: center; }
+  .overall-sub-scores .sub .sub-score { font-size: 28px; font-weight: 700; }
+  .overall-sub-scores .sub .sub-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Pillar bars */
+  .pillar-bars { margin-bottom: 24px; }
+  .pillar-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+  .pillar-bar-label {
+    font-size: 12px;
+    font-weight: 600;
+    width: 120px;
+    flex-shrink: 0;
+  }
+  .pillar-bar-track {
+    flex: 1;
+    height: 10px;
+    background: var(--dark-border);
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  .pillar-bar-fill {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.6s ease;
+  }
+  .pillar-bar-pct {
+    font-size: 13px;
+    font-weight: 700;
+    width: 45px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* Roadmap */
+  .roadmap-section {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 14px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .roadmap-section h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .roadmap-section > p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .roadmap-phase {
+    margin-bottom: 24px;
+  }
+  .roadmap-phase:last-child { margin-bottom: 0; }
+  .phase-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+  .phase-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .phase-30 .phase-badge { background: var(--red-muted); color: var(--red); }
+  .phase-60 .phase-badge { background: var(--amber-muted); color: var(--amber); }
+  .phase-90 .phase-badge { background: var(--green-muted); color: var(--green); }
+  .phase-header h4 {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .roadmap-item {
+    display: flex;
+    gap: 12px;
+    padding: 12px 14px;
+    margin-bottom: 6px;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+  .roadmap-item .ri-effort {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    font-size: 14px;
+  }
+  .effort-quick { background: var(--green-muted); }
+  .effort-moderate { background: var(--amber-muted); }
+  .effort-significant { background: var(--red-muted); }
+  .roadmap-item .ri-num {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.06);
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .roadmap-item .ri-body { flex: 1; }
+  .roadmap-item .ri-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+  }
+  .roadmap-item .ri-content { flex: 1; }
+  .roadmap-item .ri-category {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .roadmap-item .ri-action {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+
+  .roadmap-empty {
+    padding: 16px;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  /* Strengths */
+  .strengths-section {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .strengths-section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--green);
+  }
+  .strength-item {
+    font-size: 14px;
+    color: var(--text-secondary);
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .strength-item:last-child { border-bottom: none; }
+  .strength-item strong { color: var(--text-primary); }
+
+  /* CTA */
+  .cta-section {
+    background: linear-gradient(135deg, rgba(74, 222, 128, 0.1) 0%, rgba(74, 222, 128, 0.03) 100%);
+    border: 1px solid rgba(74, 222, 128, 0.2);
+    border-radius: 14px;
+    padding: 28px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .cta-section h3 { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+  .cta-section p { font-size: 14px; color: var(--text-secondary); margin-bottom: 16px; }
+  .cta-section .btn { display: inline-block; text-decoration: none; }
+
+  /* Email section */
+  .email-section {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .email-section h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .email-section p { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+  .email-status {
+    padding: 12px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    display: none;
+    margin-top: 12px;
+  }
+  .email-status.success { display: block; background: var(--green-muted); color: var(--green); }
+  .email-status.error { display: block; background: var(--red-muted); color: var(--red); }
+
+  /* Buttons */
+  .btn-row { display: flex; gap: 12px; margin-top: 28px; }
+  .btn {
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+  .btn-primary { background: var(--green); color: var(--dark); flex: 1; }
+  .btn-primary:hover { background: var(--green-dark); box-shadow: 0 4px 20px var(--green-glow); }
+  .btn-secondary { background: transparent; color: var(--text-secondary); border: 1px solid var(--dark-border); }
+  .btn-secondary:hover { border-color: var(--text-muted); color: var(--text-primary); }
+  .btn-outline-green { background: transparent; color: var(--green); border: 1px solid var(--green); }
+  .btn-outline-green:hover { background: var(--green-muted); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* Footer */
+  .footer { text-align: center; margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--dark-border); }
+  .footer p { font-size: 12px; color: var(--text-muted); }
+  .footer a { color: var(--green); text-decoration: none; }
+
+  /* Print */
+  @media print {
+    body { background: white; color: #111; }
+    body::before { display: none; }
+    .header, .vc-explainer, .methodology-section,
+    .progress-bar-container, .btn-row, .email-section { display: none !important; }
+    .section { display: block !important; }
+    .section:not(.section-summary) { display: none !important; }
+    .section-summary { display: block !important; }
+    .summary-section, .roadmap-section, .strengths-section { border-color: #ddd; background: #fafafa; }
+    .overall-score-card { background: #f0fdf4; border-color: #86efac; }
+    .score-pill.high { background: #dcfce7; }
+    .score-pill.mid { background: #fef9c3; }
+    .score-pill.low { background: #fee2e2; }
+    .cta-section { background: #f0fdf4; border-color: #86efac; }
+    .container { max-width: 100%; padding: 20px; }
+    .roadmap-item { background: #f9fafb; border-color: #e5e7eb; }
+    .pillar-header { background: #f9fafb; }
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .container { padding: 20px 16px 60px; }
+    .header h1 { font-size: 26px; }
+    .form-row { grid-template-columns: 1fr; }
+    .card-options { flex-wrap: wrap; }
+    .option-btn { min-width: calc(50% - 4px); }
+    .overall-score-card .big-score { font-size: 48px; }
+    .overall-sub-scores { gap: 20px; flex-wrap: wrap; }
+    .pillar-bar-label { width: 80px; font-size: 11px; }
+  }
+
+  /* Save indicator */
+  .save-indicator {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 11px;
+    color: var(--text-muted);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+  .save-indicator.visible { opacity: 1; }
+  .save-indicator.saved { color: var(--green); border-color: rgba(74, 222, 128, 0.3); }
+
+  /* Benchmark range bar */
+  .bench-bar-wrap {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+    padding: 16px 20px 14px;
+  }
+  .bench-bar-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    margin-bottom: 12px;
+  }
+  .bench-bar {
+    position: relative;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    margin: 0 0 8px;
+    overflow: visible;
+  }
+  .bench-bar .range {
+    position: absolute;
+    height: 100%;
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid rgba(74, 222, 128, 0.25);
+    border-radius: 6px;
+  }
+  .bench-bar .marker {
+    position: absolute;
+    z-index: 2;
+  }
+  .bench-bar .marker.median {
+    width: 3px;
+    height: 22px;
+    top: -5px;
+    background: var(--green);
+    border-radius: 2px;
+    box-shadow: 0 0 6px rgba(74, 222, 128, 0.4);
+  }
+  .bench-bar .marker.yours {
+    width: 14px;
+    height: 14px;
+    top: -1px;
+    margin-left: -7px;
+    background: var(--amber);
+    border-radius: 50%;
+    border: 2px solid var(--dark-card);
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.5);
+  }
+  .bench-bar .marker-label {
+    position: absolute;
+    top: -22px;
+    font-size: 10px;
+    font-weight: 600;
+    white-space: nowrap;
+    transform: translateX(-50%);
+    left: 50%;
+  }
+  .bench-bar .marker.median .marker-label { color: var(--green); }
+  .bench-bar .marker.yours .marker-label { color: var(--amber); top: -20px; }
+  .bench-bar-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-muted);
+    padding: 0 2px;
+  }
+  .bench-bar-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-secondary);
+    flex-wrap: wrap;
+  }
+  .bench-bar-legend .dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  /* Methodology section */
+  .methodology-section {
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 28px;
+  }
+  .methodology-section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+  }
+  .weight-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    margin: 12px 0;
+  }
+  .weight-table th {
+    text-align: left;
+    color: var(--text-muted);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 6px 8px;
+    border-bottom: 1px solid var(--dark-border);
+  }
+  .weight-table td {
+    padding: 6px 8px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid rgba(255,255,255,0.03);
+  }
+  .weight-table .pillar-row td {
+    color: var(--text-primary);
+    font-weight: 600;
+    padding-top: 12px;
+  }
+  .weight-bar {
+    display: inline-block;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--green);
+    vertical-align: middle;
+    margin-left: 8px;
+  }
+
+  /* Tunable weights */
+  .weight-slider-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .weight-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--dark-border);
+    outline: none;
+    cursor: pointer;
+  }
+  .weight-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--green);
+    cursor: pointer;
+    border: 2px solid var(--dark-card);
+    box-shadow: 0 0 3px rgba(74, 222, 128, 0.4);
+  }
+  .weight-slider::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--green);
+    cursor: pointer;
+    border: 2px solid var(--dark-card);
+  }
+  .weight-value {
+    font-size: 12px;
+    color: var(--text-muted);
+    min-width: 30px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .weight-modified {
+    color: var(--amber) !important;
+  }
+  .weight-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--dark-border);
+  }
+  .weight-controls .btn-reset {
+    font-size: 11px;
+    color: var(--text-muted);
+    background: transparent;
+    border: 1px solid var(--dark-border);
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .weight-controls .btn-reset:hover {
+    border-color: var(--amber);
+    color: var(--amber);
+  }
+  .weight-status {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .weight-status.modified {
+    color: var(--amber);
+  }
+
+  /* Print enhancements */
+  @media print {
+    .a11y-toolbar, .save-indicator, .bench-bar-legend, .methodology-section,
+    .progress-bar-container, .btn-row, .email-section, .cta-section,
+    .explainer-body, .explainer-arrow { display: none !important; }
+    .section-summary { page-break-inside: avoid; }
+    .roadmap-phase { page-break-inside: avoid; }
+    .print-header { display: block !important; text-align: center; margin-bottom: 20px; }
+    .print-header h2 { font-size: 20px; color: #111; }
+    .print-header p { font-size: 12px; color: #666; }
+  }
+  .print-header { display: none; }
+
+  /* Enhanced mobile */
+  @media (max-width: 768px) {
+    .bench-bar-legend { flex-wrap: wrap; gap: 8px; }
+    .weight-table { font-size: 12px; }
+    .weight-table .weight-bar { max-width: 40px; }
+    .methodology-section { padding: 16px; }
+    .weight-slider { width: 70px; }
+    .weight-slider-cell { gap: 4px; }
+  }
+  @media (max-width: 480px) {
+    .container { padding: 12px 10px 70px; }
+    .header h1 { font-size: 22px; }
+    .header p { font-size: 13px; }
+    .assessment-card { padding: 14px 12px; }
+    .card-label { font-size: 13px; }
+    .option-btn { padding: 8px 10px; font-size: 12px; min-width: calc(50% - 4px); }
+    .tip-content { font-size: 12px; padding: 10px; }
+    .overall-score-card .big-score { font-size: 40px; }
+    .overall-sub-scores { flex-direction: column; gap: 12px; }
+    .pillar-bar-wrap { width: 100%; }
+    .roadmap-item { flex-wrap: wrap; }
+    .ri-action { font-size: 12px; }
+    .summary-row .label { min-width: 80px; }
+    .btn { padding: 10px 16px; font-size: 13px; }
+    .form-group label { font-size: 12px; }
+    .form-group input, .form-group select { font-size: 14px; }
+    .a11y-toolbar { bottom: 10px; right: 10px; }
+  }
+</style>
+</head>
+<body>
+  <a href="#section-1" class="skip-link" style="position:absolute;top:-40px;left:0;background:var(--green);color:var(--dark);padding:8px 16px;z-index:9999;font-size:14px;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to Assessment</a>
+
+<div class="container" role="main">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-mark">
+      <div class="dragonfly">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADgAAAA4CAYAAACohjseAAAKcElEQVR42u1abYxcVRl+3nPOvXc+trulNEQoLbTdLbgFFYISDVGqSMAfVI0zv/SHxiCBgCl1t7NL9e4Ndbe7UBrTRESj8YfxxwxqkR+oKNRIDAIGo+3ysUu7tFRqaQvb3fm493y8/piZdTot/VCo0OyTTCb3zr3nvB/P+3UywDzmMY95zGMe8zhnQe03Qg7FaqymXdjFEUXu/aDEacsccihar3Ock+DjjfBeATNTjnPyZDqo1oeJyPVN9vVkFmaWz87OTmyhLXsAoMhFmae8fS8pV+SiJCILwBZeLawIOoJVlYOVPRFFLzV04TkFQw4FEbkNExvuVFl1vzPO94VfGdw3+KB70303T/k3m5b5f9O2KUee8nbdznWL0p3pjSDc5rRLBwsD3TfZ10dE3ws5FBFFjsIwFFEUucGXBpcYZaaUp5RJjBFCqFRXCkkl2cPMG0eWjfwcAMInQxVdH1kQ+OzyERTuCGW0JjIAMDA18GUIbAqywSXV6SrYsVG+UkYbo4y6dPiy4f1hGApq0q+wu3CjSqnfJpXEEpEEgxlsVaCUChR0TT8GjcLIypG//1e0ZVARxbr1kXdnYqDWvTbs3vBh6cnNKlA3mdjAxMYQSIJAzGz9jC+TanLj2Mqxx4tclKpUKgEAHLu3nHUAIBr5lQikTGyciQ2nOlM3G5hPD+4d3KLLenOe8jNnRFsC53FmcdxKxzufvrMze1F2QJBYp3wV1I7WLAAiItXyinDGQShxBABKpRKomSXDqTComuqLXsZbqqsaRCTaMpYlQTLdlUZSSV5my/eMXDry8ClpyyAQOMc52bOv5xYAmFg68esSlWzzt1PRsfBqISeEGPYzfnf1rWpdFiLZJp/z0h50VU9VXbV3W8+2ZK4ONinQP9n/1ezi7E/Kh8sJMXmgthLRoK2X8pT0JExitpuKGRy7bOyFZlkpUcke54UdENWl1Yezi7NrAaByuLI9tTeVw/Vw7d5vXWP9y+t7g1QwogJ1i9UWuqbn6NguFwgmsyjjVY5UvjK6cvRnTZ3mHswVc7KUL9n+l/t/1PGBjq+XD5YtMxOJYz3ZtBaBOOgMpKmZMoPHaqjdt3XZ1mqOc7J3qJejKHLNNfsm+q4OOoK/JuVEA4Cf8T09q68eXTX6fPOZMAzF+OpxKuVL9tbnbs0svmBxH4P7vZSXaaGjOIG3LQjILs7K2YOz3x/rGbujueaxnQyDQoQUUeQG9gzcpzLqW2wZSSVpPEii3XLMbIUQspFtd8FhYPiS4UebtG16aP3U+uXKqVdUoAgATGwcCCtHl49ONT3cQsdbhBAjfsbvrU3X4Jw7jo71rdkBgJ/1JYGQVJPNoytGB3LFnCzlSnNJrL1LoTAMKYoi1zfZ9zkVqHu9wLsaDCTlBM45Q0QExn+UbdI27SkhBWxii9W4es/Wnq2Tc/G5JjKFycJtMiU3AuCkltx7X/d9P2z+BgCFiUI3BTSsfJVz1kFX2+hYp6FjZhZCKD/rAwCsts/Yiv325lWbf9esfSftRVvjIFfMye6Pd68F42vM/JmgI0jZxEJXNdixbcm2omnRdFdaJNXkKDENT/xlYmspX0rm4vFQ2IkjQLQqOtoSGn73td13k6ABlVKdtemaQ52PgsEO3PCEIOmlPUhfIp6Na0T0BwL9eHjZ8HagnsTa4/9tFWyNyeb1xn0be5h4rbX282B8NOgIfHYMExvY2IKJTcPSjgT5qc4UTGKet9p+SWs9GwTBr5xzi8CAEOJN1vwFJ1xa+vKXXsq7qjZdAztOQPUyRUxKBhIqUCBBiGfjBIRnJcntRPTIpqWbJt5O1tNScC4ud4UeAERXRHOeGNg/cDkM1jD4Bjh8TChxsZ/1AQassbCxhYmNXXDhAjnzr5knADzYdWFXqXyoDADILs5i+rXpHBS+seCCBTfMvD5jVUpJ6UtIJQFqhIRxr0HgGQL9HgpPjiwZeXGODTtDHwCi1ZE+WdPwjkwKA1MDvUR0jYO7Bowr4LAcwPle1svGR+NHwHgw6Awei2djBoCgIyBd1jc5uNuDjmCtLusygMMQ2APCTgHxnPDEs5su2vTCOz4PttxnABjYM7AGPi60VVsjIs2OEyLSEDAEirXTZUXqKMVUDlSg40zsseYFAM7LdGU6w0XhHwf3DH5EBOL5pJK4RpkQLnZXDS8f/lt0JPpUXImnrbZvkUczQSXQsYk9Djhr2HR6wssyOICDIkGKmQNm9qQvU865A6OXjj7RLvMpFWxkI+6f7N+WOT9zh0scQAAzA67+za7lwwww4JxzABIAVSKalb6MbWL3CRIREz/OzF4jgWir7WdJ0neUr5bZxAbM3EFEKQA+EUkQQEQg0fIhAkT9PhiQvkT5SPkHYyvGbm+WuFMq2Jyl1u1dt8jX/j9JkOescwSiRram5pvERHNpvGE/ZmahBAXZAP4CH9OvTb9CknJs+SkhRQYAnHUVcnQdSy52LenqTmYSJOUE1lgmIjrGFwxmYm5eE+pzHoOZJAk4WK31RQ9c/sCh1jlwrjk9TmMiMDN1Hu2cBWPKS3kCgAMgQBBEdVs2+kjHzIaZDRygAoX0wjQJIZBUkmcqhyq3a19fCYfdRGRazGogsVt7+kOVNyq3JdXkaRCQXpgmFagmS+rrEhwYRKB6J1PPsgKAa8g2pYWeaSh3HBvViXJnvpSXpXwpKewu3OWcezTdlfaTcgJnHbixkpQS0pNS+vWsF8/EsMbudGX3GxL0i5FlI0/PUX5/SLVarSak6AQAdpykUik9umS0CuAhAA8V9hWujcvxF4npZpJ0RWpBSoEBqy1sYo/ZWygBP+v7RpuEHN21bdW2+EDxgARw+nWwOQj3vdB3jb/AH3DWfZIdLxZSwBoLMN4iQXsJ9A+S9Gcmfsq/2N/ZGgfhk6ECgGhNZPon+u/2s/4WZx3bmv3maM/otiIX5a4du6jZzTRL08Z9G6+wbK9j8CfgcCUYyxh8nlQSzjqQoENCij/VZmsjWy7f8mxT1jMuE62tT7g3XGRhlxiYFDkq+55/MFoSHTrunSdDNf7GODcL71wTv6f/g0qqcZMY7aRbdv/y+w8cs35bT9qKwnThfFVWFxhjOhRUTXbK/dHC6Ei7jCeCOpmCEUWuZag9AuDIiabtXTt2UaOx5nYBe3O9DAAudh6nGQCsdLLeSA4du1cj1inkkLADYvX1qzlPebu5a/NhAIdPNAyfatg+7ULPzDSEIRovjVNvrpeHMMTtGetkLOib7OuRUr7MlssGZsWW7i0HT5T13sm9T+nBtuzKrYU0QnRGHYUv/MRYwyAYT3n6jLqR/2Fv8a6fhjVoyIITJrbMbIJUoBs17V3f/l1XcGhoiAGgVqtpAlki0qjAnK3TRnG2NvI8TwMwAAymziEFmzRMpVJ1BRl6LtPSOeTB1y96XTPYMFgfM3GeKwo+hIcMGIZAeu689JyIwebpFhETkWbiBADCoZDOqSTTKNi6MS8e08W87xVkrs+QRFQlphoAjJfGzx0PDmGIGopmQAjqR2Fnx4MKZxc/ZeZpAEAJ83jfIVfMyfY/CcxjHvOYxzzmMY93D/8GmTvtMODAiIcAAAAASUVORK5CYII=" alt="Evolution Accelerator">
+      </div>
+      <span>Evolution Accelerator</span>
+    </div>
+    <h1>Funding Readiness<br>Self Assessment</h1>
+    <div style="display:inline-block;font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border:1px solid var(--purple);border-radius:20px;margin-bottom:12px;">Early Pre-Seed Edition</div>
+    <p>Evaluate your startup's readiness to raise your first institutional capital. Designed for companies at the earliest stage — idea through first revenue. Takes about 15 minutes. You'll receive your personalized report and 90-day roadmap by email.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Future editions will cover Late Pre-Seed, Early Seed, and Late Seed stages with criteria tailored to each milestone.</p>
+  </div>
+
+  <!-- VC-Backable Explainer -->
+  <div class="vc-explainer" style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:24px 28px;margin-bottom:28px;">
+    <div style="cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="this.parentElement.classList.toggle('explainer-open'); this.querySelector('.explainer-arrow').classList.toggle('open');">
+      <span class="explainer-arrow" style="color:var(--green);font-size:14px;transition:transform 0.2s;">&#x25B6;</span>
+      <h3 style="font-size:16px;font-weight:700;color:var(--green);margin:0;">Before You Start: Is Your Company VC-Backable?</h3>
+    </div>
+    <div class="explainer-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease;">
+      <div style="padding-top:16px;font-size:14px;color:var(--text-secondary);line-height:1.7;">
+
+        <p style="margin-bottom:14px;">This assessment helps you prepare for venture capital fundraising. But before you invest time here, it's worth understanding what makes a company "VC-backable" — because most companies aren't, and that's not a bad thing.</p>
+
+        <p style="margin-bottom:14px;font-weight:600;color:var(--text-primary);">Venture capital is a specific type of financing designed for a specific type of company.</p>
+
+        <p style="margin-bottom:14px;">VC-backable companies share a few characteristics that make them fundamentally different from most small businesses:</p>
+
+        <div style="margin:16px 0 16px 8px;">
+          <div style="display:flex;gap:10px;margin-bottom:10px;"><span style="color:var(--green);font-weight:700;min-width:24px;">1.</span><span><strong style="color:var(--text-primary);">Large addressable market.</strong> The problem you're solving needs to be big enough that a successful company could reach $100M+ in revenue. A great restaurant or consulting firm can be a wonderful business — but it's not a venture deal.</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:10px;"><span style="color:var(--green);font-weight:700;min-width:24px;">2.</span><span><strong style="color:var(--text-primary);">Scalable without proportional cost.</strong> VC-backable companies can grow revenue significantly faster than they grow headcount or expenses. Software, marketplaces, and platform businesses do this naturally. Services businesses generally don't.</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:10px;"><span style="color:var(--green);font-weight:700;min-width:24px;">3.</span><span><strong style="color:var(--text-primary);">Technology-driven disruption.</strong> Technology decomposes monolithic industries — that's where venture-scale opportunity lives. Your company should be using technology to fundamentally change how something works, not just incrementally improving an existing process.</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:10px;"><span style="color:var(--green);font-weight:700;min-width:24px;">4.</span><span><strong style="color:var(--text-primary);">Path to a liquidity event.</strong> Investors need a way to get their money back — with a return. That usually means an acquisition or (rarely at this stage) an IPO within 7-10 years. If your company is designed to be a lifestyle business or stay privately held indefinitely, VC isn't the right fit.</span></div>
+          <div style="display:flex;gap:10px;margin-bottom:10px;"><span style="color:var(--green);font-weight:700;min-width:24px;">5.</span><span><strong style="color:var(--text-primary);">Willing to give up equity.</strong> Venture funding means selling ownership in your company. You'll have partners — investors — who expect governance rights, information rights, and a return on their capital. Partnership is a marriage, not a transaction.</span></div>
+        </div>
+
+        <p style="margin-bottom:14px;font-weight:600;color:var(--amber);">Even if your company IS VC-backable, this assessment might reveal you're not ready yet.</p>
+
+        <p style="margin-bottom:14px;">That's the point. The work of becoming "funding ready" — building your team, validating your market, creating your materials — makes your company stronger regardless of whether you raise capital. Every item in this assessment is something that helps you build a better business.</p>
+
+        <p style="margin-bottom:14px;">Think of this tool as a mirror, not a gate. A strong score means you're ready to have productive conversations with investors. A lower score means you have a roadmap for what to work on next — and that roadmap is often more valuable than the score itself.</p>
+
+        <p style="margin-bottom:0;font-size:13px;color:var(--text-muted);font-style:italic;">"We screen 100 investments to invest in 3. The companies that get funded aren't just good ideas — they're well-prepared teams solving urgent problems with evidence that customers care. This assessment helps you become one of those 3."</p>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Methodology & Weights Transparency -->
+  <div class="methodology-section">
+    <div style="cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="this.parentElement.classList.toggle('explainer-open'); this.querySelector('.explainer-arrow').classList.toggle('open');">
+      <span class="explainer-arrow" style="color:var(--text-secondary);font-size:14px;transition:transform 0.2s;">&#x25B6;</span>
+      <h3 style="margin:0;">How This Assessment Works</h3>
+    </div>
+    <div class="explainer-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease;">
+      <div style="padding-top:16px;font-size:13px;color:var(--text-secondary);line-height:1.7;">
+        <p style="margin-bottom:12px;">No hocus pocus. Here's exactly how we score your readiness:</p>
+        <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Two dimensions, weighted 60/40:</strong> Business Readiness (60%) evaluates 14 items across three pillars. Materials Readiness (40%) checks 17 deliverables investors expect to see.</p>
+        <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Pillar weights reflect what early-stage investors prioritize:</strong></p>
+        <div id="weight-tune-toggle" style="margin-bottom:12px;">
+          <button onclick="toggleWeightTuning()" class="btn-reset" style="font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(74,222,128,0.3);border-radius:6px;padding:5px 14px;cursor:pointer;">&#x2699; Customize Weights</button>
+          <span style="font-size:11px;color:var(--text-muted);margin-left:8px;">Drag sliders to see how different weightings affect your score</span>
+        </div>
+        <table class="weight-table" id="methodology-table">
+          <thead>
+            <tr><th>Item</th><th>Weight</th><th style="width:40%">Share</th></tr>
+          </thead>
+          <tbody id="methodology-tbody"></tbody>
+        </table>
+        <div class="weight-controls" id="weight-controls" style="display:none;">
+          <button class="btn-reset" onclick="resetWeights()">&#x21BA; Reset to Defaults</button>
+          <span class="weight-status" id="weight-status">Using default weights</span>
+        </div>
+        <p style="margin-top:12px;margin-bottom:8px;font-size:12px;color:var(--text-muted);">Weights derived from: Angel Capital Association Scorecard Method, Precursor Ventures, Hustle Fund, YC application criteria, and Evolution Accelerator&#39;s investment philosophy. The specific numbers are judgment calls &mdash; they&#39;re transparent so you can evaluate the methodology yourself.</p>
+        <p style="margin-bottom:0;font-size:12px;color:var(--text-muted);">Benchmark data sourced from Carta State of Pre-Seed Q3 2025, SEC investor type guidelines, and industry surveys.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress -->
+  <div class="progress-bar-container" role="navigation" aria-label="Assessment progress">
+    <div class="progress-steps">
+      <div class="progress-step active" id="prog-1"></div>
+      <div class="progress-step" id="prog-2"></div>
+      <div class="progress-step" id="prog-3"></div>
+      <div class="progress-step" id="prog-4"></div>
+    </div>
+    <div class="progress-labels">
+      <span class="progress-label active" onclick="goToStep(1)">Company Info</span>
+      <span class="progress-label" onclick="goToStep(2)">Business Readiness</span>
+      <span class="progress-label" onclick="goToStep(3)">Materials</span>
+      <span class="progress-label" onclick="goToStep(4)">Your Roadmap</span>
+    </div>
+  </div>
+
+  <!-- Step 1: Company Info -->
+  <div class="section visible" id="section-1">
+    <div class="section-header">
+      <div class="step-badge">Step 1 of 4</div>
+      <h2>Company Information</h2>
+      <p>Tell us about your company. This information helps tailor your assessment and will appear in your personalized report.</p>
+    </div>
+
+    <!-- Company Basics -->
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:8px;">Company Basics</div>
+    <div class="form-group">
+      <label>Company Name *</label>
+      <input type="text" id="company_name" placeholder="Acme Technologies, Inc." required>
+    </div>
+    <div class="form-group">
+      <label>Company Website</label>
+      <input type="url" id="company_website" placeholder="https://yourcompany.com">
+    </div>
+    <div class="form-group">
+      <label>One-Line Description *</label>
+      <input type="text" id="company_description" placeholder="AI-powered inventory management for small retailers" maxlength="120">
+      <div class="field-hint">What does your company do, in one sentence? (120 chars max)</div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Primary Sector</label>
+        <select id="company_sector">
+          <option value="">Select...</option>
+          <option value="AI & Data">AI & Data</option>
+          <option value="HealthTech & Life Sciences">HealthTech & Life Sciences</option>
+          <option value="Consumer & Lifestyle">Consumer & Lifestyle</option>
+          <option value="FinTech & Payments">FinTech & Payments</option>
+          <option value="Enterprise SaaS">Enterprise SaaS</option>
+          <option value="GovTech / Defense">GovTech / Defense</option>
+          <option value="Hardware & Deep Tech">Hardware & Deep Tech</option>
+          <option value="Education & Social Impact">Education & Social Impact</option>
+          <option value="Marketplace / Platform">Marketplace / Platform</option>
+          <option value="Climate & Sustainability">Climate & Sustainability</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Company HQ Location</label>
+        <input type="text" id="company_location" placeholder="Sacramento, CA">
+      </div>
+    </div>
+
+    <!-- Founder Info -->
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;">Founder Information</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>CEO / Lead Founder Name *</label>
+        <input type="text" id="ceo_name" placeholder="Jane Smith" required>
+      </div>
+      <div class="form-group">
+        <label>Email *</label>
+        <input type="email" id="ceo_email" placeholder="jane@yourcompany.com" required>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Phone</label>
+        <input type="tel" id="ceo_phone" placeholder="916-555-1234">
+      </div>
+      <div class="form-group">
+        <label>Number of Co-Founders (including you)</label>
+        <select id="num_cofounders">
+          <option value="">Select...</option>
+          <option value="1">1 (Solo founder)</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4+">4+</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Months Working on This Full-Time</label>
+        <select id="months_fulltime">
+          <option value="">Select...</option>
+          <option value="0">Not yet full-time</option>
+          <option value="1-3">1-3 months</option>
+          <option value="4-6">4-6 months</option>
+          <option value="7-12">7-12 months</option>
+          <option value="12+">12+ months</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Revenue Status</label>
+        <select id="revenue_status">
+          <option value="">Select...</option>
+          <option value="Pre-revenue">Pre-revenue (no customers yet)</option>
+          <option value="Pre-revenue with LOIs">Pre-revenue with LOIs or commitments</option>
+          <option value="First revenue">First revenue (< $10K MRR)</option>
+          <option value="Early revenue">Early revenue ($10K-$50K MRR)</option>
+          <option value="Growing revenue">Growing revenue ($50K+ MRR)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Corporate Structure -->
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;">Corporate Structure</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Form of Organization</label>
+        <select id="org_form">
+          <option value="">Select...</option>
+          <option value="C-Corp (Delaware)">C-Corp (Delaware)</option>
+          <option value="C-Corp (Other State)">C-Corp (Other State)</option>
+          <option value="LLC">LLC</option>
+          <option value="S-Corp">S-Corp</option>
+          <option value="B-Corp">B-Corp / PBC</option>
+          <option value="Not Yet Incorporated">Not Yet Incorporated</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Date Founded / Incorporated</label>
+        <input type="text" id="date_founded" placeholder="e.g., March 2024 or 2023">
+      </div>
+    </div>
+
+    <!-- Fundraise Details -->
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;">Current Fundraise</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Amount Being Raised ($) *</label>
+        <input type="text" id="raise_amount" placeholder="150,000" oninput="formatCurrency(this); validateRaise(); validateCap();">
+      </div>
+      <div class="form-group">
+        <label>Security Instrument *</label>
+        <select id="instrument" onchange="toggleTermsFields()">
+          <option value="">Select...</option>
+          <option value="SAFE">SAFE (Simple Agreement for Future Equity)</option>
+          <option value="Convertible Note">Convertible Note</option>
+          <option value="Priced Round">Priced Round (Equity)</option>
+          <option value="Unknown">Not sure yet</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Raise amount benchmark feedback -->
+    <div id="raise-feedback" style="display:none;margin:-8px 0 16px;padding:12px 16px;border-radius:8px;font-size:13px;line-height:1.5;"></div>
+        <div id="raise-bench-visual" style="display:none;margin-top:12px;"></div>
+
+    <!-- SAFE Terms (shown when SAFE selected) -->
+    <div id="safe-terms" style="display:none;">
+      <div style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;padding:20px;margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">SAFE Terms</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>SAFE Type</label>
+            <select id="safe_type" onchange="toggleSafeCapFields(); validateCap(); validateRaise();">
+              <option value="">Select...</option>
+              <option value="Post-money with cap">Post-Money SAFE with Valuation Cap (most common)</option>
+              <option value="Post-money cap + discount">Post-Money SAFE with Cap + Discount</option>
+              <option value="Pre-money with cap">Pre-Money SAFE with Valuation Cap</option>
+              <option value="MFN">MFN (Most Favored Nation) — no cap</option>
+              <option value="Uncapped">Uncapped SAFE</option>
+            </select>
+          </div>
+          <div class="form-group" id="safe-cap-group" style="display:none;">
+            <label>Valuation Cap ($)</label>
+            <input type="text" id="safe_cap" placeholder="5,000,000" oninput="formatCurrency(this); validateCap();">
+          </div>
+        </div>
+        <div class="form-row" id="safe-details-row" style="display:none;">
+          <div class="form-group" id="safe-discount-group" style="display:none;">
+            <label>Discount (%)</label>
+            <input type="number" id="safe_discount" placeholder="20" min="0" max="50">
+            <div class="field-hint">Standard is 20%. Leave blank if no discount.</div>
+          </div>
+          <div class="form-group" id="safe-prorata-group">
+            <label>Pro Rata Rights?</label>
+            <select id="safe_prorata">
+              <option value="">Select...</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+              <option value="Unknown">Not sure</option>
+            </select>
+          </div>
+        </div>
+        <div id="safe-feedback" style="display:none;margin-top:8px;padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.5;"></div>
+        <div id="safe-benchmark-note" style="display:none;font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.5;">
+          <strong>Benchmark (Carta Q3 2025):</strong> 92% of pre-seed rounds use SAFEs. Post-money with cap only is the most common structure. At early pre-seed, median valuation caps: $4M (rounds &lt;$100K), $5M ($100K-$250K), $6M ($250K-$500K). Standard discount when included: 20%.
+        </div>
+      </div>
+    </div>
+
+    <!-- Convertible Note Terms (shown when CN selected) -->
+    <div id="cn-terms" style="display:none;">
+      <div style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;padding:20px;margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--amber);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Convertible Note Terms</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Valuation Cap ($)</label>
+            <input type="text" id="cn_cap" placeholder="4,000,000" oninput="formatCurrency(this); validateCap();">
+          </div>
+          <div class="form-group">
+            <label>Discount (%)</label>
+            <input type="number" id="cn_discount" placeholder="20" min="0" max="50">
+            <div class="field-hint">Standard is 15-25%.</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Interest Rate (%)</label>
+            <input type="number" id="cn_interest" placeholder="7" min="0" max="15" step="0.5">
+            <div class="field-hint">Median is 7%. Range: 4-8%.</div>
+          </div>
+          <div class="form-group">
+            <label>Maturity (months)</label>
+            <input type="number" id="cn_maturity" placeholder="24" min="6" max="60">
+            <div class="field-hint">Standard: 18-24 months.</div>
+          </div>
+        </div>
+        <div id="cn-feedback" style="display:none;margin-top:8px;padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.5;"></div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.5;">
+          <strong>Benchmark (Carta Q3 2025):</strong> Convertible notes are used in ~8% of pre-seed rounds. At early pre-seed, median valuation cap: $4M. Median interest rate: 7%. Standard maturity: 18-24 months. Notes tend to have lower valuation caps than SAFEs at this stage.
+        </div>
+      </div>
+    </div>
+
+    <!-- Priced Round Terms (shown when Priced Round selected) -->
+    <div id="priced-terms" style="display:none;">
+      <div style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:10px;padding:20px;margin-bottom:16px;">
+        <div style="font-size:12px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:12px;">Priced Round Terms</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Pre-Money Valuation ($)</label>
+            <input type="text" id="priced_valuation" placeholder="5,000,000" oninput="formatCurrency(this);">
+          </div>
+          <div class="form-group">
+            <label>Price Per Share ($)</label>
+            <input type="text" id="priced_pps" placeholder="1.00">
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.5;">
+          <strong>Note:</strong> Priced rounds are uncommon at early pre-seed. Most early-stage rounds use SAFEs or Convertible Notes to avoid the cost and complexity of a priced round. If you're raising less than $1M, a SAFE is almost always simpler and cheaper.
+        </div>
+      </div>
+    </div>
+
+    <!-- Has raised before? -->
+    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;">Prior Fundraising</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Total Previously Raised ($)</label>
+        <input type="text" id="prior_raised" placeholder="0" oninput="formatCurrency(this)">
+        <div class="field-hint">Friends & family, grants, angel checks, accelerator funding, etc. Enter 0 if this is your first raise.</div>
+      </div>
+      <div class="form-group">
+        <label>Source of Prior Capital</label>
+        <select id="prior_source">
+          <option value="">Select...</option>
+          <option value="None">None — first fundraise</option>
+          <option value="Self-funded">Self-funded / Bootstrapped</option>
+          <option value="Friends & Family">Friends & Family</option>
+          <option value="Grants">Grants / Awards</option>
+          <option value="Accelerator">Accelerator / Incubator</option>
+          <option value="Angel">Angel investors</option>
+          <option value="Multiple">Multiple sources</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="goToStep(2)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Step 2: Business Readiness -->
+  <div class="section" id="section-2">
+    <div class="section-header">
+      <div class="step-badge">Step 2 of 4</div>
+      <h2>Business Readiness</h2>
+      <p>Rate your company's strength in each area. Be honest — this assessment is for you. These criteria are calibrated for <strong>early pre-seed</strong> companies (idea through first revenue). Click "What does this mean?" for guidance on each item.</p>
+    </div>
+
+    <div class="live-score" id="fund-score-display">
+      <div class="score-ring">
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle class="ring-bg" cx="36" cy="36" r="30"/>
+          <circle class="ring-fill" id="fund-ring" cx="36" cy="36" r="30"
+            stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+        </svg>
+        <span class="score-text" id="fund-score-text">0%</span>
+      </div>
+      <div class="score-detail">
+        <h3>Business Readiness Score</h3>
+        <p>Updates as you complete each category below</p>
+      </div>
+    </div>
+
+    <div id="fundraising-cards"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToStep(1)">&larr; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(3)">Continue &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Step 3: Materials Readiness -->
+  <div class="section" id="section-3">
+    <div class="section-header">
+      <div class="step-badge">Step 3 of 4</div>
+      <h2>Materials Readiness</h2>
+      <p>What's the status of your key fundraising assets? In 2026, investors expect more than documents — they want to see your product, hear your story, and verify your claims before they take a meeting.</p>
+    </div>
+
+    <div class="live-score" id="mat-score-display">
+      <div class="score-ring">
+        <svg width="72" height="72" viewBox="0 0 72 72">
+          <circle class="ring-bg" cx="36" cy="36" r="30"/>
+          <circle class="ring-fill" id="mat-ring" cx="36" cy="36" r="30"
+            stroke-dasharray="188.5" stroke-dashoffset="188.5"/>
+        </svg>
+        <span class="score-text" id="mat-score-text">0%</span>
+      </div>
+      <div class="score-detail">
+        <h3>Materials Readiness Score</h3>
+        <p>Updates as you complete each item below</p>
+      </div>
+    </div>
+
+    <div id="step3-context-banner" style="display:none; margin-bottom:20px; padding:14px 18px; border-radius:10px; border:1px solid var(--dark-border); background:rgba(74,222,128,0.04); font-size:13px; line-height:1.6;"></div>
+    <div id="materials-cards"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToStep(2)">&larr; Back</button>
+      <button class="btn btn-primary" onclick="goToStep(4)">View Your Roadmap &rarr;</button>
+    </div>
+  </div>
+
+  <!-- Step 4: Report & Roadmap -->
+  <div class="section section-summary" id="section-4">
+    <div class="section-header">
+      <div class="step-badge">Your Report &amp; Roadmap</div>
+      <h2>Funding Readiness Report</h2>
+      <p>Here's where you stand — and what to do next.</p>
+    </div>
+
+    <!-- Overall Score -->
+    <div class="overall-score-card">
+      <div class="big-score" id="overall-score-big">0%</div>
+      <div class="big-label">Overall Funding Readiness</div>
+      <div class="overall-sub-scores">
+        <div class="sub">
+          <div class="sub-score" id="overall-team">0%</div>
+          <div class="sub-label">Team</div>
+        </div>
+        <div class="sub">
+          <div class="sub-score" id="overall-business">0%</div>
+          <div class="sub-label">Business</div>
+        </div>
+        <div class="sub">
+          <div class="sub-score" id="overall-corporate">0%</div>
+          <div class="sub-label">Corporate</div>
+        </div>
+        <div class="sub">
+          <div class="sub-score" id="overall-mat">0%</div>
+          <div class="sub-label">Materials</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pillar bars -->
+    <div class="pillar-bars" id="pillar-bars"></div>
+
+    <!-- Company Info Summary -->
+    <div class="summary-section company-info-summary" id="summary-company"></div>
+
+    <!-- Business Readiness Summary -->
+    <div class="summary-section" id="summary-fundraising"></div>
+
+    <!-- Materials Summary -->
+    <div class="summary-section" id="summary-materials"></div>
+
+    <!-- Strengths -->
+    <div class="strengths-section" id="strengths-section"></div>
+
+    <!-- Roadmap -->
+    <div class="roadmap-section" id="roadmap-section"></div>
+
+    <!-- CTA -->
+    <div class="cta-section" id="cta-section"></div>
+
+    <!-- Email Results -->
+    <div class="email-section">
+      <h3>Get Your Report by Email</h3>
+      <p>We'll send this report and roadmap to the email you provided, along with a copy to the Evolution Accelerator team.</p>
+      <button class="btn btn-primary" onclick="sendEmail()" id="send-btn">Send My Report</button>
+    <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
+      <button class="btn btn-outline-green" onclick="window.print()" style="flex:1;min-width:200px;">&#x1F5A8; Print / Save as PDF</button>
+      <button class="btn btn-outline-green" onclick="downloadTextReport()" style="flex:1;min-width:200px;">&#x1F4CB; Download Text Report</button>
+    </div>
+
+      <div class="email-status" id="email-status"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="goToStep(1)">&larr; Edit Responses</button>
+      <button class="btn btn-outline-green" onclick="window.print()">Print Report</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>&copy; 2026 Evolution Accelerator &middot; <a href="https://www.evolutionacceleration.com" target="_blank">evolutionacceleration.com</a> &middot; <a href="mailto:info@evolutionacceleration.com">info@evolutionacceleration.com</a></p>
+    <p style="margin-top:6px;">Capital. Community. Culture.</p>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA MODEL — v2: Pillar-based, 4-point scale
+// ============================================================
+const PILLARS = [
+  { id: 'team', label: 'Team & Leadership', icon: '&#x1F465;', cls: 'pillar-team', weightLabel: '35%', desc: 'The Trinity of Management — Product, Market, Finance' },
+  { id: 'business', label: 'Business & Market', icon: '&#x1F4C8;', cls: 'pillar-business', weightLabel: '40%', desc: 'Product-market fit, revenue, go-to-market, defensibility' },
+  { id: 'corporate', label: 'Corporate & Fundraising', icon: '&#x1F3DB;', cls: 'pillar-corporate', weightLabel: '25%', desc: 'Structure, governance, and fundraising readiness' },
+];
+
+const FUNDRAISING_ITEMS = [
+  // Team & Leadership (target: ~35%)
+  { id: 'team_trinity',   label: 'Founding Team Completeness (Trinity of Management)', weight: 130, pillar: 'team' },
+  { id: 'commitment',     label: 'Founder Commitment & Skin in the Game',              weight: 90,  pillar: 'team' },
+  { id: 'coachable',      label: 'Founder Coachability & Self-Awareness',              weight: 80,  pillar: 'team' },
+  { id: 'advisors',       label: 'Advisory Board & Network',                           weight: 50,  pillar: 'team' },
+  // Business & Market (target: ~40%)
+  { id: 'pmf',            label: 'Product-Market Fit Evidence',                         weight: 120, pillar: 'business' },
+  { id: 'revenue',        label: 'Revenue Model & Path to Revenue',                    weight: 100, pillar: 'business' },
+  { id: 'gtm',            label: 'Go-to-Market Strategy',                              weight: 70,  pillar: 'business' },
+  { id: 'unit_econ',      label: 'Unit Economics Understanding',                       weight: 50,  pillar: 'business' },
+  { id: 'trend',          label: 'Disruption Thesis & Market Timing',                  weight: 50,  pillar: 'business' },
+  { id: 'moats',          label: 'Competitive Moats & Defensibility',                  weight: 40,  pillar: 'business' },
+  // Corporate & Fundraising (target: ~25%)
+  { id: 'corp',           label: 'Corporate Structure & Governance',                   weight: 80,  pillar: 'corporate' },
+  { id: 'package',        label: 'Fundraising Package & Narrative',                    weight: 70,  pillar: 'corporate' },
+  { id: 'ip_brand',       label: 'IP & Brand Protection',                              weight: 50,  pillar: 'corporate' },
+  { id: 'valuation',      label: 'Valuation & Terms Clarity',                          weight: 50,  pillar: 'corporate' },
+];
+
+const FUND_OPTIONS = [
+  { label: 'Strong',      value: 'Strong',      score: 3, cls: 'selected-strong' },
+  { label: 'Developing',  value: 'Developing',  score: 2, cls: 'selected-developing' },
+  { label: 'Early',       value: 'Early',       score: 1, cls: 'selected-early' },
+  { label: 'Not Started', value: 'Not Started', score: 0, cls: 'selected-notstarted' },
+];
+
+const FUNDRAISING_TIPS = {
+  team_trinity: {
+    investorLook: "Every enterprise needs three capabilities: someone who builds the product, someone who sells it, and someone who manages the money. This is the Trinity of Management. Investors check whether all three legs are covered — by founders, co-founders, or committed early hires. A missing leg is a serious red flag.",
+    greenFlags: "All three roles (Product, Market, Finance) are filled by named individuals with relevant experience. Founders have complementary skills, not overlapping ones. The team has worked together before or has clear chemistry.",
+    howToImprove: "If you're a solo technical founder, identify your market and finance gaps. Recruit a co-founder or committed advisor who covers what you don't. Don't raise money to outsource your core product to non-equity engineers — that's \"prepaying your hostage taker.\""
+  },
+  coachable: {
+    investorLook: "Investors want founders who listen, learn, and adapt. Coachability is about intellectual honesty — can you hear hard feedback without getting defensive? The best founders actively seek criticism because it makes the company better.",
+    greenFlags: "You can name specific examples where feedback changed your approach. You have mentors or advisors you listen to regularly. You're curious about what you don't know.",
+    howToImprove: "Start by asking 3 people you trust: 'What's the biggest blind spot in my business?' Write down what they say without arguing. If you find yourself getting defensive, that's the signal to pay closer attention."
+  },
+  advisors: {
+    investorLook: "Named advisors with relevant expertise signal that you've recruited smart people to help you win. Advisory boards also show you're willing to listen and leverage external knowledge. Quality matters more than quantity — three great advisors beat ten names on a page.",
+    greenFlags: "You have 2-4 advisors with domain expertise, industry connections, or operational experience directly relevant to your business. They're actively engaged — not just names on a website.",
+    howToImprove: "Identify the 2-3 biggest gaps in your team's knowledge. Find people who've solved those exact problems. Reach out with a specific ask, not a vague 'will you advise?' Most experienced operators are happy to help if you're specific about what you need."
+  },
+  commitment: {
+    investorLook: "Are you all in? Investors need to know this isn't a side project. Full-time commitment, personal financial risk, and time invested are the strongest signals that you believe in what you're building. At pre-seed, the founder IS the company — your commitment level is the company's commitment level.",
+    greenFlags: "Founders are full-time (or have a clear, near-term transition plan). Founders have invested personal capital — even a modest amount shows conviction. You've been working on this for months, not weeks. You've turned down other opportunities to pursue this. You can articulate why this is the most important thing you could be doing.",
+    howToImprove: "If you're still working a day job, create a specific transition plan with a date. If you haven't invested any personal capital, put some skin in the game — it doesn't have to be a lot, but zero personal investment is a red flag. Track how many hours per week you're spending and be honest about it. 'Fold the omelet' — use what you have and build with what's in hand."
+  },
+  pmf: {
+    investorLook: "This is the number one question investors ask. Do real people want what you're building badly enough to pay for it? The strongest evidence is revenue. The next best is a waitlist, LOIs, or pilot customers. Passion for the problem is not product-market fit — customer behavior is.",
+    greenFlags: "You have paying customers or signed LOIs. Customer acquisition is repeatable (not just friends and family). Users are coming back — retention proves demand, not just curiosity. You can name your ICP and they match who's actually buying.",
+    howToImprove: "Talk to 20 potential customers this month. Not to sell — to learn. Ask: 'How are you solving this problem today? What does it cost you? Would you pay $X for something better?' If the answer is consistently yes, you're on to something. If it's wishy-washy, keep iterating before you raise."
+  },
+  revenue: {
+    investorLook: "Investors prefer companies that run to revenue. Even pre-revenue, you need a crystal-clear model for how money flows in. Subscription? Transaction fee? Marketplace take rate? Licensing? If you can't explain your revenue model in two sentences, investors won't wait around to figure it out.",
+    greenFlags: "You can clearly explain who pays, how much, and how often. If you're pre-revenue, you have a realistic timeline to first dollar. Unit economics make sense even on paper. You've validated pricing with real or potential customers.",
+    howToImprove: "Write down your pricing model on one page. Test it: would your target customer pay this? Run a pricing experiment — even a landing page with pricing tiers and a 'Sign up' button tells you a lot. Revenue doesn't have to be large, but it has to be intentional."
+  },
+  gtm: {
+    investorLook: "How will you acquire customers? Investors want a specific, measurable go-to-market plan — not 'we'll do social media marketing.' They're looking for evidence that you understand your customer acquisition channels, costs, and timelines.",
+    greenFlags: "You can name your top 2-3 customer acquisition channels. You've tested at least one and have early results. You know your CAC by channel. Your plan is sequenced — what you do first, second, third — not 'everything at once.'",
+    howToImprove: "Pick one channel and test it for 30 days. Measure everything: how many leads, at what cost, how many converted. A single channel that works is infinitely more convincing than a 10-channel strategy you haven't tested."
+  },
+  unit_econ: {
+    investorLook: "At early pre-seed, you may not have real unit economics yet — and that's OK. What investors want to see is that you've THOUGHT about it. Know your CAC (customer acquisition cost), LTV (lifetime value), and gross margins — even if they're estimates based on assumptions. The point is to show you understand the business model math, not that you have perfect data.",
+    greenFlags: "You can state your CAC, LTV, and LTV/CAC ratio. Gross margins are positive (or have a clear path to positive). You understand your payback period. You've modeled what happens as you scale.",
+    howToImprove: "Start with estimates — they don't need to be perfect. What does it cost to acquire one customer? What's that customer worth over their lifetime? If LTV is less than 3x CAC, your model needs work. Build a simple spreadsheet and pressure-test the assumptions."
+  },
+  trend: {
+    investorLook: "Technology decomposes monolithic industries — that's the macro thesis that creates venture-scale opportunity. Is your company positioned to capture value from a major disruption? The question isn't just 'is this a good product?' but 'is this the right time, and are you riding the right wave?'",
+    greenFlags: "You can name the macro trend and cite data showing it's accelerating. Your company is positioned to capture value from this trend specifically — not just adjacent to it. Industry reports or market data back up your timing.",
+    howToImprove: "Research the market trends most relevant to your space. Find 2-3 credible data points (market size, growth rate, regulatory changes) that support your timing. Frame your pitch around why NOW is the moment for your company — not just why the idea is good."
+  },
+  moats: {
+    investorLook: "At early pre-seed, you probably don't have a fortress yet — and that's expected. What investors want to see is that you're THINKING about defensibility. What stops a well-funded competitor from copying you once you prove the market? Even at this stage, early signs matter: proprietary data, network effects, switching costs, regulatory advantages, or deep domain expertise that's hard to replicate.",
+    greenFlags: "You can name at least one specific competitive advantage that gets stronger over time. You have proprietary technology, data, or relationships. Your product gets better (or stickier) as more people use it.",
+    howToImprove: "Ask yourself: 'If Google/Amazon/a well-funded startup copied my product tomorrow, why would customers stay with me?' If you don't have a good answer, think about what you could build that creates lock-in — data moats, network effects, integrations, brand trust."
+  },
+  ip_brand: {
+    investorLook: "Investors want to know you own what you're building — and that your brand is protectable. This means trademarks on your company name and key product names, IP assignment agreements so the company (not the founders personally) owns the code and inventions, and awareness of whether you have any patentable innovations. At early pre-seed, you don't need a full patent portfolio — but you need a strategy, and you need to have started the process.",
+    greenFlags: "You've filed (or are in process of filing) a trademark for your company name and primary product name. All IP is assigned to the company, not individual founders. You have a basic IP strategy — even if it's 'we're building trade secret value through proprietary data.' Domain name is secured. You're not infringing on anyone else's marks.",
+    howToImprove: "Start with a trademark search on USPTO.gov for your company name and product names — make sure nobody else owns them. File a federal trademark application (can be done for $250-350 per class via TEAS). Get all founders and contractors to sign IP assignment and invention assignment agreements. If you have novel technology, consult a patent attorney about provisional patent applications ($2-5K, buys you 12 months)."
+  },
+  corp: {
+    investorLook: "Investors need to see that you've built a real company — not just a side project. Entity type, cap table, governance, intellectual property assignment — these are table stakes. Messy corporate structure is a deal-killer for institutional investors.",
+    greenFlags: "You're organized as a C-Corp (usually Delaware) or have a good reason for your chosen structure. Your cap table is clean and fully distributed. IP is assigned to the company. Board is constituted. Operating agreements are current.",
+    howToImprove: "If you haven't incorporated yet, talk to a startup attorney about the right structure for fundraising (usually a Delaware C-Corp for venture-backed companies). Get your cap table into a tool like Carta. Make sure all founders have signed IP assignment agreements."
+  },
+  package: {
+    investorLook: "Your fundraising package is how investors judge you before they ever meet you. Pitch deck, executive summary, financial model — these documents need to be clear, professional, and tell a compelling story. Sloppy materials signal sloppy execution.",
+    greenFlags: "Your pitch deck is 10-15 slides, visually clean, and tells a clear story. You have a 1-2 page executive summary that can be forwarded. Your financial model is reasonable and defensible. Everything is consistent — same numbers, same story.",
+    howToImprove: "Start with your pitch deck — it's your #1 fundraising tool. Follow a standard structure (problem, solution, market, traction, team, ask). Get feedback from 5 people before you send it to any investor. Then build your exec summary and make sure the numbers match."
+  },
+  valuation: {
+    investorLook: "Do you understand your own terms? Founders who can explain their valuation, dilution implications, and how their terms compare to market standards negotiate better and signal sophistication. You don't have to be a finance expert, but you need to know the basics.",
+    greenFlags: "You can explain your pre-money valuation and how you arrived at it. You understand the terms of your SAFE/Note/Priced Round. You know how much dilution you're accepting. You've researched comparable deals in your stage and sector.",
+    howToImprove: "Read up on SAFE vs. Convertible Note vs. Priced Round basics. Research recent funding rounds for companies at your stage in your sector. Talk to founders who've recently raised — ask what terms they got and what they wish they'd negotiated differently."
+  },
+};
+
+const MATERIALS_TIPS = {
+  pitch_deck: {
+    investorLook: "Your pitch deck is the single most important document in your fundraise. Investors see hundreds — yours needs to tell a clear, compelling story in 10-15 slides. If your deck is confusing or amateurish, most investors won't take a meeting.",
+    greenFlags: "Clean visual design, clear story arc (problem → solution → market → traction → team → ask), consistent data across all materials, no typos.",
+    howToImprove: "Follow a proven structure. Draft first, then design. Get 5 rounds of feedback before sending to any investor. Test in low-stakes meetings and iterate based on what questions come up."
+  },
+  exec_summary: {
+    investorLook: "This is the document that gets forwarded internally at a fund. When a partner likes your pitch, they send your exec summary to their colleagues. It needs to stand on its own without you in the room to explain it.",
+    greenFlags: "1-2 pages, professionally formatted, covers problem/solution/market/traction/team/ask. Numbers match your deck exactly.",
+    howToImprove: "Write it last — after your deck and financial model are done. That way the numbers are consistent. Keep it to two pages maximum."
+  },
+  video_pitch: {
+    investorLook: "In 2026, investors expect to see you present before they take a meeting. A 2-5 minute video pitch or product demo lets them assess your communication skills, passion, and product quality asynchronously. This is especially important for remote fundraising.",
+    greenFlags: "Professional quality (good lighting, clear audio), natural delivery (not reading a script), includes live product walkthrough, hosted on a shareable page.",
+    howToImprove: "Record yourself pitching, watch it back, iterate. Film 10 takes if you need to. Include a live product demo if possible. Host it on a dedicated page (not just YouTube) so you can track who watches."
+  },
+  web_social: {
+    investorLook: "Your online presence is the first thing investors check after seeing your deck. A professional website and consistent social media presence signal that you're serious and capable of marketing your product.",
+    greenFlags: "Clean website that tells your story, active LinkedIn profiles for founders, consistent branding across platforms, some evidence of community or audience building.",
+    howToImprove: "Get a simple but professional website live. It doesn't need to be fancy — it needs to be clear. Claim all social media handles. Ensure your messaging is consistent with your deck."
+  },
+  founder_bios: {
+    investorLook: "Investors will Google you before they respond to your email. Your LinkedIn profile and bio are part of your fundraising materials whether you think about them or not. They're looking for relevant experience, credibility signals, and domain expertise.",
+    greenFlags: "Updated LinkedIn with clear headline, relevant accomplishments highlighted, recommendations from credible connections, professional headshot, clear narrative about why you're the right team for this problem.",
+    howToImprove: "Update your LinkedIn this week. Write a professional bio that connects your background to why you're building this company. Get recommendations from people who know your work."
+  },
+  demo_proto: {
+    investorLook: "Investors in 2026 expect to see the product, not just hear about it. A working demo or clickable prototype proves you can build, not just talk. It's the fastest way to move from 'interesting idea' to 'I want to learn more.'",
+    greenFlags: "Self-serve demo that investors can try without hand-holding, clear 'aha moment' within first 2 minutes, fallback demo video for meetings where live demos might fail.",
+    howToImprove: "Build the simplest version that shows your core value proposition. Focus on the one thing that makes people say 'wow.' A Figma clickthrough is better than nothing. A working MVP is 10x better."
+  },
+  financials: {
+    investorLook: "A financial model shows you understand the business, not just the product. Investors want to see that you've thought about revenue, costs, and how money flows. At early pre-seed, the model doesn't need 3-year projections — 12-18 months of credible, assumption-driven modeling is more useful and more honest.",
+    greenFlags: "P&L with 12-18 month projections, visible and clearly stated assumptions, realistic growth curves (not hockey sticks), burn rate and runway clearly shown for your target raise amount.",
+    howToImprove: "Build a model with three tabs: assumptions, P&L, and cash flow. Keep assumptions visible — investors will challenge them. Pressure-test with an accountant or CFO advisor."
+  },
+  customer_proof: {
+    investorLook: "Evidence of customer demand is the second most persuasive thing in fundraising (after a great team). Signed LOIs, paid pilots, waitlist numbers, testimonials, or usage data all count. The point is to prove someone wants this enough to act on it.",
+    greenFlags: "Paying customers (even small amounts), signed LOIs from named companies, measurable waitlist with growth, testimonials with specific outcomes, usage data showing retention.",
+    howToImprove: "Gather every piece of evidence you have: beta user feedback, waitlist signups, pilot results, email responses showing interest. Organize by strength — revenue > LOIs > waitlist > testimonials."
+  },
+  market_research: {
+    investorLook: "Market sizing shows you understand the opportunity scale, and competitive analysis shows you know who else is trying to solve this problem. Both are basic due diligence — investors will look this up regardless, so you want to control the narrative.",
+    greenFlags: "TAM/SAM/SOM with credible sources, competitive landscape with honest differentiation, clear positioning statement, citations investors can verify.",
+    howToImprove: "Use a top-down and bottom-up sizing approach. Map at least 5 competitors or alternatives (including 'do nothing'). Be honest about the landscape — investors respect founders who know their competition."
+  },
+  cap_table: {
+    investorLook: "A clean cap table is table stakes. Investors need to understand the ownership structure, any existing obligations (SAFEs, notes), and how their investment fits in. Messy or unclear cap tables are a red flag that suggests other governance issues.",
+    greenFlags: "All equity accounted for in a tool like Carta, no unexpected shareholders or obligations, clear option pool, modeling for post-money dilution at target raise.",
+    howToImprove: "Get your cap table into Carta (or equivalent). Account for every share, option, SAFE, and note. Model what happens when your current round closes — know the dilution impact."
+  },
+  founders_agr: {
+    investorLook: "Founder agreements with vesting protect everyone — including the founders themselves. Investors will not invest without them. Standard 4-year vesting with a 1-year cliff ensures no one walks away with a large equity stake after working for 3 months.",
+    greenFlags: "Signed founder agreements, 4-year vesting with 1-year cliff, clear role definitions, IP assignment included, departure terms specified, reviewed by legal counsel.",
+    howToImprove: "If you don't have founder agreements yet, this is your highest-priority legal task. Use a standard template and have it reviewed by a startup attorney. This is not optional for fundraising."
+  },
+  safe_kiss: {
+    investorLook: "At pre-seed, most investors expect a SAFE (Simple Agreement for Future Equity) or Convertible Note. Having your investment documents ready signals professionalism and speeds up closing — which matters, because investor interest has a short half-life.",
+    greenFlags: "Investment instrument chosen and drafted, terms set (valuation cap, discount if applicable), ready to send within 24 hours of a verbal commitment, reviewed by counsel.",
+    howToImprove: "Download a standard SAFE from YCombinator (safe.ycombinator.com). Decide on your valuation cap. Have legal counsel review it. The goal is to be ready to close the moment someone says yes."
+  },
+  ip_filings: {
+    investorLook: "Investors want to know you own what you're building. Trademarks on your company and product names, IP assignment agreements, and awareness of patent opportunities show that you're protecting the company's core assets.",
+    greenFlags: "Trademark applications filed for company name and primary product, IP assignment agreements signed by all founders and contractors, domain secured, basic patent or trade secret strategy documented.",
+    howToImprove: "Search USPTO.gov for your names. File trademarks ($250-350/class via TEAS). Get IP assignment agreements signed. If you have novel technology, consult a patent attorney about provisionals."
+  },
+  corp_docs: {
+    investorLook: "Proper incorporation and governance documents are non-negotiable for institutional investment. This includes articles of incorporation, bylaws, EIN, and state registrations.",
+    greenFlags: "Delaware C-Corp (standard for VC-backed), articles filed, bylaws drafted, EIN obtained, state registrations current, annual filings up to date.",
+    howToImprove: "If you haven't incorporated yet, work with a startup attorney. Delaware C-Corp is standard for companies planning to raise venture capital. Budget $1-2K for formation."
+  },
+  data_room: {
+    investorLook: "A well-organized virtual data room shows investors you're prepared for due diligence. It signals professionalism and accelerates the closing process. Investors who have to chase documents lose confidence.",
+    greenFlags: "All materials organized in a shared platform (Google Drive, DocSend, Notion), logical folder structure (Corporate, Financial, Product, Team, Legal), permissions set so you can share selectively.",
+    howToImprove: "Set up a Google Drive or DocSend folder. Create sections for each category. Add an index document. Test it — have someone navigate it cold and tell you where they got confused."
+  },
+  legal_team: {
+    investorLook: "Having legal counsel engaged signals you're serious about doing things properly. DIY legal for fundraising is a red flag. Investors want to know their investment documents will be handled by someone who knows startup law.",
+    greenFlags: "Startup attorney engaged, counsel familiar with SAFEs and early-stage instruments, available for your fundraising timeline, responsive to quick turnarounds.",
+    howToImprove: "Get referrals from other founders or your local startup community. Many startup attorneys offer deferred payment or startup packages. Confirm they specifically do startup law — corporate attorneys who 'also do startups' are not the same thing."
+  },
+  acct_team: {
+    investorLook: "Clean books are table stakes for due diligence. A bookkeeper or accountant keeping your financials current shows investors you take financial discipline seriously — even at pre-seed.",
+    greenFlags: "Books current and reconciled, proper chart of accounts set up, monthly P&L available, financial model consistent with actual books.",
+    howToImprove: "Engage a bookkeeper ($200-500/month for early-stage). Get books current and reconciled. Set up a proper chart of accounts. Schedule a pre-fundraise review to catch any issues."
+  }
+};
+
+// Materials organized into 3 groups for 2026 early pre-seed reality
+const MAT_GROUPS = [
+  { id: 'pitch', label: 'Pitch & Storytelling', desc: 'The materials that get you in the room' },
+  { id: 'proof', label: 'Proof & Evidence', desc: 'What backs up your story' },
+  { id: 'legal_ops', label: 'Legal & Operations', desc: 'The infrastructure investors need to see' },
+];
+
+const MATERIALS_ITEMS = [
+  // Pitch & Storytelling
+  { id: 'pitch_deck',     label: 'Pitch Deck (10-15 slides)',                          weight: 150, group: 'pitch' },
+  { id: 'exec_summary',   label: 'Executive Summary / One-Pager',                      weight: 75,  group: 'pitch' },
+  { id: 'video_pitch',    label: 'Video Pitch or Recorded Demo (2-5 min)',              weight: 60,  group: 'pitch' },
+  { id: 'web_social',     label: 'Website & Social Media Presence',                    weight: 90,  group: 'pitch' },
+  { id: 'founder_bios',   label: 'Founder Bios & LinkedIn Profiles',                   weight: 90,  group: 'pitch' },
+  // Proof & Evidence
+  { id: 'demo_proto',     label: 'Working Demo or Prototype',                          weight: 150, group: 'proof' },
+  { id: 'financials',     label: 'Financial Model (P&L + 12-18 Month Projections)',    weight: 70,  group: 'proof' },
+  { id: 'customer_proof', label: 'Customer Evidence (LOIs, Testimonials, Data)',        weight: 110, group: 'proof' },
+  { id: 'market_research',label: 'Market Sizing & Competitive Landscape',              weight: 50,  group: 'proof' },
+  // Legal & Operations
+  { id: 'cap_table',      label: 'Cap Table (Carta or equivalent)',                    weight: 50,  group: 'legal_ops' },
+  { id: 'founders_agr',   label: "Founders' Agreement & Vesting Schedules",            weight: 90,  group: 'legal_ops' },
+  { id: 'safe_kiss',      label: 'Investment Instrument (SAFE / Note / PPM)',           weight: 70,  group: 'legal_ops' },
+  { id: 'ip_filings',     label: 'IP Filings (Trademarks, Patents if applicable)',      weight: 50,  group: 'legal_ops' },
+  { id: 'corp_docs',      label: 'Corporate Docs (Incorporation, Bylaws)',              weight: 50,  group: 'legal_ops' },
+  { id: 'data_room',      label: 'Virtual Data Room Organized',                        weight: 40,  group: 'legal_ops' },
+  { id: 'legal_team',     label: 'Legal Counsel Engaged',                              weight: 40,  group: 'legal_ops' },
+  { id: 'acct_team',      label: 'Bookkeeper or Accountant Engaged',                   weight: 25,  group: 'legal_ops' },
+];
+const MAT_OPTIONS = [
+  { label: 'Done',        value: 'Done',        score: 3, cls: 'selected-done' },
+  { label: 'Started',     value: 'Started',     score: 1, cls: 'selected-started' },
+  { label: 'Not Started', value: 'Not Started', score: 0, cls: 'selected-notstarted' },
+];
+
+// State
+const fundAnswers = {};
+const matAnswers = {};
+let currentStep = 1;
+
+// ============================================================
+// BUILD CARDS — with pillar headers and expandable tips
+// ============================================================
+function buildFundraisingCards() {
+  const container = document.getElementById('fundraising-cards');
+  const totalWeight = FUNDRAISING_ITEMS.reduce((s, i) => s + i.weight, 0);
+  let currentPillar = null;
+
+  FUNDRAISING_ITEMS.forEach(item => {
+    // Insert pillar header
+    if (item.pillar !== currentPillar) {
+      currentPillar = item.pillar;
+      const pillar = PILLARS.find(p => p.id === currentPillar);
+      const header = document.createElement('div');
+      header.className = `pillar-header ${pillar.cls}`;
+      header.innerHTML = `
+        <div class="pillar-icon">${pillar.icon}</div>
+        <div class="pillar-info">
+          <h3>${pillar.label} <span style="font-weight:400;font-size:12px;opacity:0.7">(${pillar.weightLabel})</span></h3>
+          <p>${pillar.desc}</p>
+        </div>
+      `;
+      container.appendChild(header);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    const relWeight = ((item.weight / totalWeight) * 100).toFixed(0);
+    const tip = FUNDRAISING_TIPS[item.id];
+
+    let optionsHtml = FUND_OPTIONS.map(opt =>
+      `<button class="option-btn" role="radio" aria-checked="false" tabindex="0" data-item="${item.id}" data-value="${opt.value}" data-score="${opt.score}" data-cls="${opt.cls}">${opt.label}</button>`
+    ).join('');
+
+    let tipHtml = '';
+    if (tip) {
+      tipHtml = `
+        <div class="card-tip-toggle" onclick="toggleTip(this)">
+          <span class="arrow">&#x25B6;</span> What does this mean?
+        </div>
+        <div class="card-tip-content">
+          <h4>What Investors Look For</h4>
+          <p>${tip.investorLook}</p>
+          <h4>Green Flags</h4>
+          <p>${tip.greenFlags}</p>
+          <h4>How to Improve</h4>
+          <p>${tip.howToImprove}</p>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-label">${item.label}</div>
+        <div class="card-weight">${relWeight}% weight</div>
+      </div>
+      <div class="card-options" role="radiogroup" aria-label="${item.label}">${optionsHtml}</div>
+      ${tipHtml}
+    `;
+    container.appendChild(card);
+
+    card.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        card.querySelectorAll('.option-btn').forEach(b => b.className = 'option-btn');
+        btn.classList.add(btn.dataset.cls);
+        fundAnswers[btn.dataset.item] = {
+          value: btn.dataset.value,
+          score: parseInt(btn.dataset.score)
+        };
+        updateFundScore();
+      });
+    });
+  });
+}
+
+function buildMaterialsCards() {
+  const container = document.getElementById('materials-cards');
+  const totalWeight = MATERIALS_ITEMS.reduce((s, i) => s + i.weight, 0);
+  let currentGroup = null;
+
+  MATERIALS_ITEMS.forEach(item => {
+    // Insert group header
+    if (item.group !== currentGroup) {
+      currentGroup = item.group;
+      const grp = MAT_GROUPS.find(g => g.id === currentGroup);
+      if (grp) {
+        const header = document.createElement('div');
+        header.className = 'pillar-header pillar-business';
+        header.style.background = 'rgba(245, 158, 11, 0.04)';
+        header.innerHTML = `
+          <div class="pillar-icon" style="background:var(--amber-muted);color:var(--amber);">${currentGroup === 'pitch' ? '&#x1F3AF;' : currentGroup === 'proof' ? '&#x1F4CA;' : '&#x2696;'}</div>
+          <div class="pillar-info">
+            <h3 style="color:var(--amber);">${grp.label}</h3>
+            <p>${grp.desc}</p>
+          </div>
+        `;
+        container.appendChild(header);
+      }
+    }
+
+    const card = document.createElement('div');
+    card.className = 'assessment-card';
+    const relWeight = ((item.weight / totalWeight) * 100).toFixed(0);
+    const tip = ROADMAP_ACTIONS[item.id];
+
+    let optionsHtml = MAT_OPTIONS.map(opt =>
+      `<button class="option-btn" role="radio" aria-checked="false" tabindex="0" data-item="${item.id}" data-value="${opt.value}" data-score="${opt.score}" data-cls="${opt.cls}">${opt.label}</button>`
+    ).join('');
+
+    // Add expandable tip from MATERIALS_TIPS (rich format) or ROADMAP_ACTIONS (fallback)
+    const matTip = MATERIALS_TIPS[item.id];
+    let tipHtml = '';
+    if (matTip) {
+      tipHtml = `
+        <div id="tip-${item.id}" class="tip-wrapper">
+        <div class="card-tip-toggle" onclick="toggleTip(this)">
+          <span class="arrow">&#x25B6;</span> What does this mean?
+        </div>
+        <div class="card-tip-content tip-content">
+          <h4>What Investors Look For</h4>
+          <p>${matTip.investorLook}</p>
+          <h4>Green Flags</h4>
+          <p>${matTip.greenFlags}</p>
+          <h4>How to Improve</h4>
+          <p>${matTip.howToImprove}</p>
+        </div>
+        </div>
+      `;
+    } else if (tip) {
+      tipHtml = `
+        <div id="tip-${item.id}" class="tip-wrapper">
+        <div class="card-tip-toggle" onclick="toggleTip(this)">
+          <span class="arrow">&#x25B6;</span> What does this mean?
+        </div>
+        <div class="card-tip-content tip-content">
+          <h4>If Not Started</h4>
+          <p>${tip.critical}</p>
+          <h4>If In Progress</h4>
+          <p>${tip.priority}</p>
+          <h4>If Done — Next Level</h4>
+          <p>${tip.polish}</p>
+        </div>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="card-top">
+        <div class="card-label">${item.label}</div>
+        <div class="card-weight">${relWeight}% weight</div>
+      </div>
+      <div class="card-options" role="radiogroup" aria-label="${item.label}">${optionsHtml}</div>
+      ${tipHtml}
+    `;
+    container.appendChild(card);
+
+    card.querySelectorAll('.option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        card.querySelectorAll('.option-btn').forEach(b => b.className = 'option-btn');
+        btn.classList.add(btn.dataset.cls);
+        matAnswers[btn.dataset.item] = {
+          value: btn.dataset.value,
+          score: parseInt(btn.dataset.score)
+        };
+        updateMatScore();
+      });
+    });
+  });
+}
+
+function toggleTip(el) {
+  el.classList.toggle('open');
+  const content = el.nextElementSibling;
+  content.classList.toggle('open');
+}
+
+// ============================================================
+// SCORING
+// ============================================================
+function calcScore(items, answers) {
+  const totalWeight = items.reduce((s, i) => s + i.weight, 0);
+  let weightedSum = 0;
+  let maxSum = 0;
+
+  items.forEach(item => {
+    const relWeight = item.weight / totalWeight;
+    const score = answers[item.id] ? answers[item.id].score : 0;
+    weightedSum += item.weight * relWeight * score;
+    maxSum += item.weight * relWeight * 3;
+  });
+
+  return maxSum > 0 ? (weightedSum / maxSum) : 0;
+}
+
+function calcPillarScore(pillarId) {
+  const items = FUNDRAISING_ITEMS.filter(i => i.pillar === pillarId);
+  return calcScore(items, fundAnswers);
+}
+
+function updateFundScore() {
+  const pct = calcScore(FUNDRAISING_ITEMS, fundAnswers);
+  updateRing('fund-ring', 'fund-score-text', pct);
+}
+function updateMatScore() {
+  const pct = calcScore(MATERIALS_ITEMS, matAnswers);
+  updateRing('mat-ring', 'mat-score-text', pct);
+}
+
+function updateRing(ringId, textId, pct) {
+  const circ = 2 * Math.PI * 30;
+  const offset = circ * (1 - pct);
+  const ring = document.getElementById(ringId);
+  const text = document.getElementById(textId);
+  ring.style.strokeDashoffset = offset;
+  text.textContent = Math.round(pct * 100) + '%';
+
+  if (pct >= 0.67) ring.style.stroke = 'var(--green)';
+  else if (pct >= 0.34) ring.style.stroke = 'var(--amber)';
+  else ring.style.stroke = 'var(--red)';
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+// ============================
+// BENCHMARK DATA — Early Pre-Seed
+// Sources: Carta Q3 2025, SEC investor types data, Arc 2025, Zeni 2026
+// Calibrated for EARLY pre-seed (F&F + first angel checks),
+// NOT institutional pre-seed ($500K+ from fund managers)
+// ============================
+const BENCHMARKS = {
+  earlyPreSeed: {
+    raise: { low: 25000, median: 150000, high: 500000, p75: 250000, p25: 50000 },
+    safeCap: {
+      under100k: { median: 4000000, low: 2000000, high: 6000000 },
+      '100k_250k': { median: 5000000, low: 3000000, high: 8000000 },
+      '250k_500k': { median: 6000000, low: 4000000, high: 10000000 },
+    },
+    cnCap: { median: 4000000, low: 2000000, high: 7000000 },
+    dilution: { median: 0.10, low: 0.05, high: 0.15 },
+    safeUsage: 0.92,
+  },
+  preSeed: {
+    raise: { low: 250000, median: 500000, high: 2000000, p75: 1000000, p25: 350000 },
+  },
+  seed: {
+    raise: { low: 1000000, median: 3100000, high: 5000000, p75: 4000000, p25: 2000000 },
+  },
+};
+
+function toggleTermsFields() {
+  const val = document.getElementById('instrument').value;
+  document.getElementById('safe-terms').style.display = val === 'SAFE' ? 'block' : 'none';
+  document.getElementById('cn-terms').style.display = val === 'Convertible Note' ? 'block' : 'none';
+  document.getElementById('priced-terms').style.display = val === 'Priced Round' ? 'block' : 'none';
+  if (val === 'SAFE') toggleSafeCapFields();
+  validateRaise();
+}
+
+function isUncappedSafe() {
+  const safeType = (document.getElementById('safe_type') || {}).value || '';
+  return safeType === 'MFN' || safeType === 'Uncapped';
+}
+
+function toggleSafeCapFields() {
+  const safeType = (document.getElementById('safe_type') || {}).value || '';
+  const uncapped = safeType === 'MFN' || safeType === 'Uncapped';
+  const hasDiscount = safeType === 'Post-money cap + discount';
+  const hasCap = !uncapped && safeType !== '';
+
+  // Cap field: show for capped types only
+  const capGroup = document.getElementById('safe-cap-group');
+  const capInput = document.getElementById('safe_cap');
+  if (capGroup) capGroup.style.display = hasCap ? 'block' : 'none';
+  if (capInput && uncapped) { capInput.value = ''; }
+
+  // Details row (discount + pro rata): show when any type is selected
+  const detailsRow = document.getElementById('safe-details-row');
+  if (detailsRow) detailsRow.style.display = safeType ? 'flex' : 'none';
+
+  // Discount field: only for "Cap + Discount" type
+  const discountGroup = document.getElementById('safe-discount-group');
+  if (discountGroup) discountGroup.style.display = hasDiscount ? 'block' : 'none';
+
+  // Benchmark note: show when capped type selected
+  const benchNote = document.getElementById('safe-benchmark-note');
+  if (benchNote) benchNote.style.display = hasCap ? 'block' : 'none';
+
+  // Feedback for uncapped types
+  const safeFb = document.getElementById('safe-feedback');
+  if (safeFb && uncapped) {
+    safeFb.style.display = 'block';
+    safeFb.className = 'raise-high';
+    safeFb.innerHTML = '<strong>No valuation cap.</strong> ' + (safeType === 'MFN'
+      ? 'An MFN SAFE gives the investor the best terms from any future SAFE you issue — but sets no cap now. Dilution is unknown until a priced round. Most early pre-seed investors prefer a capped SAFE so they know the maximum price they\'re paying.'
+      : 'An uncapped SAFE has no cap on conversion price — dilution depends entirely on your future priced round valuation. This is very investor-unfriendly at early pre-seed. Most investors will want a cap.');
+  } else if (safeFb && !uncapped) {
+    safeFb.style.display = 'none';
+  }
+}
+
+function parseCurrency(str) {
+  if (!str) return 0;
+  return parseInt(str.replace(/[^0-9]/g, ''), 10) || 0;
+}
+
+// Single source of truth for dilution calculation
+function calcDilution(raise, cap) {
+  if (!raise || !cap || cap <= 0) return null;
+  const instrument = document.getElementById('instrument').value;
+  const safeType = (document.getElementById('safe_type') || {}).value || '';
+  if (instrument === 'SAFE' && (safeType === 'MFN' || safeType === 'Uncapped')) return null;
+  const isPostMoney = instrument === 'SAFE' && safeType.toLowerCase().indexOf('post-money') >= 0;
+  return isPostMoney ? (raise / cap) : (raise / (cap + raise));
+}
+
+function validateRaise() {
+  const amt = parseCurrency(document.getElementById('raise_amount').value);
+  const fb = document.getElementById('raise-feedback');
+  if (!amt || amt < 10000) { fb.style.display = 'none'; return; }
+
+  const b = BENCHMARKS.earlyPreSeed.raise;
+  let msg = '';
+  let cls = '';
+
+  if (amt <= b.p25) {
+    cls = 'raise-ok';
+    msg = '<strong>Friends & family range.</strong> $' + amt.toLocaleString() + ' is typical for a friends & family round ($25K-$50K). At this size you might not even need a SAFE — a simple note or even a handshake can work, though we recommend a SAFE for clean cap table hygiene. Typical dilution: 5-10%.';
+  } else if (amt <= b.median) {
+    cls = 'raise-ok';
+    msg = '<strong>Right in the early pre-seed sweet spot.</strong> $' + amt.toLocaleString() + ' is squarely in the range where angel investors and small checks come together (median: $150K). This is the most common early pre-seed raise — achievable with 3-8 angel investors.';
+  } else if (amt <= b.high) {
+    cls = 'raise-ok';
+    msg = '<strong>Solid early pre-seed round.</strong> $' + amt.toLocaleString() + ' is on the larger side for an early pre-seed ($250K-$500K). Very achievable with a strong angel network or a lead angel plus a few followers. You\'ll want a clear use-of-funds plan showing 12-18 months of runway.';
+  } else if (amt <= BENCHMARKS.preSeed.raise.p75) {
+    cls = 'raise-high';
+    msg = '<strong>This is institutional pre-seed territory.</strong> $' + amt.toLocaleString() + ' is above the typical early pre-seed range ($25K-$500K) and into institutional pre-seed ($500K-$1M). You\'ll likely need a pre-seed fund or institutional angel to lead. Make sure your traction justifies this — most institutional pre-seed investors expect more than an idea.';
+  } else if (amt <= BENCHMARKS.seed.raise.p25) {
+    cls = 'raise-very-high';
+    msg = '<strong>Large pre-seed or small seed.</strong> $' + amt.toLocaleString() + ' overlaps with the seed range (seed median: $3.1M). You\'ll be competing against companies with real revenue and proven metrics. Consider whether a smaller early pre-seed first might be faster and more achievable — you can always raise a larger round once you have traction.';
+  } else {
+    cls = 'raise-very-high';
+    msg = '<strong>This is a seed round, not pre-seed.</strong> $' + amt.toLocaleString() + ' is firmly in seed territory (median seed: $3.1M). This assessment is calibrated for early pre-seed companies. If you\'re raising this much, you probably need seed-stage metrics: proven PMF, real revenue, and clear unit economics.';
+  }
+
+  // Add dilution estimate (only for capped instruments, uses shared calcDilution)
+  const instrument = document.getElementById('instrument').value;
+  let capAmt = 0;
+  if (instrument === 'SAFE') capAmt = parseCurrency((document.getElementById('safe_cap') || {}).value);
+  else if (instrument === 'Convertible Note') capAmt = parseCurrency((document.getElementById('cn_cap') || {}).value);
+  const dilResult = calcDilution(amt, capAmt);
+  if (dilResult !== null) {
+    msg += ' <em>At your valuation cap, this raise implies ~' + (dilResult * 100).toFixed(1) + '% dilution.</em>';
+  }
+
+  fb.style.display = 'block';
+  fb.className = cls;
+  fb.innerHTML = msg;
+}
+
+function validateCap() {
+  const instrument = document.getElementById('instrument').value;
+  const amt = parseCurrency(document.getElementById('raise_amount').value);
+  let capAmt, fbEl, benchmarks;
+
+  if (instrument === 'SAFE') {
+    if (isUncappedSafe()) return; // No cap to validate for MFN/Uncapped
+    capAmt = parseCurrency(document.getElementById('safe_cap').value);
+    fbEl = document.getElementById('safe-feedback');
+    // Pick benchmark tier based on raise size
+    if (amt < 100000) benchmarks = BENCHMARKS.earlyPreSeed.safeCap.under100k;
+    else if (amt < 250000) benchmarks = BENCHMARKS.earlyPreSeed.safeCap['100k_250k'];
+    else benchmarks = BENCHMARKS.earlyPreSeed.safeCap['250k_500k'];
+  } else if (instrument === 'Convertible Note') {
+    capAmt = parseCurrency(document.getElementById('cn_cap').value);
+    fbEl = document.getElementById('cn-feedback');
+    benchmarks = BENCHMARKS.earlyPreSeed.cnCap;
+  } else {
+    return;
+  }
+
+  if (!capAmt || capAmt < 500000 || !fbEl) { if (fbEl) fbEl.style.display = 'none'; return; }
+
+  let msg = '';
+  let cls = '';
+
+  if (capAmt < benchmarks.low) {
+    cls = 'raise-low';
+    msg = 'Your valuation cap ($' + (capAmt/1000000).toFixed(1) + 'M) is below the typical range. The median for your raise size is $' + (benchmarks.median/1000000).toFixed(1) + 'M. A low cap is great for investors but means you\'re giving up more equity. Make sure you\'re comfortable with the dilution.';
+  } else if (capAmt <= benchmarks.median * 1.2) {
+    cls = 'raise-ok';
+    msg = 'Your valuation cap ($' + (capAmt/1000000).toFixed(1) + 'M) is in line with market benchmarks (median: $' + (benchmarks.median/1000000).toFixed(1) + 'M for your raise size). This should be well-received by investors.';
+  } else if (capAmt <= benchmarks.high) {
+    cls = 'raise-high';
+    msg = 'Your valuation cap ($' + (capAmt/1000000).toFixed(1) + 'M) is above the median ($' + (benchmarks.median/1000000).toFixed(1) + 'M) for your raise size. This is workable if you have strong traction, but some investors may push back or pass. Be prepared to justify it with data.';
+  } else {
+    cls = 'raise-very-high';
+    msg = 'Your valuation cap ($' + (capAmt/1000000).toFixed(1) + 'M) is significantly above market ($' + (benchmarks.median/1000000).toFixed(1) + 'M median). At early pre-seed, caps this high are rare and typically reserved for repeat founders or companies with exceptional traction. This will likely slow your fundraise.';
+  }
+
+  // Calculate dilution using shared function
+  const dilResult = calcDilution(amt, capAmt);
+  if (dilResult !== null) {
+    const dilPct = dilResult * 100;
+    msg += ' Implied dilution: ~' + dilPct.toFixed(1) + '%.';
+    // Context-aware commentary using benchmark range (5-15%) and raise/cap relationship
+    const benchLow = BENCHMARKS.earlyPreSeed.dilution.low * 100; // 5%
+    const benchHigh = BENCHMARKS.earlyPreSeed.dilution.high * 100; // 15%
+    if (dilPct < 3) {
+      msg += ' That\'s very low dilution for early pre-seed. Your cap ($' + (capAmt/1000000).toFixed(1) + 'M) is high relative to your raise ($' + (amt/1000).toFixed(0) + 'K) — investors may see insufficient ownership as a reason to pass. Consider whether a lower cap would make the deal more attractive.';
+    } else if (dilPct < benchLow) {
+      msg += ' Below the typical early pre-seed range (' + benchLow + '-' + benchHigh + '%). A higher cap relative to your raise means less equity for investors — some may want a lower cap to justify the risk at this stage.';
+    } else if (dilPct <= benchHigh) {
+      msg += ' Within the typical early pre-seed range (' + benchLow + '-' + benchHigh + '%).';
+    } else if (dilPct <= 25) {
+      msg += ' Above the typical range (' + benchLow + '-' + benchHigh + '%). Your cap is relatively low for this raise size — you\'re giving up more equity than most founders at this stage. Consider whether a higher cap is warranted.';
+    } else {
+      msg += ' Well above typical range (' + benchLow + '-' + benchHigh + '%). At ' + dilPct.toFixed(0) + '% dilution you\'re giving up a substantial share at early pre-seed. This level of dilution may make future rounds difficult. Strongly consider a higher cap.';
+    }
+  }
+
+  fbEl.style.display = 'block';
+  fbEl.className = cls;
+  fbEl.innerHTML = msg;
+
+  // Also refresh raise feedback for dilution estimate
+  validateRaise();
+}
+
+function goToStep(step) {
+  currentStep = step;
+  for (let i = 1; i <= 4; i++) {
+    document.getElementById(`section-${i}`).classList.toggle('visible', i === step);
+    const progEl = document.getElementById(`prog-${i}`);
+    progEl.classList.remove('active', 'complete');
+    if (i < step) progEl.classList.add('complete');
+    if (i === step) progEl.classList.add('active');
+  }
+  document.querySelectorAll('.progress-label').forEach((el, idx) => {
+    el.classList.toggle('active', idx + 1 === step);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  if (step === 3) refreshStep3Context();
+  if (step === 4) buildSummary();
+}
+
+function refreshStep3Context() {
+  // 1. Build context banner from Step 1 answers
+  const rev = (document.getElementById('revenue_status') || {}).value || '';
+  const inst = (document.getElementById('instrument') || {}).value || '';
+  const safeType = (document.getElementById('safe_type') || {}).value || '';
+  const org = (document.getElementById('org_form') || {}).value || '';
+  const raise = parseCurrency((document.getElementById('raise_amount') || {}).value);
+  const banner = document.getElementById('step3-context-banner');
+
+  if (!rev && !inst && !org) {
+    banner.style.display = 'none';
+  } else {
+    let lines = [];
+    lines.push('<strong style="color:var(--green);">Based on your Step 1 answers:</strong>');
+    if (rev) lines.push('Revenue: <strong>' + rev + '</strong>' + (rev === 'Pre-revenue' || rev === 'Pre-revenue with LOIs' ? ' — tips below are adjusted for pre-revenue companies' : ''));
+    if (inst) {
+      let instLabel = inst;
+      if (inst === 'SAFE' && safeType) instLabel = safeType + ' SAFE';
+      lines.push('Instrument: <strong>' + instLabel + '</strong>');
+    }
+    if (org) lines.push('Organization: <strong>' + org + '</strong>' + (org === 'Not Yet Incorporated' ? ' — <span style="color:var(--red);">incorporation is your #1 priority</span>' : ''));
+    if (raise) lines.push('Target raise: <strong>$' + raise.toLocaleString() + '</strong>');
+    banner.innerHTML = lines.join('<br>');
+    banner.style.display = 'block';
+  }
+
+  // 2. Refresh conditional tips on all materials cards
+  MATERIALS_ITEMS.forEach(function(item) {
+    var tipEl = document.getElementById('tip-' + item.id);
+    if (!tipEl) return;
+    var tipContent = tipEl.querySelector('.tip-content');
+    if (!tipContent) return;
+
+    // Remove any previously appended conditional tip
+    var existingConditional = tipContent.querySelector('.conditional-tip');
+    if (existingConditional) existingConditional.remove();
+
+    // Get fresh conditional tip based on current Step 1 values
+    var extra = getConditionalTip(item.id);
+    if (extra) {
+      var span = document.createElement('span');
+      span.className = 'conditional-tip';
+      span.innerHTML = extra;
+      tipContent.appendChild(span);
+    }
+  });
+
+  // 3. Update card labels for context-specific items
+  updateMaterialsLabels();
+}
+
+function updateMaterialsLabels() {
+  var rev = (document.getElementById('revenue_status') || {}).value || '';
+  var inst = (document.getElementById('instrument') || {}).value || '';
+
+  // Financial Model: adjust label based on revenue status
+  var financialsCard = document.querySelector('[data-item="financials"]');
+  if (financialsCard) {
+    var cardLabel = financialsCard.closest('.assessment-card').querySelector('.card-label');
+    if (cardLabel) {
+      if (rev === 'Pre-revenue' || rev === 'Pre-revenue with LOIs' || rev === '') {
+        cardLabel.textContent = 'Financial Model (Burn Rate + 12-18 Month Projections)';
+      } else {
+        cardLabel.textContent = 'Financial Model (P&L + 12-18 Month Projections)';
+      }
+    }
+  }
+
+  // Customer Evidence: adjust label based on revenue status
+  var custCard = document.querySelector('[data-item="customer_proof"]');
+  if (custCard) {
+    var cardLabel2 = custCard.closest('.assessment-card').querySelector('.card-label');
+    if (cardLabel2) {
+      if (rev === 'Pre-revenue' || rev === '') {
+        cardLabel2.textContent = 'Customer Evidence (LOIs, Waitlist, Surveys, Beta Signups)';
+      } else if (rev === 'Pre-revenue with LOIs') {
+        cardLabel2.textContent = 'Customer Evidence (LOIs, Testimonials, Usage Data)';
+      } else {
+        cardLabel2.textContent = 'Customer Evidence (Revenue Data, Testimonials, Metrics)';
+      }
+    }
+  }
+
+  // Investment Instrument: adjust label based on instrument selection
+  var safeCard = document.querySelector('[data-item="safe_kiss"]');
+  if (safeCard) {
+    var cardLabel3 = safeCard.closest('.assessment-card').querySelector('.card-label');
+    if (cardLabel3) {
+      if (inst === 'SAFE') {
+        cardLabel3.textContent = 'SAFE Agreement (from safe.ycombinator.com)';
+      } else if (inst === 'Convertible Note') {
+        cardLabel3.textContent = 'Note Purchase Agreement (attorney-drafted)';
+      } else if (inst === 'Priced Round') {
+        cardLabel3.textContent = 'Stock Purchase Agreement & Legal Docs';
+      } else {
+        cardLabel3.textContent = 'Investment Instrument (SAFE / Note / PPM)';
+      }
+    }
+  }
+}
+
+// ============================================================
+// SUMMARY REPORT
+// ============================================================
+function buildSummary() {
+  const fundPct = calcScore(FUNDRAISING_ITEMS, fundAnswers);
+  const matPct = calcScore(MATERIALS_ITEMS, matAnswers);
+  const teamPct = calcPillarScore('team');
+  const bizPct = calcPillarScore('business');
+  const corpPct = calcPillarScore('corporate');
+  // Overall: weighted average of business readiness (60%) and materials (40%)
+  const overallPct = fundPct * 0.6 + matPct * 0.4;
+
+  // Big scores
+  document.getElementById('overall-score-big').textContent = Math.round(overallPct * 100) + '%';
+  document.getElementById('overall-score-big').style.color = scoreColor(overallPct);
+  document.getElementById('overall-team').textContent = Math.round(teamPct * 100) + '%';
+  document.getElementById('overall-team').style.color = scoreColor(teamPct);
+  document.getElementById('overall-business').textContent = Math.round(bizPct * 100) + '%';
+  document.getElementById('overall-business').style.color = scoreColor(bizPct);
+  document.getElementById('overall-corporate').textContent = Math.round(corpPct * 100) + '%';
+  document.getElementById('overall-corporate').style.color = scoreColor(corpPct);
+  document.getElementById('overall-mat').textContent = Math.round(matPct * 100) + '%';
+  document.getElementById('overall-mat').style.color = scoreColor(matPct);
+
+  // Pillar bars
+  const barsDiv = document.getElementById('pillar-bars');
+  const barData = [
+    { label: 'Team', pct: teamPct, color: 'var(--purple)' },
+    { label: 'Business', pct: bizPct, color: 'var(--green)' },
+    { label: 'Corporate', pct: corpPct, color: 'var(--blue)' },
+    { label: 'Materials', pct: matPct, color: 'var(--amber)' },
+  ];
+  barsDiv.innerHTML = barData.map(d => `
+    <div class="pillar-bar-row">
+      <div class="pillar-bar-label">${d.label}</div>
+      <div class="pillar-bar-track">
+        <div class="pillar-bar-fill" style="width:${Math.round(d.pct*100)}%;background:${d.color}"></div>
+      </div>
+      <div class="pillar-bar-pct" style="color:${d.color}">${Math.round(d.pct*100)}%</div>
+    </div>
+  `).join('');
+
+  // Company info
+  const companyDiv = document.getElementById('summary-company');
+  const fields = [
+    ['Company', 'company_name'], ['Website', 'company_website'],
+    ['CEO / Founder', 'ceo_name'], ['Email', 'ceo_email'], ['Phone', 'ceo_phone'],
+    ['Organization', 'org_form'], ['State', 'org_state'],
+    ['Raising', 'raise_amount'], ['Instrument', 'instrument']
+  ];
+  const inst = document.getElementById('instrument').value;
+  let termsHtml = '';
+  if (inst === 'SAFE') {
+    termsHtml = '<div class="summary-row"><span class="label">SAFE Type</span><span class="value">' + (document.getElementById('safe_type').value || '\u2014') + '</span></div>' +
+      '<div class="summary-row"><span class="label">Valuation Cap</span><span class="value">$' + (document.getElementById('safe_cap').value || '\u2014') + '</span></div>';
+    const sd = document.getElementById('safe_discount').value;
+    if (sd) termsHtml += '<div class="summary-row"><span class="label">Discount</span><span class="value">' + sd + '%</span></div>';
+  } else if (inst === 'Convertible Note') {
+    termsHtml = '<div class="summary-row"><span class="label">Valuation Cap</span><span class="value">$' + (document.getElementById('cn_cap').value || '\u2014') + '</span></div>';
+    const ci = document.getElementById('cn_interest').value;
+    if (ci) termsHtml += '<div class="summary-row"><span class="label">Interest Rate</span><span class="value">' + ci + '%</span></div>';
+    const cm = document.getElementById('cn_maturity').value;
+    if (cm) termsHtml += '<div class="summary-row"><span class="label">Maturity</span><span class="value">' + cm + ' months</span></div>';
+  }
+  companyDiv.innerHTML = '<h3>Company Information</h3>' +
+    '<div class="summary-row"><span class="label">Company</span><span class="value">' + (document.getElementById('company_name').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">Description</span><span class="value">' + (document.getElementById('company_description').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">CEO</span><span class="value">' + (document.getElementById('ceo_name').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">Sector</span><span class="value">' + (document.getElementById('company_sector').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">Revenue</span><span class="value">' + (document.getElementById('revenue_status').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">Raising</span><span class="value">$' + (document.getElementById('raise_amount').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">Instrument</span><span class="value">' + (inst || '\u2014') + '</span></div>' +
+    termsHtml;
+
+  // Business readiness summary by pillar
+  const fundDiv = document.getElementById('summary-fundraising');
+  const fundPill = scorePill(fundPct);
+  let fundHtml = `<h3>Business Readiness <span class="score-pill ${fundPill.cls}">${Math.round(fundPct*100)}%</span></h3>`;
+  let curPillar = null;
+  FUNDRAISING_ITEMS.forEach(item => {
+    if (item.pillar !== curPillar) {
+      curPillar = item.pillar;
+      const p = PILLARS.find(x => x.id === curPillar);
+      fundHtml += `<div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-top:12px;margin-bottom:4px;">${p.label}</div>`;
+    }
+    const ans = fundAnswers[item.id];
+    const val = ans ? (ans.value || FUND_OPTIONS.find(o => o.score === ans.score)?.label || 'Rated') : 'Not rated';
+    const cls = ans ? (val || 'not-rated').toLowerCase().replace(' ', '-') : 'not-set';
+    fundHtml += `<div class="summary-row"><span class="label">${item.label}</span><span class="value ${cls}">${val}</span></div>`;
+  });
+  fundDiv.innerHTML = fundHtml;
+
+  // Materials summary with groups
+  const matDiv = document.getElementById('summary-materials');
+  const matPill = scorePill(matPct);
+  let matHtml = `<h3>Materials Readiness <span class="score-pill ${matPill.cls}">${Math.round(matPct*100)}%</span></h3>`;
+  let curGroup = null;
+  MATERIALS_ITEMS.forEach(item => {
+    if (item.group !== curGroup) {
+      curGroup = item.group;
+      const g = MAT_GROUPS.find(x => x.id === curGroup);
+      if (g) matHtml += `<div style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.8px;margin-top:12px;margin-bottom:4px;">${g.label}</div>`;
+    }
+    const ans = matAnswers[item.id];
+    const val = ans ? (ans.value || MAT_OPTIONS.find(o => o.score === ans.score)?.label || 'Rated') : 'Not rated';
+    let cls = 'not-set';
+    if (ans) {
+      if (val === 'Done') cls = 'strong';
+      else if (val === 'Started') cls = 'developing';
+      else cls = 'weak';
+    }
+    matHtml += `<div class="summary-row"><span class="label">${item.label}</span><span class="value ${cls}">${val}</span></div>`;
+  });
+  matDiv.innerHTML = matHtml;
+
+  // Build strengths & roadmap
+  buildStrengths();
+  buildRoadmap();
+  buildCTA(overallPct);
+}
+
+// ============================================================
+// STRENGTHS
+// ============================================================
+function buildStrengths() {
+  const section = document.getElementById('strengths-section');
+  const strengths = [];
+
+  FUNDRAISING_ITEMS.forEach(item => {
+    const ans = fundAnswers[item.id];
+    if (ans && ans.score === 3) {
+      strengths.push(`<div class="strength-item"><strong>${item.label}</strong> — strong foundation to build on.</div>`);
+    }
+  });
+  MATERIALS_ITEMS.forEach(item => {
+    const ans = matAnswers[item.id];
+    if (ans && ans.score === 3 && item.weight >= 75) {
+      strengths.push(`<div class="strength-item"><strong>${item.label}</strong> — complete and ready.</div>`);
+    }
+  });
+
+  if (strengths.length > 0) {
+    section.style.display = '';
+    section.innerHTML = `<h3>&#x2705; Your Strengths</h3>${strengths.join('')}`;
+  } else {
+    section.style.display = 'none';
+  }
+}
+
+// ============================================================
+// ROADMAP — prioritized actions + 30/60/90 timeline
+// ============================================================
+const ROADMAP_ACTIONS = {
+  // Business readiness items
+  team_trinity: {
+    critical: "Map your Trinity of Management gaps (Product, Market, Finance). Identify at least one candidate for each missing role within 30 days.",
+    priority: "Formalize advisory or co-founder conversations for unfilled Trinity roles. Get commitments in writing.",
+    polish: "Document each team member's role clarity and decision-making authority. Prepare team slide for pitch deck.",
+    effort: 'significant'
+  },
+  coachable: {
+    critical: "Schedule 5 honest feedback conversations with mentors, customers, or peers this month. Document what you learn.",
+    priority: "Join a founder peer group or accelerator that provides regular structured feedback.",
+    polish: "Prepare 2-3 specific examples of how feedback changed your approach — you'll need these in investor meetings.",
+    effort: 'moderate'
+  },
+  commitment: {
+    critical: "Define your transition-to-full-time plan with a specific date. If you're already full-time, document how long you've been working on this and what personal capital you've invested.",
+    priority: "Go full-time if you haven't yet. Invest personal capital (even a modest amount). Build your 'why now, why me' narrative around your commitment level.",
+    polish: "Prepare to answer: 'What have you sacrificed to pursue this?' and 'What's your personal financial stake?' Investors ask these — often indirectly.",
+    effort: 'quick'
+  },
+  advisors: {
+    critical: "Identify your top 3 knowledge gaps and reach out to 5 potential advisors with specific asks.",
+    priority: "Formalize advisory agreements (standard 0.25-1% equity for advisors). Get bios and LinkedIn profiles ready.",
+    polish: "Brief advisors on your fundraise so they can make warm introductions to investors.",
+    effort: 'moderate'
+  },
+  pmf: {
+    critical: "Talk to 20 target customers this month. Document demand signals: willingness to pay, frequency of problem, current workarounds.",
+    priority: "Run a structured pilot or beta with at least 5 paying customers. Measure retention, not just sign-ups.",
+    polish: "Build your PMF evidence slide with hard numbers: NPS, retention rate, revenue growth, or signed LOIs.",
+    effort: 'significant'
+  },
+  revenue: {
+    critical: "Write your revenue model on one page: who pays, how much, how often. Test pricing with 10 potential customers.",
+    priority: "Generate your first dollar of revenue (or if pre-revenue, get a signed LOI or paid pilot agreement).",
+    polish: "Model 12-month revenue projections with assumptions documented. Be ready to defend every number.",
+    effort: 'significant'
+  },
+  gtm: {
+    critical: "Pick your #1 customer acquisition channel and run a 30-day test. Measure cost per lead and conversion rate.",
+    priority: "Document results from channel testing. Build a 6-month GTM plan with milestones and budget.",
+    polish: "Prepare a GTM summary showing CAC by channel, conversion rates, and scaling plan.",
+    effort: 'moderate'
+  },
+  unit_econ: {
+    critical: "Build a basic unit economics model: CAC, LTV, gross margin, payback period — even with estimates.",
+    priority: "Validate unit economics with real data from your first customers. Identify path to LTV/CAC > 3x.",
+    polish: "Prepare a unit economics slide showing current state and projected improvement as you scale.",
+    effort: 'moderate'
+  },
+  trend: {
+    critical: "Research your market wave: find 3 credible data points (market size, growth rate, regulatory tailwinds) that prove your timing.",
+    priority: "Frame your company narrative around the trend — 'Because of X macro shift, Y is now possible for the first time.'",
+    polish: "Add trend/timing data to your pitch deck market slide. Reference specific reports or data sources.",
+    effort: 'quick'
+  },
+  moats: {
+    critical: "Answer honestly: if a well-funded competitor copied your product, why would customers stay? Document your answer.",
+    priority: "Identify which moat type you're building (data, network effects, switching costs, brand, regulatory) and invest in strengthening it.",
+    polish: "Prepare your competitive defensibility story for investor meetings. Include a competitive landscape slide.",
+    effort: 'moderate'
+  },
+  ip_brand: {
+    critical: "Run a trademark search on USPTO.gov for your company name and key product names. Secure your domain. Get all founders and contractors to sign IP assignment agreements.",
+    priority: "File federal trademark applications for your company name and primary product ($250-350/class via TEAS). Consult a patent attorney if you have novel technology. Document your trade secret strategy.",
+    polish: "Prepare an IP summary slide for investor due diligence. Show trademarks filed/granted, patent strategy (if applicable), and IP assignment status.",
+    effort: 'moderate'
+  },
+  corp: {
+    critical: "Incorporate properly (usually Delaware C-Corp for VC-backed companies). Consult a startup attorney.",
+    priority: "Clean up your cap table, ensure all IP is assigned to the company, and get founder agreements signed.",
+    polish: "Get your corporate documents organized in a virtual data room so they're ready for due diligence.",
+    effort: 'significant'
+  },
+  package: {
+    critical: "Draft your pitch deck (10-15 slides, standard structure). Get feedback from 5 people before sending to any investor.",
+    priority: "Create your executive summary (1-2 pages) and ensure numbers are consistent with your deck and financial model.",
+    polish: "Have your materials reviewed by a mentor or advisor who's seen hundreds of decks. Refine based on feedback.",
+    effort: 'moderate'
+  },
+  valuation: {
+    critical: "Research recent comparable deals at your stage and sector. Understand SAFE vs. Note vs. Priced Round trade-offs.",
+    priority: "Set your terms (valuation cap, discount, raise amount) and be able to explain how you arrived at them.",
+    polish: "Practice explaining your terms and dilution impact in investor-friendly language. Know your walkaway number.",
+    effort: 'quick'
+  },
+  // Materials items
+  pitch_deck: { critical: "Your pitch deck is your #1 fundraising tool. Draft 10-15 slides with clean visuals and a clear story arc.", priority: "Get 5 rounds of feedback and iterate. Test it in low-stakes meetings first.", polish: "Finalize and prepare appendix slides for deep-dive questions.", effort: 'moderate' },
+  exec_summary: { critical: "Write a 1-2 page summary investors can forward internally. This is often how you get introduced.", priority: "Align numbers and narrative with your pitch deck.", polish: "Have it reviewed by an advisor who's seen hundreds.", effort: 'quick' },
+  video_pitch: { critical: "Record a 2-5 minute video pitch or product demo. In 2026, investors expect to see you present before they take a meeting.", priority: "Polish your delivery — practice until it feels natural, not scripted. Include a live product walkthrough if possible.", polish: "Host it on a dedicated page (not just YouTube) and include it in your outreach emails.", effort: 'moderate' },
+  web_social: { critical: "Get a professional website live and claim all social media handles. Your online presence is the first thing investors check.", priority: "Ensure consistent branding and messaging across all platforms. Your website should tell the same story as your deck.", polish: "Add social proof: logos, testimonials, press mentions, team photos.", effort: 'moderate' },
+  founder_bios: { critical: "Write professional bios and update LinkedIn profiles for all founders. Investors will search you before they respond.", priority: "Add relevant accomplishments, social proof, and a clear narrative about why you're the right team for this problem.", polish: "Cross-link between company site and personal profiles. Get recommendations from credible connections.", effort: 'quick' },
+  demo_proto: { critical: "Build a working demo or clickable prototype. Investors in 2026 expect to see the product, not just hear about it.", priority: "Make the demo self-serve — investors should be able to try it without hand-holding. Focus on the 'aha moment.'", polish: "Record a polished demo video as backup for meetings where live demos might fail.", effort: 'significant' },
+  financials: { critical: "Build a financial model with P&L and 12-18 month projections. Keep assumptions visible and defensible. At early pre-seed, long-range projections are guesswork — focus on your next 4-6 quarters.", priority: "Pressure-test with an accountant or CFO advisor. Model your burn rate and runway at current raise amount.", polish: "Prepare to walk through line-by-line in due diligence. Know your unit economics cold.", effort: 'significant' },
+  customer_proof: { critical: "Gather evidence of customer demand: signed LOIs, paid pilots, waitlist numbers, testimonials, or usage data.", priority: "Organize proof by type (revenue, intent, engagement) and present the strongest evidence first.", polish: "Build a customer evidence slide for your deck with specific numbers and named customers (with permission).", effort: 'moderate' },
+  market_research: { critical: "Size your market (TAM/SAM/SOM) and map your competitive landscape. Use credible sources.", priority: "Identify your unique positioning versus competitors. Be honest about who else is in the space.", polish: "Prepare a competitive matrix slide and a market sizing slide backed by data sources investors can verify.", effort: 'moderate' },
+  cap_table: { critical: "Build a cap table showing all equity, options, warrants, and SAFEs. Use Carta or equivalent.", priority: "Verify with legal counsel. Model dilution at your target raise amount.", polish: "Prepare a waterfall analysis showing post-money ownership.", effort: 'moderate' },
+  founders_agr: { critical: "Draft and sign founder agreements with vesting, IP assignment, roles, and departure terms.", priority: "Have legal counsel review. Standard 4-year vest with 1-year cliff.", polish: "Ensure agreements are in your data room and current.", effort: 'significant' },
+  safe_kiss: { critical: "Choose your investment instrument (SAFE is most common at pre-seed). Have it drafted or reviewed by counsel.", priority: "Understand your terms vs. market standards. Know the implications of valuation caps and discounts.", polish: "Have final documents ready to send immediately when an investor commits. Speed matters.", effort: 'moderate' },
+  ip_filings: { critical: "File trademark applications for company name and primary product names. Ensure domain is secured.", priority: "Get IP assignment agreements signed by all founders and contractors. Consult patent attorney if you have novel technology.", polish: "Prepare an IP summary for due diligence: marks filed, patents (if any), trade secret strategy, domain portfolio.", effort: 'moderate' },
+  corp_docs: { critical: "Incorporate properly (usually Delaware C-Corp). File articles, draft bylaws.", priority: "Have legal review all corporate documents. Ensure EIN, state registrations, and annual filings are current.", polish: "Organize in your virtual data room.", effort: 'moderate' },
+  data_room: { critical: "Set up a virtual data room (Google Drive, Notion, or dedicated tool like DocSend). Organize all fundraising materials in one place.", priority: "Structure folders logically: Corporate, Financial, Product, Team, Legal. Set permissions so you can share selectively.", polish: "Add an index document. Test the experience — have someone navigate it cold and give feedback.", effort: 'quick' },
+  legal_team: { critical: "Engage a startup attorney. Don't DIY your fundraising legal docs.", priority: "Get referrals from other founders or your local startup community. Confirm they know startup instruments (SAFEs, etc.).", polish: "Confirm counsel is available for your fundraising timeline and responsive to quick turnarounds.", effort: 'moderate' },
+  acct_team: { critical: "Engage a bookkeeper or accountant. Clean books are table stakes for due diligence.", priority: "Get books current and reconciled. Set up proper chart of accounts.", polish: "Schedule a pre-fundraise review to catch any issues before investors see your numbers.", effort: 'quick' },
+};
+
+function buildRoadmap() {
+  const container = document.getElementById('roadmap-section');
+
+  // Read Step 1 context for conditional logic
+  const raiseAmt = parseCurrency(document.getElementById('raise_amount').value);
+  const instrument = document.getElementById('instrument').value;
+  const safeType = (document.getElementById('safe_type') || {}).value || '';
+  const orgForm = document.getElementById('org_form').value;
+  const revenueStatus = document.getElementById('revenue_status').value;
+  const monthsFT = document.getElementById('months_fulltime').value;
+  const isPreRevenue = !revenueStatus || revenueStatus === 'Pre-revenue' || revenueStatus === 'Pre-revenue with LOIs';
+  const needsIncorp = !orgForm || orgForm === 'Not Yet Incorporated' || orgForm === 'LLC' || orgForm === 'S-Corp';
+  const needsInstrument = !instrument || instrument === 'Unknown';
+  const isPartTime = !monthsFT || monthsFT === '0';
+  const raiseOversize = raiseAmt > BENCHMARKS.earlyPreSeed.raise.high;
+
+  // Logical roadmap categories — items are grouped and sequenced by what a founder
+  // would actually do in order. Dependencies flow top to bottom within each category.
+  const CATEGORIES = {
+    founder:   { label: 'Founder Readiness',       icon: '&#x1F464;', color: 'var(--purple)' },
+    legal:     { label: 'Legal & Corporate',        icon: '&#x2696;',  color: 'var(--red)' },
+    product:   { label: 'Product & Customer Evidence', icon: '&#x1F4CA;', color: 'var(--green)' },
+    financial: { label: 'Financial Readiness',      icon: '&#x1F4B0;', color: 'var(--amber)' },
+    story:     { label: 'Story & Materials',        icon: '&#x1F3AF;', color: '#60A5FA' },
+    strategy:  { label: 'Fundraise Strategy',       icon: '&#x1F680;', color: '#F472B6' }
+  };
+
+  // Map each item to its logical category (not the same as pillar/group)
+  const ITEM_CATEGORY = {
+    // Business readiness
+    team_trinity: 'founder', commitment: 'founder', coachable: 'founder', advisors: 'founder',
+    pmf: 'product', revenue: 'product', gtm: 'product', unit_econ: 'financial',
+    trend: 'strategy', moats: 'strategy', ip_brand: 'legal', corp: 'legal',
+    package: 'story', valuation: 'strategy',
+    // Materials
+    pitch_deck: 'story', exec_summary: 'story', video_pitch: 'story',
+    web_social: 'story', founder_bios: 'founder',
+    demo_proto: 'product', financials: 'financial', customer_proof: 'product',
+    market_research: 'strategy',
+    cap_table: 'legal', founders_agr: 'legal', safe_kiss: 'legal',
+    ip_filings: 'legal', corp_docs: 'legal', data_room: 'legal',
+    legal_team: 'legal', acct_team: 'financial'
+  };
+
+  // Dependency ordering within each category (items appearing first must be done first)
+  const DEPENDENCY_ORDER = {
+    founder: ['commitment', 'team_trinity', 'coachable', 'advisors', 'founder_bios'],
+    legal: ['corp_docs', 'legal_team', 'founders_agr', 'ip_brand', 'ip_filings', 'cap_table', 'safe_kiss', 'data_room'],
+    product: ['pmf', 'demo_proto', 'customer_proof', 'revenue', 'gtm'],
+    financial: ['acct_team', 'unit_econ', 'financials'],
+    story: ['pitch_deck', 'exec_summary', 'web_social', 'video_pitch', 'package'],
+    strategy: ['valuation', 'trend', 'moats', 'market_research']
+  };
+
+  // Collect all roadmap items with their phase assignment
+  const allItems = [];
+
+  // Process fundraising items
+  FUNDRAISING_ITEMS.forEach(function(item) {
+    var ans = fundAnswers[item.id];
+    var score = ans ? ans.score : -1;
+    var actions = ROADMAP_ACTIONS[item.id];
+    if (!actions) return;
+
+    var phase, actionText;
+    if (score <= 0 && item.weight >= 70) {
+      phase = 30; actionText = actions.critical;
+    } else if (score <= 0) {
+      phase = 60; actionText = actions.critical;
+    } else if (score === 1) {
+      phase = 60; actionText = actions.priority;
+    } else if (score === 2 && item.weight >= 70) {
+      phase = 90; actionText = actions.polish;
+    } else {
+      return;
+    }
+
+    // Conditional text adjustments based on Step 1 context
+    if (item.id === 'revenue' && isPreRevenue) {
+      actionText = 'Since you\'re pre-revenue: ' + actionText;
+    }
+    if (item.id === 'unit_econ' && isPreRevenue) {
+      actionText += ' Even pre-revenue, you should model estimated unit economics based on your pricing assumptions.';
+    }
+
+    allItems.push({
+      id: item.id,
+      label: item.label,
+      action: actionText,
+      effort: actions.effort,
+      phase: phase,
+      category: ITEM_CATEGORY[item.id] || 'strategy',
+      weight: item.weight
+    });
+  });
+
+  // Process materials items
+  MATERIALS_ITEMS.forEach(function(item) {
+    var ans = matAnswers[item.id];
+    var score = ans ? ans.score : -1;
+    var actions = ROADMAP_ACTIONS[item.id];
+    if (!actions) return;
+
+    var phase, actionText;
+    if (score <= 0 && item.weight >= 90) {
+      phase = 30; actionText = actions.critical;
+    } else if (score <= 0) {
+      phase = 60; actionText = actions.critical;
+    } else if (score === 1) {
+      phase = 60; actionText = actions.priority;
+    } else {
+      return;
+    }
+
+    // Conditional text adjustments
+    if (item.id === 'financials' && isPreRevenue) {
+      actionText = 'Since you\'re pre-revenue, focus on a burn rate model and runway projection rather than a full P&L. Show how you\'ll use the raise amount over 12-18 months with clear monthly burn assumptions.';
+    }
+    if (item.id === 'customer_proof' && isPreRevenue) {
+      if (revenueStatus === 'Pre-revenue with LOIs') {
+        actionText = 'You have LOIs or commitments — great. Organize them clearly: signed LOIs, pilot agreements, and testimonials. Quantify the revenue potential if all commitments convert.';
+      } else {
+        actionText = 'Pre-revenue, so focus on demand signals: LOIs, waitlist numbers, beta signups, survey results. Any evidence that real humans want what you\'re building counts. Aim for at least 3 concrete proof points.';
+      }
+    }
+    if (item.id === 'safe_kiss') {
+      if (instrument === 'SAFE') {
+        actionText = 'You\'ve chosen a SAFE — download the standard post-money SAFE templates from safe.ycombinator.com. Have legal counsel customize for your terms (cap: $' + (parseCurrency((document.getElementById('safe_cap') || {}).value) || 0).toLocaleString() + ' if set). Have final docs ready to send the moment an investor says yes.';
+      } else if (instrument === 'Convertible Note') {
+        actionText = 'You\'ve chosen a Convertible Note — this requires attorney-drafted documents (note purchase agreement, promissory note). More complex than a SAFE, so budget 2-3 weeks for legal prep. Make sure you understand interest rate, maturity date, and conversion mechanics.';
+      }
+    }
+    if (item.id === 'cap_table' && needsIncorp) {
+      actionText = 'You\'ll need to incorporate first (see Legal & Corporate above), then build your cap table. For now, draft a simple equity split agreement between founders so ownership is clear.';
+    }
+
+    allItems.push({
+      id: item.id,
+      label: item.label,
+      action: actionText,
+      effort: actions.effort,
+      phase: phase,
+      category: ITEM_CATEGORY[item.id] || 'story',
+      weight: item.weight
+    });
+  });
+
+  // Add context-aware generated items from Step 1
+  if (needsIncorp) {
+    allItems.push({
+      id: '_incorp', label: 'Incorporate as a Delaware C-Corp',
+      action: orgForm === 'Not Yet Incorporated' ? 'This is your #1 blocker — you cannot raise capital without a legal entity. Talk to a startup attorney about forming a Delaware C-Corp. Budget $500-$1,500 for incorporation. Everything else in the Legal & Corporate category depends on this.' : 'Your current structure (' + orgForm + ') will create complications with venture investors. Most require a C-Corp (usually Delaware). Consult a startup attorney about conversion — the sooner you do this, the cleaner your cap table will be.',
+      effort: 'significant', phase: 30, category: 'legal', weight: 999
+    });
+  }
+  if (needsInstrument) {
+    allItems.push({
+      id: '_instrument', label: 'Choose Your Investment Instrument',
+      action: '92% of pre-seed rounds in 2025 used SAFEs (Carta data). Unless you have a specific reason for a different structure, a post-money SAFE with a valuation cap is the standard. Download templates from safe.ycombinator.com and have legal counsel review.',
+      effort: 'moderate', phase: 30, category: 'strategy', weight: 999
+    });
+  }
+  if (raiseOversize) {
+    allItems.push({
+      id: '_rightsize', label: 'Right-Size Your Raise',
+      action: 'Your target ($' + raiseAmt.toLocaleString() + ') exceeds the typical early pre-seed range ($25K-$500K). Raise the minimum needed for your next 2-3 milestones (12-18 months of runway). More money at your lowest valuation = more dilution. If you truly need $500K+, make sure your traction justifies an institutional pre-seed.',
+      effort: 'quick', phase: 30, category: 'strategy', weight: 999
+    });
+  }
+  if (isPartTime) {
+    allItems.push({
+      id: '_fulltime', label: 'Create a Full-Time Transition Plan',
+      action: 'Investors strongly prefer full-time founders. Create a specific plan with a target date and triggering milestones. If you can\'t go full-time yet, be ready to explain your timeline. This often comes up in the first investor conversation.',
+      effort: 'significant', phase: 30, category: 'founder', weight: 999
+    });
+  }
+  if (isPreRevenue && revenueStatus !== 'Pre-revenue with LOIs') {
+    allItems.push({
+      id: '_revenue', label: 'Generate Your First Revenue Signal',
+      action: 'The strongest pre-seed companies have at least one paying customer. Your goal: close a first paid engagement, even a small pilot ($500-$5,000). Revenue proves demand; a pitch deck does not. If paid revenue isn\'t possible yet, get signed LOIs or paid beta commitments.',
+      effort: 'significant', phase: 60, category: 'product', weight: 999
+    });
+  }
+
+  // Sort items within each category by dependency order
+  function getDependencyRank(itemId, category) {
+    var order = DEPENDENCY_ORDER[category];
+    if (!order) return 50;
+    var idx = order.indexOf(itemId);
+    return idx >= 0 ? idx : 50;
+  }
+
+  // Group items by phase, then by category, then by dependency order
+  var phases = [
+    { num: 30, label: 'Phase 1: Critical Foundation', sublabel: 'Days 1-30', color: 'var(--red)', desc: 'Deal-breakers and blockers. Do these first — in this order.', items: [] },
+    { num: 60, label: 'Phase 2: Build & Strengthen', sublabel: 'Days 31-60', color: 'var(--amber)', desc: 'These turn "maybe" into "yes." Work through each category in sequence.', items: [] },
+    { num: 90, label: 'Phase 3: Polish & Launch', sublabel: 'Days 61-90', color: 'var(--green)', desc: 'You\'re close — now make everything exceptional.', items: [] }
+  ];
+
+  allItems.forEach(function(ri) {
+    var phaseObj = phases.find(function(p) { return p.num === ri.phase; });
+    if (phaseObj) phaseObj.items.push(ri);
+  });
+
+  // Category display order (logical progression for a founder)
+  var categoryOrder = ['founder', 'legal', 'product', 'financial', 'story', 'strategy'];
+
+  var effortIcons = { quick: '&#x26A1;', moderate: '&#x1F527;', significant: '&#x1F3D7;' };
+  var effortCls = { quick: 'effort-quick', moderate: 'effort-moderate', significant: 'effort-significant' };
+
+  var html = '';
+  var totalItems = 0;
+
+  if (allItems.length === 0) {
+    html = '<div style="text-align:center;padding:40px;"><p style="font-size:18px;color:var(--green);font-weight:700;">Outstanding! No critical gaps identified.</p><p style="color:var(--text-secondary);margin-top:8px;">Your company appears well-prepared for fundraising conversations. Focus on refining your narrative and building relationships with investors.</p></div>';
+  } else {
+    phases.forEach(function(phase) {
+      if (!phase.items.length) return;
+
+      html += '<div class="roadmap-phase">';
+      html += '<div class="phase-header" style="border-left:3px solid ' + phase.color + ';padding-left:16px;margin-bottom:16px;">';
+      html += '<h3 style="color:' + phase.color + ';font-size:16px;font-weight:700;">' + phase.label + ' <span style="font-weight:400;font-size:13px;opacity:0.7;">(' + phase.sublabel + ')</span></h3>';
+      html += '<p style="font-size:13px;color:var(--text-secondary);margin-top:4px;">' + phase.desc + '</p>';
+      html += '</div>';
+
+      var itemNum = 0;
+
+      // Group and render by category
+      categoryOrder.forEach(function(catId) {
+        var catItems = phase.items.filter(function(ri) { return ri.category === catId; });
+        if (!catItems.length) return;
+
+        // Sort by dependency order within the category
+        catItems.sort(function(a, b) {
+          var depA = getDependencyRank(a.id, catId);
+          var depB = getDependencyRank(b.id, catId);
+          if (depA !== depB) return depA - depB;
+          return (b.weight || 0) - (a.weight || 0);
+        });
+
+        var cat = CATEGORIES[catId];
+        html += '<div style="margin-top:' + (itemNum > 0 ? '18' : '4') + 'px;margin-bottom:8px;padding:6px 12px;background:rgba(255,255,255,0.03);border-radius:6px;border-left:2px solid ' + cat.color + ';">';
+        html += '<span style="font-size:12px;font-weight:700;color:' + cat.color + ';text-transform:uppercase;letter-spacing:0.5px;">' + cat.icon + ' ' + cat.label + '</span>';
+        html += '</div>';
+
+        catItems.forEach(function(ri) {
+          itemNum++;
+          totalItems++;
+          html += '<div class="roadmap-item">';
+          html += '<div class="ri-num">' + itemNum + '</div>';
+          html += '<div class="ri-body">';
+          html += '<div class="ri-label">' + ri.label + '</div>';
+          html += '<div class="ri-action">' + ri.action + '</div>';
+          html += '</div>';
+          html += '<div class="ri-effort ' + (effortCls[ri.effort] || '') + '">' + (effortIcons[ri.effort] || '') + '</div>';
+          html += '</div>';
+        });
+      });
+
+      html += '</div>';
+    });
+
+    // Effort legend
+    html += '<div style="display:flex;gap:20px;justify-content:center;margin-top:24px;padding-top:16px;border-top:1px solid var(--dark-border);">';
+    html += '<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><div class="ri-effort effort-quick" style="width:20px;height:20px;font-size:11px;">&#x26A1;</div> Quick win (hours)</div>';
+    html += '<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><div class="ri-effort effort-moderate" style="width:20px;height:20px;font-size:11px;">&#x1F527;</div> Moderate (days)</div>';
+    html += '<div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--text-muted)"><div class="ri-effort effort-significant" style="width:20px;height:20px;font-size:11px;">&#x1F3D7;</div> Significant (weeks)</div>';
+    html += '</div>';
+
+    // Summary stats
+    var quickWins = allItems.filter(function(r) { return r.effort === 'quick'; }).length;
+    html += '<div style="text-align:center;margin-top:20px;font-size:13px;color:var(--text-muted);">';
+    html += totalItems + ' action items across ' + phases.filter(function(p){return p.items.length > 0;}).length + ' phases. ' + quickWins + ' quick wins you can do this week.';
+    html += '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+// ============================================================
+// CTA
+// ============================================================
+function buildCTA(overallPct) {
+  const section = document.getElementById('cta-section');
+  if (overallPct >= 0.7) {
+    section.innerHTML = `
+      <h3>You're Approaching Investor-Ready</h3>
+      <p>Your assessment shows strong fundamentals. Let's talk about next steps — Evolution Accelerator works with companies like yours to connect with the right investors.</p>
+      <a class="btn btn-primary" href="mailto:info@evolutionacceleration.com?subject=FRA%20Follow-Up%20%E2%80%93%20${encodeURIComponent(document.getElementById('company_name').value || 'My Company')}" style="display:inline-block">Let's Talk &rarr;</a>
+    `;
+  } else {
+    section.innerHTML = `
+      <h3>Let's Get You Ready</h3>
+      <p>Your roadmap above shows a clear path forward. Evolution Accelerator helps founders prepare for investment through advising, community, and connections. We'd love to help.</p>
+      <a class="btn btn-primary" href="mailto:info@evolutionacceleration.com?subject=FRA%20Follow-Up%20%E2%80%93%20${encodeURIComponent(document.getElementById('company_name').value || 'My Company')}" style="display:inline-block">Get in Touch &rarr;</a>
+    `;
+  }
+}
+
+// ============================================================
+// EMAIL
+// ============================================================
+function sendEmail() {
+  const btn = document.getElementById('send-btn');
+  const status = document.getElementById('email-status');
+  const email = document.getElementById('ceo_email').value;
+
+  if (!email) {
+    status.className = 'email-status error';
+    status.textContent = 'Please enter your email address in Step 1.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+
+  const report = buildTextReport();
+
+  if (typeof emailjs !== 'undefined' && window.EMAILJS_SERVICE_ID) {
+    emailjs.send(window.EMAILJS_SERVICE_ID, window.EMAILJS_TEMPLATE_ID, {
+      to_email: email,
+      to_name: document.getElementById('ceo_name').value || 'Founder',
+      company_name: document.getElementById('company_name').value || 'Your Company',
+      report_body: report,
+      reply_to: 'info@evolutionacceleration.com'
+    }).then(() => {
+      status.className = 'email-status success';
+      status.textContent = 'Report sent! Check your inbox (and spam folder).';
+    }).catch(err => {
+      status.className = 'email-status error';
+      status.textContent = 'Email delivery failed. Please copy your report using the print button.';
+      console.error(err);
+    }).finally(() => {
+      btn.disabled = false;
+      btn.textContent = 'Send My Report';
+    });
+  } else {
+    const subject = encodeURIComponent(`Funding Readiness Assessment \u2014 ${document.getElementById('company_name').value || 'My Company'}`);
+    const body = encodeURIComponent(report);
+    const mailto = `mailto:${email}?cc=info@evolutionacceleration.com&subject=${subject}&body=${body}`;
+    window.location.href = mailto;
+
+    status.className = 'email-status success';
+    status.textContent = 'Your email client should open with your report. If not, use the Print button to save a copy.';
+    btn.disabled = false;
+    btn.textContent = 'Send My Report';
+  }
+}
+
+function buildTextReport() {
+  const fundPct = calcScore(FUNDRAISING_ITEMS, fundAnswers);
+  const matPct = calcScore(MATERIALS_ITEMS, matAnswers);
+  const teamPct = calcPillarScore('team');
+  const bizPct = calcPillarScore('business');
+  const corpPct = calcPillarScore('corporate');
+  const overall = Math.round((fundPct * 0.6 + matPct * 0.4) * 100);
+
+  let r = `FUNDING READINESS SELF ASSESSMENT — EARLY PRE-SEED EDITION\n`;
+  r += `Evolution Accelerator | evolutionacceleration.com\n`;
+  r += `${'='.repeat(60)}\n\n`;
+
+  r += `COMPANY: ${document.getElementById('company_name').value || '\u2014'}\n`;
+  r += `Description: ${document.getElementById('company_description').value || '\u2014'}\n`;
+  r += `CEO: ${document.getElementById('ceo_name').value || '\u2014'}\n`;
+  r += `Email: ${document.getElementById('ceo_email').value || '\u2014'}\n`;
+  r += `Website: ${document.getElementById('company_website').value || '\u2014'}\n`;
+  r += `Sector: ${document.getElementById('company_sector').value || '\u2014'}\n`;
+  r += `Location: ${document.getElementById('company_location').value || '\u2014'}\n`;
+  r += `Co-founders: ${document.getElementById('num_cofounders').value || '\u2014'}\n`;
+  r += `Full-time: ${document.getElementById('months_fulltime').value || '\u2014'}\n`;
+  r += `Revenue status: ${document.getElementById('revenue_status').value || '\u2014'}\n`;
+  r += `Organization: ${document.getElementById('org_form').value || '\u2014'}\n`;
+  r += `Founded: ${document.getElementById('date_founded').value || '\u2014'}\n`;
+  r += `\nFUNDRAISE:\n`;
+  r += `  Raising: $${document.getElementById('raise_amount').value || '\u2014'}\n`;
+  r += `  Instrument: ${document.getElementById('instrument').value || '\u2014'}\n`;
+  const inst = document.getElementById('instrument').value;
+  if (inst === 'SAFE') {
+    r += `  SAFE Type: ${document.getElementById('safe_type').value || '\u2014'}\n`;
+    r += `  Valuation Cap: $${document.getElementById('safe_cap').value || '\u2014'}\n`;
+    const sd = document.getElementById('safe_discount').value;
+    if (sd) r += `  Discount: ${sd}%\n`;
+    r += `  Pro Rata: ${document.getElementById('safe_prorata').value || '\u2014'}\n`;
+  } else if (inst === 'Convertible Note') {
+    r += `  Valuation Cap: $${document.getElementById('cn_cap').value || '\u2014'}\n`;
+    const cd = document.getElementById('cn_discount').value;
+    if (cd) r += `  Discount: ${cd}%\n`;
+    const ci = document.getElementById('cn_interest').value;
+    if (ci) r += `  Interest Rate: ${ci}%\n`;
+    const cm = document.getElementById('cn_maturity').value;
+    if (cm) r += `  Maturity: ${cm} months\n`;
+  } else if (inst === 'Priced Round') {
+    r += `  Pre-Money Valuation: $${document.getElementById('priced_valuation').value || '\u2014'}\n`;
+    const pps = document.getElementById('priced_pps').value;
+    if (pps) r += `  Price Per Share: $${pps}\n`;
+  }
+  r += `  Prior capital raised: $${document.getElementById('prior_raised').value || '0'}\n`;
+  r += `  Prior capital source: ${document.getElementById('prior_source').value || '\u2014'}\n\n`;
+
+  r += `${'-'.repeat(55)}\n`;
+  r += `OVERALL READINESS: ${overall}%\n`;
+  r += `  Team & Leadership: ${Math.round(teamPct * 100)}%\n`;
+  r += `  Business & Market: ${Math.round(bizPct * 100)}%\n`;
+  r += `  Corporate & Fundraising: ${Math.round(corpPct * 100)}%\n`;
+  r += `  Materials: ${Math.round(matPct * 100)}%\n`;
+  r += `${'-'.repeat(55)}\n\n`;
+
+  r += `BUSINESS READINESS (${Math.round(fundPct * 100)}%)\n`;
+  let cp = null;
+  FUNDRAISING_ITEMS.forEach(item => {
+    if (item.pillar !== cp) {
+      cp = item.pillar;
+      const p = PILLARS.find(x => x.id === cp);
+      r += `\n  -- ${p.label} --\n`;
+    }
+    const ans = fundAnswers[item.id];
+    const val = ans ? (ans.value || FUND_OPTIONS.find(o => o.score === ans.score)?.label || 'Rated') : 'Not rated';
+    r += `  ${item.label}: ${val}\n`;
+  });
+
+  r += `\nMATERIALS READINESS (${Math.round(matPct * 100)}%)\n`;
+  let cg = null;
+  MATERIALS_ITEMS.forEach(item => {
+    if (item.group !== cg) {
+      cg = item.group;
+      const g = MAT_GROUPS.find(x => x.id === cg);
+      if (g) r += `\n  -- ${g.label} --\n`;
+    }
+    const ans = matAnswers[item.id];
+    const val = ans ? (ans.value || MAT_OPTIONS.find(o => o.score === ans.score)?.label || 'Rated') : 'Not rated';
+    r += `  ${item.label}: ${val}\n`;
+  });
+
+  // Roadmap in text
+  r += `\n${'='.repeat(55)}\n`;
+  r += `YOUR 90-DAY ROADMAP\n`;
+  r += `${'-'.repeat(55)}\n\n`;
+
+  const allItems = [...FUNDRAISING_ITEMS, ...MATERIALS_ITEMS];
+  const phase30 = [], phase60 = [], phase90 = [];
+
+  FUNDRAISING_ITEMS.forEach(item => {
+    const ans = fundAnswers[item.id];
+    const score = ans ? ans.score : -1;
+    const actions = ROADMAP_ACTIONS[item.id];
+    if (!actions) return;
+    if (score <= 0 && item.weight >= 80) phase30.push({ label: item.label, action: actions.critical });
+    else if (score <= 1 && item.weight >= 60) {
+      if (score <= 0) phase30.push({ label: item.label, action: actions.critical });
+      else phase60.push({ label: item.label, action: actions.priority });
+    } else if (score === 2 && item.weight >= 60) phase90.push({ label: item.label, action: actions.polish });
+  });
+
+  MATERIALS_ITEMS.forEach(item => {
+    const ans = matAnswers[item.id];
+    const score = ans ? ans.score : -1;
+    const actions = ROADMAP_ACTIONS[item.id];
+    if (!actions) return;
+    if (score <= 0 && item.weight >= 75) phase30.push({ label: item.label, action: actions.critical });
+    else if (score <= 0) phase60.push({ label: item.label, action: actions.critical });
+    else if (score === 1) phase60.push({ label: item.label, action: actions.priority });
+  });
+
+  if (phase30.length) {
+    r += `DAYS 1-30: FOUNDATION\n`;
+    phase30.forEach(ri => { r += `  * ${ri.label}: ${ri.action}\n`; });
+    r += `\n`;
+  }
+  if (phase60.length) {
+    r += `DAYS 31-60: BUILD\n`;
+    phase60.forEach(ri => { r += `  * ${ri.label}: ${ri.action}\n`; });
+    r += `\n`;
+  }
+  if (phase90.length) {
+    r += `DAYS 61-90: POLISH & LAUNCH\n`;
+    phase90.forEach(ri => { r += `  * ${ri.label}: ${ri.action}\n`; });
+    r += `\n`;
+  }
+
+  if (phase30.length + phase60.length + phase90.length === 0) {
+    r += `You scored strong across the board! Start your investor outreach.\n\n`;
+  }
+
+  r += `${'-'.repeat(55)}\n`;
+  r += `For questions, contact info@evolutionacceleration.com\n`;
+  r += `Capital. Community. Culture.\n`;
+
+  return r;
+}
+
+// ============================================================
+// UTILITY
+// ============================================================
+function scoreColor(pct) {
+  if (pct >= 0.67) return 'var(--green)';
+  if (pct >= 0.34) return 'var(--amber)';
+  return 'var(--red)';
+}
+function scorePill(pct) {
+  if (pct >= 0.67) return { cls: 'high' };
+  if (pct >= 0.34) return { cls: 'mid' };
+  return { cls: 'low' };
+}
+function formatCurrency(input) {
+  let val = input.value.replace(/[^0-9]/g, '');
+  if (val) input.value = parseInt(val).toLocaleString();
+  else input.value = '';
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildFundraisingCards();
+buildMaterialsCards();
+
+</script>
+
+<!--
+  EMAIL INTEGRATION SETUP (for Coleman):
+  ==========================================
+  Option 1: EmailJS (recommended for simple setup)
+  1. Create free account at emailjs.com
+  2. Add your Gmail service
+  3. Create a template with variables: {{to_email}}, {{to_name}}, {{company_name}}, {{report_body}}
+  4. Add these lines before the closing </body> tag:
+     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+     <script>
+       emailjs.init("YOUR_PUBLIC_KEY");
+       window.EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
+       window.EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
+     </script>
+
+  Option 2: Formspree
+  Replace the sendEmail() function with a POST to formspree.io/f/YOUR_FORM_ID
+
+  Without either configured, it falls back to mailto: which opens the user's email client.
+-->
+
+
+  <!-- Save Indicator -->
+  <div class="save-indicator" id="save-indicator">Saving...</div>
+
+  <!-- Print Header (visible only when printing) -->
+  <div class="print-header">
+    <h2>Funding Readiness Assessment — Early Pre-Seed Edition</h2>
+    <p>Prepared by Evolution Accelerator | evolutionacceleration.com</p>
+  </div>
+
+  <!-- Accessibility Script -->
+  <script>
+// ============================
+// ACCESSIBILITY
+// ============================
+
+const a11yState = { cb: false, hc: false, lg: false, rm: false };
+
+function toggleA11y(mode) {
+  a11yState[mode] = !a11yState[mode];
+  const root = document.getElementById('html-root');
+  const btn = document.getElementById('btn-' + mode);
+
+  const classMap = { cb: 'cb-mode', hc: 'hc-mode', lg: 'lg-text', rm: 'reduced-motion' };
+
+  if (a11yState[mode]) {
+    root.classList.add(classMap[mode]);
+    btn.classList.add('active');
+    btn.setAttribute('aria-checked', 'true');
+  } else {
+    root.classList.remove(classMap[mode]);
+    btn.classList.remove('active');
+    btn.setAttribute('aria-checked', 'false');
+  }
+
+  // Persist in sessionStorage
+  try { sessionStorage.setItem('a11y_' + mode, a11yState[mode]); } catch(e) {}
+}
+
+// Restore accessibility preferences on load
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    ['cb', 'hc', 'lg', 'rm'].forEach(function(mode) {
+      if (sessionStorage.getItem('a11y_' + mode) === 'true') toggleA11y(mode);
+    });
+  } catch(e) {}
+});
+
+// Keyboard navigation for option buttons
+document.addEventListener('keydown', function(e) {
+  if (e.target.classList.contains('option-btn')) {
+    const btns = Array.from(e.target.parentElement.querySelectorAll('.option-btn'));
+    const idx = btns.indexOf(e.target);
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      btns[(idx + 1) % btns.length].focus();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      e.preventDefault();
+      btns[(idx - 1 + btns.length) % btns.length].focus();
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.target.click();
+    }
+  }
+});
+  
+
+// ============================
+// SAVE & RESTORE (localStorage)
+// ============================
+const SAVE_KEY = 'fra_v2_state';
+
+function saveState() {
+  try {
+    const state = {
+      step: currentStep,
+      fundAnswers: {},
+      matAnswers: {},
+      formFields: {},
+      timestamp: Date.now()
+    };
+    // Save scored answers (value + score to match click handler format)
+    Object.keys(fundAnswers).forEach(k => {
+      state.fundAnswers[k] = { value: fundAnswers[k].value, score: fundAnswers[k].score };
+    });
+    Object.keys(matAnswers).forEach(k => {
+      state.matAnswers[k] = { value: matAnswers[k].value, score: matAnswers[k].score };
+    });
+    // Save form fields from Step 1
+    const fields = ['company_name','company_website','company_description','company_sector',
+      'hq_location','ceo_name','ceo_email','ceo_phone','cofounder_count','months_fulltime',
+      'revenue_status','org_form','date_founded','raise_amount','instrument','safe_type',
+      'safe_cap','safe_discount','safe_prorata','cn_cap','cn_discount','cn_interest',
+      'cn_maturity','priced_premoney','priced_pps','prior_raised','prior_source'];
+    fields.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) state.formFields[id] = el.value;
+    });
+    localStorage.setItem(SAVE_KEY, JSON.stringify(state));
+    showSaveIndicator();
+  } catch(e) {}
+}
+
+function restoreState() {
+  try {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) return false;
+    const state = JSON.parse(raw);
+    // Check if saved state is less than 7 days old
+    if (Date.now() - state.timestamp > 7 * 24 * 60 * 60 * 1000) {
+      localStorage.removeItem(SAVE_KEY);
+      return false;
+    }
+    // Restore form fields
+    if (state.formFields) {
+      Object.keys(state.formFields).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = state.formFields[id];
+      });
+      // Trigger terms visibility
+      if (state.formFields.instrument) toggleTermsFields();
+    }
+    // Restore fund answers
+    if (state.fundAnswers) {
+      Object.keys(state.fundAnswers).forEach(k => {
+        const saved = state.fundAnswers[k];
+        // Ensure restored object has .value (handles old localStorage format that saved .label)
+        if (!saved.value && saved.label) saved.value = saved.label;
+        if (!saved.value) {
+          const opt = FUND_OPTIONS.find(o => o.score === saved.score);
+          if (opt) saved.value = opt.value;
+        }
+        fundAnswers[k] = saved;
+        // Highlight the matching button with correct CSS class
+        const btns = document.querySelectorAll('[data-item="' + k + '"]');
+        btns.forEach(btn => {
+          if (parseInt(btn.dataset.score) === saved.score) {
+            btn.className = 'option-btn';
+            btn.classList.add(btn.dataset.cls);
+          }
+        });
+      });
+    }
+    // Restore material answers
+    if (state.matAnswers) {
+      Object.keys(state.matAnswers).forEach(k => {
+        const saved = state.matAnswers[k];
+        if (!saved.value && saved.label) saved.value = saved.label;
+        if (!saved.value) {
+          const opt = MAT_OPTIONS.find(o => o.score === saved.score);
+          if (opt) saved.value = opt.value;
+        }
+        matAnswers[k] = saved;
+        const btns = document.querySelectorAll('[data-item="' + k + '"]');
+        btns.forEach(btn => {
+          if (parseInt(btn.dataset.score) === saved.score) {
+            btn.className = 'option-btn';
+            btn.classList.add(btn.dataset.cls);
+          }
+        });
+      });
+    }
+    return true;
+  } catch(e) { return false; }
+}
+
+function showSaveIndicator() {
+  const el = document.getElementById('save-indicator');
+  el.textContent = '\u2713 Progress saved';
+  el.classList.add('visible', 'saved');
+  setTimeout(() => { el.classList.remove('visible'); }, 1500);
+}
+
+function clearSavedState() {
+  try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+}
+
+// Auto-save on any answer selection or form change
+function setupAutoSave() {
+  // Debounced save
+  let saveTimer;
+  function debounceSave() {
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(saveState, 500);
+  }
+  // Listen for clicks on option buttons
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('option-btn') || e.target.closest('.option-btn')) {
+      debounceSave();
+    }
+  });
+  // Listen for form input changes
+  document.addEventListener('input', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+      debounceSave();
+    }
+  });
+  document.addEventListener('change', function(e) {
+    if (e.target.tagName === 'SELECT') {
+      debounceSave();
+    }
+  });
+}
+
+// ============================
+// BENCHMARK VISUAL (range bar)
+// ============================
+function buildBenchVisual() {
+  const container = document.getElementById('raise-bench-visual');
+  if (!container) return;
+  const amt = parseCurrency(document.getElementById('raise_amount').value);
+  if (!amt || amt < 10000) { container.style.display = 'none'; return; }
+
+  const b = BENCHMARKS.earlyPreSeed.raise;
+  // Scale: 0 to max(high * 1.5, amt * 1.2) — gives breathing room
+  const maxVal = Math.max(b.high * 1.5, amt * 1.2, 600000);
+  const pct = (v) => Math.min(Math.max((v / maxVal) * 100, 0), 100).toFixed(1);
+
+  const fmtK = (v) => v >= 1000000 ? '$' + (v/1000000).toFixed(1) + 'M' : '$' + (v/1000).toFixed(0) + 'K';
+
+  let html = '<div class="bench-bar-wrap">';
+  html += '<div class="bench-bar-title">YOUR RAISE vs. EARLY PRE-SEED RANGE</div>';
+  html += '<div class="bench-bar" style="margin-top:28px;">';
+  // Range band
+  html += '<div class="range" style="left:' + pct(b.low) + '%;width:' + (pct(b.high) - pct(b.low)) + '%;"></div>';
+  // Median marker with label
+  html += '<div class="marker median" style="left:' + pct(b.median) + '%;"><span class="marker-label">' + fmtK(b.median) + '</span></div>';
+  // Your raise marker with label
+  html += '<div class="marker yours" style="left:' + pct(amt) + '%;"><span class="marker-label">' + fmtK(amt) + '</span></div>';
+  html += '</div>';
+  // Axis labels
+  html += '<div class="bench-bar-labels"><span>$0</span><span>' + fmtK(maxVal) + '</span></div>';
+  // Legend
+  html += '<div class="bench-bar-legend">';
+  html += '<span><span class="dot" style="background:rgba(74,222,128,0.2);border:1px solid rgba(74,222,128,0.3);"></span>Typical range (' + fmtK(b.low) + ' – ' + fmtK(b.high) + ')</span>';
+  html += '<span><span class="dot" style="background:var(--green);"></span>Median</span>';
+  html += '<span><span class="dot" style="background:var(--amber);"></span>Your raise</span>';
+  html += '</div>';
+  html += '</div>';
+
+  container.innerHTML = html;
+  container.style.display = 'block';
+}
+
+// ============================
+// METHODOLOGY TABLE (dynamic, tunable)
+// ============================
+// Store default weights for reset
+const DEFAULT_WEIGHTS = {};
+FUNDRAISING_ITEMS.forEach(item => { DEFAULT_WEIGHTS[item.id] = item.weight; });
+let weightTuningActive = false;
+
+function toggleWeightTuning() {
+  weightTuningActive = !weightTuningActive;
+  document.getElementById('weight-controls').style.display = weightTuningActive ? 'flex' : 'none';
+  buildMethodologyTable();
+  const btn = document.querySelector('#weight-tune-toggle button');
+  if (btn) {
+    btn.textContent = weightTuningActive ? '\u2715 Close Customizer' : '\u2699 Customize Weights';
+    btn.style.borderColor = weightTuningActive ? 'rgba(245,158,11,0.4)' : 'rgba(74,222,128,0.3)';
+    btn.style.color = weightTuningActive ? 'var(--amber)' : 'var(--green)';
+  }
+}
+
+function buildMethodologyTable() {
+  const tbody = document.getElementById('methodology-tbody');
+  if (!tbody) return;
+  const totalWeight = FUNDRAISING_ITEMS.reduce((s, i) => s + i.weight, 0);
+  const maxWeight = Math.max(...FUNDRAISING_ITEMS.map(i => i.weight));
+  let html = '';
+  let currentPillar = null;
+
+  FUNDRAISING_ITEMS.forEach(item => {
+    if (item.pillar !== currentPillar) {
+      currentPillar = item.pillar;
+      const p = PILLARS.find(x => x.id === currentPillar);
+      const pillarWeight = FUNDRAISING_ITEMS.filter(i => i.pillar === currentPillar).reduce((s, i) => s + i.weight, 0);
+      const pct = (pillarWeight / totalWeight * 100).toFixed(1);
+      html += '<tr class="pillar-row"><td>' + p.label + '</td><td colspan="2">' + pct + '% of Business Readiness score</td></tr>';
+    }
+    const pct = (item.weight / totalWeight * 100).toFixed(1);
+    const barWidth = (item.weight / maxWeight * 60).toFixed(0);
+    const isModified = item.weight !== DEFAULT_WEIGHTS[item.id];
+    const modClass = isModified ? ' weight-modified' : '';
+
+    if (weightTuningActive) {
+      html += '<tr><td style="padding-left:20px;" class="' + modClass + '">' + item.label + '</td>';
+      html += '<td><div class="weight-slider-cell">';
+      html += '<input type="range" class="weight-slider" min="10" max="200" step="5" value="' + item.weight + '" data-weight-id="' + item.id + '" oninput="updateItemWeight(this)">';
+      html += '<span class="weight-value' + modClass + '" id="wv-' + item.id + '">' + item.weight + '</span>';
+      html += '</div></td>';
+      html += '<td><span class="weight-bar" style="width:' + barWidth + 'px;"></span> <span class="' + modClass + '">' + pct + '%</span></td></tr>';
+    } else {
+      html += '<tr><td style="padding-left:20px;">' + item.label + '</td><td class="' + modClass + '">' + pct + '%</td><td><span class="weight-bar" style="width:' + barWidth + 'px;"></span></td></tr>';
+    }
+  });
+
+  html += '<tr class="pillar-row" style="border-top:1px solid var(--dark-border);"><td colspan="3" style="padding-top:16px;font-size:12px;color:var(--text-muted);font-weight:400;">Materials Readiness is scored separately (17 items across Pitch & Storytelling, Proof & Evidence, Legal & Operations). Done = full credit, Started = partial, Not Started = zero.</td></tr>';
+  tbody.innerHTML = html;
+  updateWeightStatus();
+}
+
+function updateItemWeight(slider) {
+  const id = slider.dataset.weightId;
+  const newWeight = parseInt(slider.value);
+  const item = FUNDRAISING_ITEMS.find(i => i.id === id);
+  if (item) {
+    item.weight = newWeight;
+    // Update the value display
+    const valEl = document.getElementById('wv-' + id);
+    if (valEl) {
+      valEl.textContent = newWeight;
+      const isModified = newWeight !== DEFAULT_WEIGHTS[id];
+      valEl.classList.toggle('weight-modified', isModified);
+    }
+    // Rebuild the table to update percentages and pillar totals
+    buildMethodologyTable();
+    // Re-find the slider and restore focus (table rebuild destroys it)
+    const newSlider = document.querySelector('[data-weight-id="' + id + '"]');
+    if (newSlider) { newSlider.value = newWeight; newSlider.focus(); }
+    // Recalculate live scores
+    recalcAllScores();
+    // Save custom weights
+    saveCustomWeights();
+  }
+}
+
+function resetWeights() {
+  FUNDRAISING_ITEMS.forEach(item => {
+    item.weight = DEFAULT_WEIGHTS[item.id];
+  });
+  buildMethodologyTable();
+  recalcAllScores();
+  clearCustomWeights();
+}
+
+function recalcAllScores() {
+  // Update the fund score ring if answers exist
+  if (typeof updateFundScore === 'function') updateFundScore();
+  // Update pillar bars if on results page
+  if (currentStep === 4 && typeof buildSummary === 'function') buildSummary();
+}
+
+function updateWeightStatus() {
+  const statusEl = document.getElementById('weight-status');
+  if (!statusEl) return;
+  const isCustom = FUNDRAISING_ITEMS.some(item => item.weight !== DEFAULT_WEIGHTS[item.id]);
+  if (isCustom) {
+    const changes = FUNDRAISING_ITEMS.filter(item => item.weight !== DEFAULT_WEIGHTS[item.id]).length;
+    statusEl.textContent = changes + ' weight' + (changes > 1 ? 's' : '') + ' customized';
+    statusEl.classList.add('modified');
+  } else {
+    statusEl.textContent = 'Using default weights';
+    statusEl.classList.remove('modified');
+  }
+}
+
+function saveCustomWeights() {
+  try {
+    const custom = {};
+    let isCustom = false;
+    FUNDRAISING_ITEMS.forEach(item => {
+      if (item.weight !== DEFAULT_WEIGHTS[item.id]) {
+        custom[item.id] = item.weight;
+        isCustom = true;
+      }
+    });
+    if (isCustom) {
+      localStorage.setItem('fra_v2_weights', JSON.stringify(custom));
+    } else {
+      localStorage.removeItem('fra_v2_weights');
+    }
+  } catch(e) {}
+}
+
+function clearCustomWeights() {
+  try { localStorage.removeItem('fra_v2_weights'); } catch(e) {}
+}
+
+function restoreCustomWeights() {
+  try {
+    const raw = localStorage.getItem('fra_v2_weights');
+    if (!raw) return;
+    const custom = JSON.parse(raw);
+    Object.keys(custom).forEach(id => {
+      const item = FUNDRAISING_ITEMS.find(i => i.id === id);
+      if (item && typeof custom[id] === 'number') {
+        item.weight = custom[id];
+      }
+    });
+  } catch(e) {}
+}
+
+// ============================
+// CONDITIONAL MATERIALS TIPS
+// ============================
+function getConditionalTip(itemId) {
+  const rev = (document.getElementById('revenue_status') || {}).value || '';
+  const inst = (document.getElementById('instrument') || {}).value || '';
+  const org = (document.getElementById('org_form') || {}).value || '';
+  const ft = (document.getElementById('months_fulltime') || {}).value || '';
+  let extra = '';
+
+  if (itemId === 'financials' && (rev === 'Pre-revenue' || rev === '')) {
+    extra = ' <em style="color:var(--amber);">Since you\u2019re pre-revenue, focus on a burn rate model and runway projection rather than a full P&L. Show how you\u2019ll use the raise amount over 12-18 months.</em>';
+  }
+  if (itemId === 'safe_kiss') {
+    if (inst === 'SAFE') extra = ' <em style="color:var(--green);">You\u2019ve selected a SAFE \u2014 download the standard post-money SAFE from safe.ycombinator.com and have legal counsel customize it.</em>';
+    else if (inst === 'Convertible Note') extra = ' <em style="color:var(--amber);">You\u2019ve selected a Convertible Note \u2014 make sure you have legal counsel draft the note purchase agreement. Notes are more complex than SAFEs.</em>';
+    else if (inst === '' || inst === 'Unknown') extra = ' <em style="color:var(--red);">You haven\u2019t chosen an investment instrument yet. 92% of early pre-seed rounds use SAFEs \u2014 go back to Step 1 and select one.</em>';
+  }
+  if (itemId === 'corp_docs' && (org === 'Not Yet Incorporated' || org === '')) {
+    extra = ' <em style="color:var(--red);">You indicated you\u2019re not yet incorporated. This is your #1 priority \u2014 you cannot raise capital without a legal entity.</em>';
+  }
+  if (itemId === 'customer_proof' && (rev === 'Pre-revenue' || rev === '')) {
+    extra = ' <em style="color:var(--amber);">Pre-revenue? Focus on LOIs, beta signups, waitlist numbers, or survey data. Any evidence that real humans want what you\u2019re building counts.</em>';
+  }
+  if (itemId === 'video_pitch' && parseInt(ft) === 0) {
+    extra = ' <em style="color:var(--text-muted);">A video pitch is especially valuable if you\u2019re not yet full-time \u2014 it shows investors your energy and commitment even when you can\u2019t take every meeting.</em>';
+  }
+  if (itemId === 'cap_table' && (org === 'Not Yet Incorporated' || org === '')) {
+    extra = ' <em style="color:var(--text-muted);">You\u2019ll need to incorporate before you can create a real cap table. For now, draft a simple equity split agreement between founders.</em>';
+  }
+  if (itemId === 'data_room') {
+    extra = ' <em style="color:var(--text-muted);">At early pre-seed, a shared Google Drive folder is fine. You don\u2019t need Carta or DocSend yet \u2014 just organized, accessible documents.</em>';
+  }
+  return extra;
+}
+
+// ============================
+// TEXT REPORT DOWNLOAD
+// ============================
+function downloadTextReport() {
+  const report = buildTextReport();
+  const blob = new Blob([report], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const company = document.getElementById('company_name').value || 'Company';
+  const date = new Date().toISOString().split('T')[0];
+  a.download = date + ' ' + company + ' Funding Readiness Assessment.txt';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ============================
+// INIT: RESTORE + AUTO-SAVE + METHODOLOGY
+// ============================
+(function initPublishFeatures() {
+  // Restore custom weights before building methodology table
+  restoreCustomWeights();
+
+  // Build methodology table
+  buildMethodologyTable();
+
+  // Set up auto-save
+  setupAutoSave();
+
+  // Try to restore saved state
+  const restored = restoreState();
+  if (restored) {
+    const indicator = document.getElementById('save-indicator');
+    indicator.textContent = '\u21BB Previous progress restored';
+    indicator.classList.add('visible', 'saved');
+    setTimeout(() => { indicator.classList.remove('visible'); }, 3000);
+  }
+
+  // Hook benchmark visual into raise validation
+  const origValidateRaise = window.validateRaise;
+  if (origValidateRaise) {
+    window.validateRaise = function() {
+      origValidateRaise();
+      buildBenchVisual();
+    };
+  }
+
+  // Conditional tips are now handled dynamically by refreshStep3Context()
+  // which is called every time the user enters Step 3 via goToStep(3).
+})();
+
+</script>
+
+  <!-- Accessibility Toolbar -->
+  <div class="a11y-toolbar" role="toolbar" aria-label="Accessibility options">
+    <div class="a11y-panel" id="a11y-panel" role="dialog" aria-label="Accessibility settings">
+      <h4>Accessibility</h4>
+      <button class="a11y-toggle" id="btn-cb" onclick="toggleA11y('cb')" role="switch" aria-checked="false" aria-label="Colorblind-friendly colors">
+        <span style="font-size:14px;">&#x1F441;</span> Colorblind Mode
+      </button>
+      <button class="a11y-toggle" id="btn-hc" onclick="toggleA11y('hc')" role="switch" aria-checked="false" aria-label="High contrast">
+        <span style="font-size:14px;">&#x25D1;</span> High Contrast
+      </button>
+      <button class="a11y-toggle" id="btn-lg" onclick="toggleA11y('lg')" role="switch" aria-checked="false" aria-label="Larger text">
+        <span style="font-size:14px;">Aa</span> Larger Text
+      </button>
+      <button class="a11y-toggle" id="btn-rm" onclick="toggleA11y('rm')" role="switch" aria-checked="false" aria-label="Reduced motion">
+        <span style="font-size:14px;">&#x23F8;</span> Reduce Motion
+      </button>
+    </div>
+    <button class="a11y-toggle" onclick="document.getElementById('a11y-panel').classList.toggle('open')" aria-label="Open accessibility settings" aria-expanded="false" aria-controls="a11y-panel" style="padding:10px 14px;">
+      <span style="font-size:16px;">&#x267F;</span> <span style="font-size:11px;">Accessibility</span>
+    </button>
+  </div>
+
+</body>
+</html>
