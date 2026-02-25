@@ -1165,7 +1165,7 @@
 <body>
   <a href="#section-1" class="skip-link" style="position:absolute;top:-40px;left:0;background:var(--green);color:var(--dark);padding:8px 16px;z-index:9999;font-size:14px;transition:top 0.2s;" onfocus="this.style.top='0'" onblur="this.style.top='-40px'">Skip to Assessment</a>
 
-<div class="container" role="main">
+<main class="container">
 
   <!-- Header -->
   <div class="header">
@@ -1283,7 +1283,7 @@
       <input type="url" id="company_website" placeholder="https://yourcompany.com">
     </div>
     <div class="form-group">
-      <label>One-Line Description *</label>
+      <label>One-Line Description</label>
       <input type="text" id="company_description" placeholder="AI-powered inventory management for small retailers" maxlength="120">
       <div class="field-hint">What does your company do, in one sentence? (120 chars max)</div>
     </div>
@@ -1681,7 +1681,7 @@
     <p style="margin-top:8px;"><button onclick="if(confirm('Clear all saved assessment data? This cannot be undone.')){localStorage.removeItem('fra_v2_state');location.reload();}" style="font-size:11px;color:var(--text-muted);background:transparent;border:1px solid var(--dark-border);border-radius:4px;padding:4px 10px;cursor:pointer;font-family:inherit;">Clear Saved Data</button></p>
   </div>
 
-</div>
+</main>
 
 <script>
 // ============================================================
@@ -2093,8 +2093,9 @@ function buildFundraisingCards() {
 
     card.querySelectorAll('.option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        card.querySelectorAll('.option-btn').forEach(b => b.className = 'option-btn');
+        card.querySelectorAll('.option-btn').forEach(b => { b.className = 'option-btn'; b.setAttribute('aria-checked', 'false'); });
         btn.classList.add(btn.dataset.cls);
+        btn.setAttribute('aria-checked', 'true');
         fundAnswers[btn.dataset.item] = {
           value: btn.dataset.value,
           score: parseInt(btn.dataset.score)
@@ -2188,8 +2189,9 @@ function buildMaterialsCards() {
 
     card.querySelectorAll('.option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
-        card.querySelectorAll('.option-btn').forEach(b => b.className = 'option-btn');
+        card.querySelectorAll('.option-btn').forEach(b => { b.className = 'option-btn'; b.setAttribute('aria-checked', 'false'); });
         btn.classList.add(btn.dataset.cls);
+        btn.setAttribute('aria-checked', 'true');
         matAnswers[btn.dataset.item] = {
           value: btn.dataset.value,
           score: parseInt(btn.dataset.score)
@@ -2242,10 +2244,11 @@ function updateRing(ringId, textId, pct) {
   const ring = document.getElementById(ringId);
   const text = document.getElementById(textId);
   ring.style.strokeDashoffset = offset;
-  text.textContent = Math.round(pct * 100) + '%';
+  const displayPct = Math.round(pct * 100);
+  text.textContent = displayPct + '%';
 
-  if (pct >= 0.67) ring.style.stroke = 'var(--green)';
-  else if (pct >= 0.34) ring.style.stroke = 'var(--amber)';
+  if (displayPct >= 67) ring.style.stroke = 'var(--green)';
+  else if (displayPct >= 34) ring.style.stroke = 'var(--amber)';
   else ring.style.stroke = 'var(--red)';
 }
 
@@ -2692,7 +2695,7 @@ function buildSummary() {
   const fields = [
     ['Company', 'company_name'], ['Website', 'company_website'],
     ['CEO / Founder', 'ceo_name'], ['Email', 'ceo_email'], ['Phone', 'ceo_phone'],
-    ['Organization', 'org_form'], ['State', 'org_state'],
+    ['Organization', 'org_form'],
     ['Raising', 'raise_amount'], ['Instrument', 'instrument']
   ];
   const inst = document.getElementById('instrument').value;
@@ -2710,9 +2713,9 @@ function buildSummary() {
     if (cm) termsHtml += '<div class="summary-row"><span class="label">Maturity</span><span class="value">' + cm + ' months</span></div>';
   }
   companyDiv.innerHTML = '<h3>Company Information</h3>' +
-    '<div class="summary-row"><span class="label">Company</span><span class="value">' + (document.getElementById('company_name').value || '\u2014') + '</span></div>' +
-    '<div class="summary-row"><span class="label">Description</span><span class="value">' + (document.getElementById('company_description').value || '\u2014') + '</span></div>' +
-    '<div class="summary-row"><span class="label">CEO</span><span class="value">' + (document.getElementById('ceo_name').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">Company</span><span class="value">' + escapeHtml(document.getElementById('company_name').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">Description</span><span class="value">' + escapeHtml(document.getElementById('company_description').value || '\u2014') + '</span></div>' +
+    '<div class="summary-row"><span class="label">CEO</span><span class="value">' + escapeHtml(document.getElementById('ceo_name').value || '\u2014') + '</span></div>' +
     '<div class="summary-row"><span class="label">Sector</span><span class="value">' + (document.getElementById('company_sector').value || '\u2014') + '</span></div>' +
     '<div class="summary-row"><span class="label">Revenue</span><span class="value">' + (document.getElementById('revenue_status').value || '\u2014') + '</span></div>' +
     '<div class="summary-row"><span class="label">Raising</span><span class="value">$' + (document.getElementById('raise_amount').value || '\u2014') + '</span></div>' +
@@ -3239,16 +3242,16 @@ function buildTextReport() {
   const allItems = [...FUNDRAISING_ITEMS, ...MATERIALS_ITEMS];
   const phase30 = [], phase60 = [], phase90 = [];
 
+  // Use same thresholds as buildRoadmap (HTML version) for consistency
   FUNDRAISING_ITEMS.forEach(item => {
     const ans = fundAnswers[item.id];
     const score = ans ? ans.score : -1;
     const actions = ROADMAP_ACTIONS[item.id];
     if (!actions) return;
-    if (score <= 0 && item.weight >= 80) phase30.push({ label: item.label, action: actions.critical });
-    else if (score <= 1 && item.weight >= 60) {
-      if (score <= 0) phase30.push({ label: item.label, action: actions.critical });
-      else phase60.push({ label: item.label, action: actions.priority });
-    } else if (score === 2 && item.weight >= 60) phase90.push({ label: item.label, action: actions.polish });
+    if (score <= 0 && item.weight >= 70) phase30.push({ label: item.label, action: actions.critical });
+    else if (score <= 0) phase60.push({ label: item.label, action: actions.critical });
+    else if (score === 1) phase60.push({ label: item.label, action: actions.priority });
+    else if (score === 2 && item.weight >= 70) phase90.push({ label: item.label, action: actions.polish });
   });
 
   MATERIALS_ITEMS.forEach(item => {
@@ -3256,7 +3259,7 @@ function buildTextReport() {
     const score = ans ? ans.score : -1;
     const actions = ROADMAP_ACTIONS[item.id];
     if (!actions) return;
-    if (score <= 0 && item.weight >= 75) phase30.push({ label: item.label, action: actions.critical });
+    if (score <= 0 && item.weight >= 90) phase30.push({ label: item.label, action: actions.critical });
     else if (score <= 0) phase60.push({ label: item.label, action: actions.critical });
     else if (score === 1) phase60.push({ label: item.label, action: actions.priority });
   });
@@ -3291,14 +3294,20 @@ function buildTextReport() {
 // ============================================================
 // UTILITY
 // ============================================================
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
 function scoreColor(pct) {
-  if (pct >= 0.67) return 'var(--green)';
-  if (pct >= 0.34) return 'var(--amber)';
+  const d = Math.round(pct * 100);
+  if (d >= 67) return 'var(--green)';
+  if (d >= 34) return 'var(--amber)';
   return 'var(--red)';
 }
 function scorePill(pct) {
-  if (pct >= 0.67) return { cls: 'high' };
-  if (pct >= 0.34) return { cls: 'mid' };
+  const d = Math.round(pct * 100);
+  if (d >= 67) return { cls: 'high' };
+  if (d >= 34) return { cls: 'mid' };
   return { cls: 'low' };
 }
 function formatCurrency(input) {
@@ -3897,7 +3906,7 @@ function downloadTextReport() {
         <span style="font-size:14px;">&#x23F8;</span> Reduce Motion
       </button>
     </div>
-    <button class="a11y-toggle" onclick="document.getElementById('a11y-panel').classList.toggle('open')" aria-label="Open accessibility settings" aria-expanded="false" aria-controls="a11y-panel" style="padding:10px 14px;">
+    <button class="a11y-toggle" onclick="var p=document.getElementById('a11y-panel');p.classList.toggle('open');this.setAttribute('aria-expanded',p.classList.contains('open'))" aria-label="Open accessibility settings" aria-expanded="false" aria-controls="a11y-panel" style="padding:10px 14px;">
       <span style="font-size:16px;">&#x267F;</span> <span style="font-size:11px;">Accessibility</span>
     </button>
   </div>
