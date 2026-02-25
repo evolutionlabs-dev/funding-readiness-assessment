@@ -365,6 +365,10 @@
     cursor: pointer;
     transition: all 0.15s;
     text-align: center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    -webkit-tap-highlight-color: transparent;
   }
   .option-btn:hover { border-color: var(--text-muted); color: var(--text-primary); }
   .option-btn.selected-strong {
@@ -802,10 +806,11 @@
     body { background: white; color: #111; }
     body::before { display: none; }
     .header, .vc-explainer, .methodology-section,
-    .progress-bar-container, .btn-row, .email-section { display: none !important; }
+    .progress-bar-container, .btn-row, .email-section, .footer { display: none !important; }
     .section { display: block !important; }
     .section:not(.section-summary) { display: none !important; }
     .section-summary { display: block !important; }
+    .option-btn { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .summary-section, .roadmap-section, .strengths-section { border-color: #ddd; background: #fafafa; }
     .overall-score-card { background: #f0fdf4; border-color: #86efac; }
     .score-pill.high { background: #dcfce7; }
@@ -822,8 +827,18 @@
     .container { padding: 20px 16px 60px; }
     .header h1 { font-size: 26px; }
     .form-row { grid-template-columns: 1fr; }
-    .card-options { flex-wrap: wrap; }
-    .option-btn { min-width: calc(50% - 4px); }
+    .card-options { flex-wrap: wrap; gap: 6px; }
+    .card-options .option-btn {
+      flex: 0 0 calc(50% - 3px);
+      min-width: 0;
+      padding: 12px 8px;
+      font-size: 13px;
+      min-height: 44px;
+    }
+    /* 3-button groups: full-width stacked for cleaner layout */
+    .card-options--three .option-btn {
+      flex: 0 0 100%;
+    }
     .overall-score-card .big-score { font-size: 48px; }
     .overall-sub-scores { gap: 20px; flex-wrap: wrap; }
     .pillar-bar-label { width: 80px; font-size: 11px; }
@@ -1084,7 +1099,7 @@
     .header p { font-size: 13px; }
     .assessment-card { padding: 14px 12px; }
     .card-label { font-size: 13px; }
-    .option-btn { padding: 8px 10px; font-size: 12px; min-width: calc(50% - 4px); }
+    .option-btn { padding: 12px 10px; font-size: 13px; min-height: 44px; }
     .tip-content { font-size: 12px; padding: 10px; }
     .overall-score-card .big-score { font-size: 40px; }
     .overall-sub-scores { flex-direction: column; gap: 12px; }
@@ -1593,7 +1608,7 @@
       <p>We'll send this report and roadmap to the email you provided, along with a copy to the Evolution Accelerator team.</p>
       <button class="btn btn-primary" onclick="sendEmail()" id="send-btn">Send My Report</button>
     <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap;">
-      <button class="btn btn-outline-green" onclick="window.print()" style="flex:1;min-width:200px;">&#x1F5A8; Print / Save as PDF</button>
+      <button class="btn btn-outline-green" onclick="handlePrintPDF()" style="flex:1;min-width:200px;">&#x1F5A8; Print / Save as PDF</button>
       <button class="btn btn-outline-green" onclick="downloadTextReport()" style="flex:1;min-width:200px;">&#x1F4CB; Download Text Report</button>
     </div>
 
@@ -1602,7 +1617,7 @@
 
     <div class="btn-row">
       <button class="btn btn-secondary" onclick="goToStep(1)">&larr; Edit Responses</button>
-      <button class="btn btn-outline-green" onclick="window.print()">Print Report</button>
+      <button class="btn btn-outline-green" onclick="handlePrintPDF()">Print Report</button>
     </div>
   </div>
 
@@ -2002,7 +2017,7 @@ function buildMaterialsCards() {
         <div class="card-label">${item.label}</div>
         <div class="card-weight">${relWeight}% weight</div>
       </div>
-      <div class="card-options" role="radiogroup" aria-label="${item.label}">${optionsHtml}</div>
+      <div class="card-options card-options--three" role="radiogroup" aria-label="${item.label}">${optionsHtml}</div>
       ${tipHtml}
     `;
     container.appendChild(card);
@@ -3622,6 +3637,40 @@ function getConditionalTip(itemId) {
     extra = ' <em style="color:var(--text-muted);">At early pre-seed, a shared Google Drive folder is fine. You don\u2019t need Carta or DocSend yet \u2014 just organized, accessible documents.</em>';
   }
   return extra;
+}
+
+// ============================
+// PRINT / PDF HANDLER (iOS-aware)
+// ============================
+function handlePrintPDF() {
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+  if (isIOS) {
+    // On iOS, window.print() may not work in all contexts.
+    // Try it, and if it appears to fail, offer the text report as fallback.
+    try {
+      // iOS Safari does support window.print() — it opens the share sheet
+      // But it can silently fail in in-app browsers (Instagram, LinkedIn, etc.)
+      const printOpened = window.print();
+      // Show a helpful toast in case the share sheet didn't appear
+      setTimeout(() => {
+        const indicator = document.querySelector('.save-indicator');
+        if (indicator) {
+          indicator.textContent = 'Tip: If nothing happened, use Safari and tap Share → Print';
+          indicator.className = 'save-indicator visible';
+          setTimeout(() => { indicator.className = 'save-indicator'; }, 5000);
+        }
+      }, 1000);
+    } catch(e) {
+      // Fallback: offer text download
+      if (confirm('PDF export may not work in this browser. Would you like to download a text version of your report instead?')) {
+        downloadTextReport();
+      }
+    }
+  } else {
+    window.print();
+  }
 }
 
 // ============================
