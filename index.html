@@ -223,13 +223,6 @@
     gap: 6px;
     margin-bottom: 8px;
   }
-  .progress-step {
-    flex: 1;
-    height: 4px;
-    border-radius: 2px;
-    background: var(--dark-border);
-    transition: background 0.3s;
-  }
   .progress-step.active { background: var(--green); }
   .progress-step.complete { background: var(--green-dark); }
   .progress-labels {
@@ -299,6 +292,8 @@
     margin: 24px 0 12px;
     border-radius: 12px;
     border: 1px solid var(--dark-border);
+    scroll-margin-top: 20px;
+    transition: border-color 0.2s, box-shadow 0.3s;
   }
   .pillar-header:first-child { margin-top: 0; }
   .pillar-header .pillar-icon {
@@ -828,14 +823,75 @@
     border-radius: 10px;
     margin-left: auto;
     white-space: nowrap;
+    transition: background 0.3s, color 0.3s, transform 0.3s;
   }
   .pillar-completion.done {
     background: var(--green-muted);
     color: var(--green);
   }
+  .pillar-completion.done.just-completed {
+    animation: badge-celebrate 0.6s ease;
+  }
+  @keyframes badge-celebrate {
+    0% { transform: scale(1); }
+    30% { transform: scale(1.25); }
+    60% { transform: scale(0.95); }
+    100% { transform: scale(1); }
+  }
   .pillar-completion.partial {
     background: rgba(255,255,255,0.06);
     color: var(--text-muted);
+  }
+
+  /* Answered card subtle feedback */
+  .assessment-card.answered {
+    border-color: rgba(255,255,255,0.06);
+  }
+  .assessment-card.just-answered {
+    animation: card-flash 0.4s ease;
+  }
+  @keyframes card-flash {
+    0% { border-color: rgba(74, 222, 128, 0.4); }
+    100% { border-color: rgba(255,255,255,0.06); }
+  }
+
+  /* Button press feedback */
+  .option-btn:active {
+    transform: scale(0.96);
+  }
+
+  /* Progress bar step hover */
+  .progress-step {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--dark-border);
+    transition: background 0.3s, transform 0.15s;
+    cursor: pointer;
+  }
+  .progress-step:hover { transform: scaleY(1.8); }
+
+  /* Sticky live score during assessment */
+  .live-score.sticky {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-radius: 0 0 14px 14px;
+    margin-left: -24px;
+    margin-right: -24px;
+    padding-left: 22px;
+    padding-right: 22px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    background: rgba(18, 18, 26, 0.92);
+  }
+  @media (max-width: 600px) {
+    .live-score.sticky {
+      margin-left: -16px;
+      margin-right: -16px;
+      padding: 12px 16px;
+      gap: 12px;
+    }
   }
 
   /* Step 1 section dividers */
@@ -1390,10 +1446,10 @@
   <!-- Progress -->
   <div class="progress-bar-container" role="navigation" aria-label="Assessment progress">
     <div class="progress-steps">
-      <div class="progress-step active" id="prog-1"></div>
-      <div class="progress-step" id="prog-2"></div>
-      <div class="progress-step" id="prog-3"></div>
-      <div class="progress-step" id="prog-4"></div>
+      <div class="progress-step active" id="prog-1" onclick="goToStep(1)"></div>
+      <div class="progress-step" id="prog-2" onclick="goToStep(2)"></div>
+      <div class="progress-step" id="prog-3" onclick="goToStep(3)"></div>
+      <div class="progress-step" id="prog-4" onclick="goToStep(4)"></div>
     </div>
     <div class="progress-labels">
       <span class="progress-label active" onclick="goToStep(1)">Company Info</span>
@@ -1687,7 +1743,7 @@
       <p>Rate your company's strength in each area. Be honest — this assessment is for you. These criteria are calibrated for <strong>early pre-seed</strong> companies (idea through first revenue). Click "What does this mean?" for guidance on each item.</p>
     </div>
 
-    <div class="live-score" id="fund-score-display">
+    <div class="live-score sticky" id="fund-score-display">
       <div class="score-ring">
         <svg width="72" height="72" viewBox="0 0 72 72">
           <circle class="ring-bg" cx="36" cy="36" r="30"/>
@@ -1718,7 +1774,7 @@
       <p>What's the status of your key fundraising assets? In 2026, investors expect more than documents — they want to see your product, hear your story, and verify your claims before they take a meeting.</p>
     </div>
 
-    <div class="live-score" id="mat-score-display">
+    <div class="live-score sticky" id="mat-score-display">
       <div class="score-ring">
         <svg width="72" height="72" viewBox="0 0 72 72">
           <circle class="ring-bg" cx="36" cy="36" r="30"/>
@@ -2280,6 +2336,9 @@ function buildFundraisingCards() {
           value: btn.dataset.value,
           score: parseInt(btn.dataset.score)
         };
+        // Visual feedback: flash the card
+        card.classList.add('answered', 'just-answered');
+        setTimeout(() => card.classList.remove('just-answered'), 400);
         updateFundScore();
         updatePillarBadges('fund');
       });
@@ -2391,6 +2450,9 @@ function buildMaterialsCards() {
           value: btn.dataset.value,
           score: parseInt(btn.dataset.score)
         };
+        // Visual feedback: flash the card
+        card.classList.add('answered', 'just-answered');
+        setTimeout(() => card.classList.remove('just-answered'), 400);
         updateMatScore();
         updatePillarBadges('mat');
       });
@@ -2440,8 +2502,14 @@ function updatePillarBadges(type) {
     if (!badge) return;
     const g = groups[gId];
     badge.textContent = g.answered + '/' + g.total;
+    const wasDone = badge.classList.contains('done');
     if (g.answered === g.total) {
       badge.className = 'pillar-completion done';
+      // Celebrate when freshly completed
+      if (!wasDone) {
+        badge.classList.add('just-completed');
+        setTimeout(() => badge.classList.remove('just-completed'), 700);
+      }
     } else {
       badge.className = 'pillar-completion partial';
     }
@@ -2506,10 +2574,26 @@ function calcPillarScore(pillarId) {
 function updateFundScore() {
   const pct = calcScore(FUNDRAISING_ITEMS, fundAnswers);
   updateRing('fund-ring', 'fund-score-text', pct);
+  // Update progress counter
+  const answered = FUNDRAISING_ITEMS.filter(i => fundAnswers[i.id]).length;
+  const detail = document.querySelector('#fund-score-display .score-detail p');
+  if (detail) {
+    if (answered === 0) detail.textContent = 'Updates as you complete each category below';
+    else if (answered === FUNDRAISING_ITEMS.length) detail.textContent = 'All ' + FUNDRAISING_ITEMS.length + ' items complete';
+    else detail.textContent = answered + ' of ' + FUNDRAISING_ITEMS.length + ' items answered';
+  }
 }
 function updateMatScore() {
   const pct = calcScore(MATERIALS_ITEMS, matAnswers);
   updateRing('mat-ring', 'mat-score-text', pct);
+  // Update progress counter
+  const answered = MATERIALS_ITEMS.filter(i => matAnswers[i.id]).length;
+  const detail = document.querySelector('#mat-score-display .score-detail p');
+  if (detail) {
+    if (answered === 0) detail.textContent = 'Updates as you complete each item below';
+    else if (answered === MATERIALS_ITEMS.length) detail.textContent = 'All ' + MATERIALS_ITEMS.length + ' items complete';
+    else detail.textContent = answered + ' of ' + MATERIALS_ITEMS.length + ' items answered';
+  }
 }
 
 function updateRing(ringId, textId, pct) {
