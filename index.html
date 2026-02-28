@@ -1314,8 +1314,15 @@
     .example-modal-overlay { display: none !important; }
     .example-report-btn { display: none !important; }
     .a11y-toolbar, .save-indicator, .bench-bar-legend,
-    .progress-bar-container, .btn-row, .email-section, .cta-section,
+    .progress-bar-container, .btn-row, .email-section,
     .explainer-body, .explainer-arrow, .report-nav { display: none !important; }
+    .cta-section { background: #f0fdf4 !important; border: 1px solid #86efac; padding: 20px; border-radius: 12px; }
+    .cta-section .btn { display: none !important; }
+    .cta-section a[href^="mailto"] { display: none !important; }
+    .cta-section::after {
+      content: 'Contact: lead@evfm.co  |  evolutionacceleration.com';
+      display: block; margin-top: 12px; font-size: 13px; color: #333; font-weight: 600;
+    }
     .pillar-group { max-height: none !important; opacity: 1 !important; }
     .section-summary { page-break-inside: avoid; }
     .roadmap-phase { page-break-inside: avoid; }
@@ -1820,6 +1827,7 @@
     <div class="overall-score-card" id="overall-score-card">
       <div class="big-score" id="overall-score-big">0%</div>
       <div class="big-label">Overall Funding Readiness</div>
+      <div id="benchmark-context" style="font-size:12px;color:var(--text-muted);margin-top:4px;"></div>
       <div class="overall-sub-scores">
         <div class="sub">
           <div class="sub-score" id="overall-team">0%</div>
@@ -2868,14 +2876,16 @@ function validateStep1() {
   return valid;
 }
 
-function goToStep(step) {
-  // Validate Step 1 before allowing navigation forward from it
-  if (currentStep === 1 && step > 1) {
-    if (!validateStep1()) return;
-  }
-  // Warn about unanswered questions when going to results
-  if (step === 4 && currentStep !== 4) {
-    if (!checkUnanswered()) return;
+function goToStep(step, skipValidation) {
+  if (!skipValidation) {
+    // Validate Step 1 before allowing navigation forward from it
+    if (currentStep === 1 && step > 1) {
+      if (!validateStep1()) return;
+    }
+    // Warn about unanswered questions when going to results
+    if (step === 4 && currentStep !== 4) {
+      if (!checkUnanswered()) return;
+    }
   }
   currentStep = step;
   for (let i = 1; i <= 4; i++) {
@@ -3030,6 +3040,21 @@ function buildSummary() {
   document.getElementById('overall-mat').textContent = Math.round(matPct * 100) + '%';
   document.getElementById('overall-mat').style.color = scoreColor(matPct);
 
+  // Benchmark context
+  const overallInt = Math.round(overallPct * 100);
+  const benchEl = document.getElementById('benchmark-context');
+  if (benchEl) {
+    if (overallInt >= 75) {
+      benchEl.innerHTML = 'Above typical early pre-seed range. Most companies at this stage score 35-55%.';
+    } else if (overallInt >= 55) {
+      benchEl.innerHTML = 'Solid for early pre-seed. Most companies at this stage score 35-55%.';
+    } else if (overallInt >= 35) {
+      benchEl.innerHTML = 'Typical for early pre-seed. Most companies at this stage score 35-55%.';
+    } else {
+      benchEl.innerHTML = 'Below typical early pre-seed range (35-55%). Focus on the roadmap below.';
+    }
+  }
+
   // Pillar bars
   const barsDiv = document.getElementById('pillar-bars');
   const barData = [
@@ -3120,6 +3145,15 @@ function buildSummary() {
     matHtml += `<div class="summary-row"><span class="label">${item.label}</span><span class="value ${cls}">${val}</span></div>`;
   });
   matDiv.innerHTML = matHtml;
+
+  // Update print header with company name and date
+  const printHeader = document.querySelector('.print-header');
+  if (printHeader) {
+    const companyName = escapeHtml(document.getElementById('company_name').value || 'Company');
+    const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    printHeader.innerHTML = '<h2>Funding Readiness Assessment — ' + companyName + '</h2>' +
+      '<p>Prepared ' + today + ' | Evolution Accelerator | evolutionacceleration.com</p>';
+  }
 
   // Build strengths & roadmap
   buildStrengths();
@@ -3559,7 +3593,12 @@ function buildTextReport() {
   r += `  Prior capital source: ${document.getElementById('prior_source').value || '\u2014'}\n\n`;
 
   r += `${'-'.repeat(55)}\n`;
-  r += `OVERALL READINESS: ${overall}%\n`;
+  r += `OVERALL READINESS: ${overall}%`;
+  if (overall >= 75) r += ` (above typical early pre-seed range of 35-55%)`;
+  else if (overall >= 55) r += ` (solid for early pre-seed; typical range is 35-55%)`;
+  else if (overall >= 35) r += ` (typical for early pre-seed; range is 35-55%)`;
+  else r += ` (below typical early pre-seed range of 35-55%)`;
+  r += `\n`;
   r += `  Team & Leadership: ${Math.round(teamPct * 100)}%\n`;
   r += `  Business & Market: ${Math.round(bizPct * 100)}%\n`;
   r += `  Corporate & Fundraising: ${Math.round(corpPct * 100)}%\n`;
@@ -3592,12 +3631,15 @@ function buildTextReport() {
     r += `  ${item.label}: ${val}\n`;
   });
 
-  // Roadmap in text
+  // Roadmap in text — with conditional adjustments matching HTML version
   r += `\n${'='.repeat(55)}\n`;
   r += `YOUR 90-DAY ROADMAP\n`;
   r += `${'-'.repeat(55)}\n\n`;
 
-  const allItems = [...FUNDRAISING_ITEMS, ...MATERIALS_ITEMS];
+  const revenueStatus = document.getElementById('revenue_status').value;
+  const isPreRevenue = !revenueStatus || revenueStatus === 'Pre-revenue' || revenueStatus === 'Pre-revenue with LOIs';
+  const instrument = document.getElementById('instrument').value;
+
   const phase30 = [], phase60 = [], phase90 = [];
 
   // Use same thresholds as buildRoadmap (HTML version) for consistency
@@ -3606,10 +3648,16 @@ function buildTextReport() {
     const score = ans ? ans.score : -1;
     const actions = ROADMAP_ACTIONS[item.id];
     if (!actions) return;
-    if (score <= 0 && item.weight >= 70) phase30.push({ label: item.label, action: actions.critical });
-    else if (score <= 0) phase60.push({ label: item.label, action: actions.critical });
-    else if (score === 1) phase60.push({ label: item.label, action: actions.priority });
-    else if (score === 2 && item.weight >= 70) phase90.push({ label: item.label, action: actions.polish });
+    let phase, actionText;
+    if (score <= 0 && item.weight >= 70) { phase = phase30; actionText = actions.critical; }
+    else if (score <= 0) { phase = phase60; actionText = actions.critical; }
+    else if (score === 1) { phase = phase60; actionText = actions.priority; }
+    else if (score === 2 && item.weight >= 70) { phase = phase90; actionText = actions.polish; }
+    else return;
+    // Conditional text adjustments
+    if (item.id === 'revenue' && isPreRevenue) actionText = 'Since you\'re pre-revenue: ' + actionText;
+    if (item.id === 'unit_econ' && isPreRevenue) actionText += ' Even pre-revenue, you should model estimated unit economics based on your pricing assumptions.';
+    phase.push({ label: item.label, action: actionText });
   });
 
   MATERIALS_ITEMS.forEach(item => {
@@ -3617,9 +3665,20 @@ function buildTextReport() {
     const score = ans ? ans.score : -1;
     const actions = ROADMAP_ACTIONS[item.id];
     if (!actions) return;
-    if (score <= 0 && item.weight >= 90) phase30.push({ label: item.label, action: actions.critical });
-    else if (score <= 0) phase60.push({ label: item.label, action: actions.critical });
-    else if (score === 1) phase60.push({ label: item.label, action: actions.priority });
+    let phase, actionText;
+    if (score <= 0 && item.weight >= 90) { phase = phase30; actionText = actions.critical; }
+    else if (score <= 0) { phase = phase60; actionText = actions.critical; }
+    else if (score === 1) { phase = phase60; actionText = actions.priority; }
+    else return;
+    // Conditional text adjustments
+    if (item.id === 'financials' && isPreRevenue) actionText = 'Since you\'re pre-revenue, focus on a burn rate model and runway projection rather than a full P&L. Show how you\'ll use the raise amount over 12-18 months with clear monthly burn assumptions.';
+    if (item.id === 'customer_proof' && isPreRevenue) {
+      if (revenueStatus === 'Pre-revenue with LOIs') actionText = 'You have LOIs or commitments \u2014 organize them clearly: signed LOIs, pilot agreements, and testimonials. Quantify the revenue potential if all commitments convert.';
+      else actionText = 'Pre-revenue, so focus on demand signals: LOIs, waitlist numbers, beta signups, survey results. Any evidence that real humans want what you\'re building counts.';
+    }
+    if (item.id === 'safe_kiss' && instrument === 'SAFE') actionText = 'You\'ve chosen a SAFE \u2014 download standard post-money SAFE templates from safe.ycombinator.com. Have legal counsel customize for your terms. Have final docs ready to send the moment an investor says yes.';
+    else if (item.id === 'safe_kiss' && instrument === 'Convertible Note') actionText = 'You\'ve chosen a Convertible Note \u2014 this requires attorney-drafted documents. More complex than a SAFE, so budget 2-3 weeks for legal prep.';
+    phase.push({ label: item.label, action: actionText });
   });
 
   if (phase30.length) {
@@ -3845,12 +3904,14 @@ function restoreState() {
           if (opt) saved.value = opt.value;
         }
         fundAnswers[k] = saved;
-        // Highlight the matching button with correct CSS class
+        // Highlight the matching button and mark card as answered
         const btns = document.querySelectorAll('[data-item="' + k + '"]');
         btns.forEach(btn => {
           if (parseInt(btn.dataset.score) === saved.score) {
             btn.className = 'option-btn';
             btn.classList.add(btn.dataset.cls);
+            const card = btn.closest('.assessment-card');
+            if (card) card.classList.add('answered');
           }
         });
       });
@@ -3870,6 +3931,8 @@ function restoreState() {
           if (parseInt(btn.dataset.score) === saved.score) {
             btn.className = 'option-btn';
             btn.classList.add(btn.dataset.cls);
+            const card = btn.closest('.assessment-card');
+            if (card) card.classList.add('answered');
           }
         });
       });
@@ -3879,7 +3942,10 @@ function restoreState() {
       updatePillarBadges('fund');
       updatePillarBadges('mat');
     }
-    return true;
+    // Update score displays
+    if (typeof updateFundScore === 'function') updateFundScore();
+    if (typeof updateMatScore === 'function') updateMatScore();
+    return state.step || true;
   } catch(e) { return false; }
 }
 
@@ -4231,6 +4297,11 @@ function downloadTextReport() {
   // Try to restore saved state
   const restored = restoreState();
   if (restored) {
+    // Navigate to saved step (restoreState returns the step number)
+    const savedStep = typeof restored === 'number' ? restored : 1;
+    if (savedStep > 1 && savedStep <= 4) {
+      goToStep(savedStep, true);
+    }
     const indicator = document.getElementById('save-indicator');
     indicator.textContent = '\u21BB Previous progress restored';
     indicator.classList.add('visible', 'saved');
