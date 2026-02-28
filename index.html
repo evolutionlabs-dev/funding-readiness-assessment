@@ -2458,22 +2458,31 @@ function updatePillarBadges(type) {
           const nextId = allHeaders[i].dataset.pillarId;
           const nextGroup = document.getElementById('pillar-group-' + nextId + '-' + type);
           if (nextGroup && nextGroup.classList.contains('collapsed') && groups[nextId] && groups[nextId].answered < groups[nextId].total) {
-            // Collapse current, expand next
-            groupEl.classList.add('collapsed');
-            headerEl.classList.remove('expanded');
-            headerEl.querySelector('.pillar-chevron').innerHTML = '&#x25B6;';
-            nextGroup.classList.remove('collapsed');
-            allHeaders[i].classList.add('expanded');
-            allHeaders[i].querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
-            // Wait for CSS transition to finish before scrolling,
-            // so the browser calculates the correct layout position
-            var scrollTarget = allHeaders[i];
+            // Staged transition: scroll → expand next → collapse current
+            // This avoids three competing motions happening at once.
+            var nextHeader = allHeaders[i];
+            var curGroup = groupEl;
+            var curHeader = headerEl;
+
+            // Step 1: Scroll to the next header (still collapsed, so no layout shift)
+            var rect = nextHeader.getBoundingClientRect();
+            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            window.scrollTo({ top: rect.top + scrollTop - 20, behavior: 'smooth' });
+
+            // Step 2: After scroll settles, expand the next section
             setTimeout(function() {
-              var rect = scrollTarget.getBoundingClientRect();
-              var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-              // Place the header 20px below the top of the viewport
-              window.scrollTo({ top: rect.top + scrollTop - 20, behavior: 'smooth' });
-            }, 420);
+              nextGroup.classList.remove('collapsed');
+              nextHeader.classList.add('expanded');
+              nextHeader.querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
+            }, 450);
+
+            // Step 3: Collapse the completed section (now above viewport, invisible)
+            setTimeout(function() {
+              curGroup.classList.add('collapsed');
+              curHeader.classList.remove('expanded');
+              curHeader.querySelector('.pillar-chevron').innerHTML = '&#x25B6;';
+            }, 550);
+
             break;
           }
         }
