@@ -296,6 +296,10 @@
     transition: border-color 0.2s, box-shadow 0.3s;
   }
   .pillar-header:first-child { margin-top: 0; }
+  .pillar-header:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
+  }
   .pillar-header .pillar-icon {
     font-size: 20px;
     width: 36px;
@@ -347,12 +351,13 @@
   }
   .option-btn {
     flex: 1;
-    padding: 9px 6px;
+    padding: 10px 6px;
+    min-height: 44px;
     border-radius: 8px;
     border: 1px solid var(--dark-border);
     background: transparent;
     color: var(--text-secondary);
-    font-size: 12px;
+    font-size: 13px;
     font-weight: 500;
     font-family: inherit;
     cursor: pointer;
@@ -362,6 +367,10 @@
     -moz-appearance: none;
     appearance: none;
     -webkit-tap-highlight-color: transparent;
+  }
+  .option-btn:focus-visible {
+    outline: 2px solid var(--green);
+    outline-offset: 2px;
   }
   .option-btn:hover { border-color: var(--text-muted); color: var(--text-primary); }
   .option-btn.selected-strong,
@@ -959,6 +968,8 @@
     .container { padding: 20px 16px 60px; }
     .header h1 { font-size: 26px; }
     .form-row { grid-template-columns: 1fr; }
+    /* Prevent iOS Safari zoom on input focus */
+    .form-group input, .form-group select, .form-group textarea { font-size: 16px !important; }
     .card-options { flex-wrap: wrap; gap: 6px; }
     .card-options .option-btn {
       flex: 0 0 calc(50% - 3px);
@@ -974,6 +985,12 @@
     .overall-score-card .big-score { font-size: 48px; }
     .overall-sub-scores { gap: 20px; flex-wrap: wrap; }
     .pillar-bar-label { width: 80px; font-size: 11px; }
+    /* Compact sticky score on mobile */
+    .live-score.sticky .score-ring { width: 48px; height: 48px; }
+    .live-score.sticky .score-ring svg { width: 48px; height: 48px; }
+    .live-score.sticky .score-text { font-size: 13px; }
+    .live-score.sticky .score-detail h3 { font-size: 13px; }
+    .live-score.sticky .score-detail p { font-size: 11px; }
   }
 
   /* Save indicator */
@@ -1366,8 +1383,9 @@
     .summary-row .label { min-width: 80px; }
     .btn { padding: 10px 16px; font-size: 13px; }
     .form-group label { font-size: 12px; }
-    .form-group input, .form-group select { font-size: 14px; }
+    .form-group input, .form-group select { font-size: 16px !important; }
     .a11y-toolbar { bottom: 10px; right: 10px; }
+    .a11y-panel { width: 180px; max-width: calc(100vw - 40px); }
   }
 </style>
 </head>
@@ -1387,7 +1405,10 @@
     <h1>Funding Readiness<br>Self Assessment</h1>
     <div style="display:inline-block;font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border:1px solid var(--purple);border-radius:20px;margin-bottom:12px;">Early Pre-Seed Edition</div>
     <p>Evaluate your startup's readiness to raise your first institutional capital. Designed for companies at the earliest stage — idea through first revenue. Takes about 15 minutes.</p>
-    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;"><a href="#" onclick="event.preventDefault();showExampleReport()" style="color:var(--green);text-decoration:none;">See an example report</a> &middot; Future editions will cover Late Pre-Seed, Early Seed, and Late Seed stages.</p>
+    <p style="margin-top:12px;">
+      <a href="#" onclick="event.preventDefault();showExampleReport()" class="btn btn-outline-green" style="font-size:13px;padding:8px 18px;display:inline-block;">See an Example Report</a>
+    </p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Future editions will cover Late Pre-Seed, Early Seed, and Late Seed stages.</p>
   </div>
 
   <!-- Before You Begin (merged VC-backable + methodology) -->
@@ -2290,7 +2311,11 @@ function buildFundraisingCards() {
         <span class="pillar-completion partial" data-pillar-badge="${currentPillar}-fund">0/${pillarItems.length}</span>
         <span class="pillar-chevron">${isFirst ? '&#x25BC;' : '&#x25B6;'}</span>
       `;
+      header.setAttribute('tabindex', '0');
+      header.setAttribute('role', 'button');
+      header.setAttribute('aria-expanded', isFirst ? 'true' : 'false');
       header.addEventListener('click', function() { togglePillarGroup(this); });
+      header.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePillarGroup(this); } });
       container.appendChild(header);
 
       groupDiv = document.createElement('div');
@@ -2383,7 +2408,11 @@ function buildMaterialsCards() {
           <span class="pillar-completion partial" data-pillar-badge="${currentGroup}-mat">0/${groupItems.length}</span>
           <span class="pillar-chevron">${isFirst ? '&#x25BC;' : '&#x25B6;'}</span>
         `;
+        header.setAttribute('tabindex', '0');
+        header.setAttribute('role', 'button');
+        header.setAttribute('aria-expanded', isFirst ? 'true' : 'false');
         header.addEventListener('click', function() { togglePillarGroup(this); });
+        header.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); togglePillarGroup(this); } });
         container.appendChild(header);
 
         groupDiv = document.createElement('div');
@@ -2484,10 +2513,12 @@ function togglePillarGroup(headerEl) {
   if (isCollapsed) {
     groupEl.classList.remove('collapsed');
     headerEl.classList.add('expanded');
+    headerEl.setAttribute('aria-expanded', 'true');
     headerEl.querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
   } else {
     groupEl.classList.add('collapsed');
     headerEl.classList.remove('expanded');
+    headerEl.setAttribute('aria-expanded', 'false');
     headerEl.querySelector('.pillar-chevron').innerHTML = '&#x25B6;';
   }
 }
@@ -3871,7 +3902,7 @@ function saveState() {
     });
     localStorage.setItem(SAVE_KEY, JSON.stringify(state));
     showSaveIndicator();
-  } catch(e) {}
+  } catch(e) { /* localStorage unavailable — fail silently */ }
 }
 
 function restoreState() {
@@ -4203,7 +4234,8 @@ function getConditionalTip(itemId) {
   const ft = (document.getElementById('months_fulltime') || {}).value || '';
   let extra = '';
 
-  if (itemId === 'financials' && (rev === 'Pre-revenue' || rev === '')) {
+  const isPreRev = rev === 'Pre-revenue' || rev === 'Pre-revenue with LOIs' || rev === '';
+  if (itemId === 'financials' && isPreRev) {
     extra = ' <em style="color:var(--amber);">Since you\u2019re pre-revenue, focus on a burn rate model and runway projection rather than a full P&L. Show how you\u2019ll use the raise amount over 12-18 months.</em>';
   }
   if (itemId === 'safe_kiss') {
@@ -4214,10 +4246,10 @@ function getConditionalTip(itemId) {
   if (itemId === 'corp_docs' && (org === 'Not Yet Incorporated' || org === '')) {
     extra = ' <em style="color:var(--red);">You indicated you\u2019re not yet incorporated. This is your #1 priority \u2014 you cannot raise capital without a legal entity.</em>';
   }
-  if (itemId === 'customer_proof' && (rev === 'Pre-revenue' || rev === '')) {
+  if (itemId === 'customer_proof' && isPreRev) {
     extra = ' <em style="color:var(--amber);">Pre-revenue? Focus on LOIs, beta signups, waitlist numbers, or survey data. Any evidence that real humans want what you\u2019re building counts.</em>';
   }
-  if (itemId === 'video_pitch' && parseInt(ft) === 0) {
+  if (itemId === 'video_pitch' && ft === '0') {
     extra = ' <em style="color:var(--text-muted);">A video pitch is especially valuable if you\u2019re not yet full-time \u2014 it shows investors your energy and commitment even when you can\u2019t take every meeting.</em>';
   }
   if (itemId === 'cap_table' && (org === 'Not Yet Incorporated' || org === '')) {
