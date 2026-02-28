@@ -241,8 +241,7 @@
     color: var(--text-muted);
     cursor: pointer;
     transition: color 0.2s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.3px;
   }
   .progress-label.active { color: var(--green); font-weight: 600; }
 
@@ -254,11 +253,10 @@
   .section-header p { font-size: 14px; color: var(--text-secondary); }
   .step-badge {
     display: inline-block;
-    font-size: 11px;
-    font-weight: 700;
+    font-size: 12px;
+    font-weight: 600;
     color: var(--green);
-    text-transform: uppercase;
-    letter-spacing: 1.5px;
+    letter-spacing: 0.3px;
     margin-bottom: 8px;
   }
 
@@ -336,7 +334,7 @@
     border: 1px solid var(--dark-border);
     border-radius: 12px;
     padding: 18px;
-    margin-bottom: 10px;
+    margin-bottom: 16px;
     transition: border-color 0.2s;
   }
   .assessment-card:hover { border-color: rgba(255,255,255,0.08); }
@@ -347,7 +345,7 @@
     margin-bottom: 12px;
   }
   .card-label { font-size: 14px; font-weight: 600; }
-  .card-weight { font-size: 11px; color: var(--text-muted); }
+  .card-weight { display: none; }
   .card-options {
     display: flex;
     gap: 8px;
@@ -371,36 +369,27 @@
     -webkit-tap-highlight-color: transparent;
   }
   .option-btn:hover { border-color: var(--text-muted); color: var(--text-primary); }
-  .option-btn.selected-strong {
-    background: var(--green-muted);
-    border-color: var(--green);
-    color: var(--green);
-  }
-  .option-btn.selected-developing {
-    background: var(--amber-muted);
-    border-color: var(--amber);
-    color: var(--amber);
-  }
-  .option-btn.selected-early {
-    background: var(--purple-muted);
-    border-color: var(--purple);
-    color: var(--purple);
-  }
-  .option-btn.selected-notstarted {
-    background: var(--red-muted);
-    border-color: var(--red);
-    color: var(--red);
-  }
-  /* Materials cards keep original classes */
+  .option-btn.selected-strong,
   .option-btn.selected-done {
     background: var(--green-muted);
     border-color: var(--green);
     color: var(--green);
   }
+  .option-btn.selected-developing,
   .option-btn.selected-started {
-    background: var(--amber-muted);
-    border-color: var(--amber);
-    color: var(--amber);
+    background: rgba(255,255,255,0.06);
+    border-color: var(--text-secondary);
+    color: var(--text-primary);
+  }
+  .option-btn.selected-early {
+    background: rgba(255,255,255,0.03);
+    border-color: var(--text-muted);
+    color: var(--text-secondary);
+  }
+  .option-btn.selected-notstarted {
+    background: var(--red-muted);
+    border-color: var(--red);
+    color: var(--red);
   }
 
   /* Expandable tips */
@@ -804,6 +793,90 @@
   .footer p { font-size: 12px; color: var(--text-muted); }
   .footer a { color: var(--green); text-decoration: none; }
 
+  /* Pillar accordion */
+  .pillar-group {
+    overflow: hidden;
+    max-height: 5000px;
+    transition: max-height 0.4s ease, opacity 0.3s;
+  }
+  .pillar-group.collapsed {
+    max-height: 0 !important;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .pillar-header {
+    cursor: pointer;
+    user-select: none;
+  }
+  .pillar-header:hover {
+    border-color: rgba(255,255,255,0.12);
+  }
+  .pillar-chevron {
+    margin-left: auto;
+    font-size: 14px;
+    color: var(--text-muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+  .pillar-header.expanded .pillar-chevron {
+    transform: rotate(90deg);
+  }
+  .pillar-completion {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-left: auto;
+    white-space: nowrap;
+  }
+  .pillar-completion.done {
+    background: var(--green-muted);
+    color: var(--green);
+  }
+  .pillar-completion.partial {
+    background: rgba(255,255,255,0.06);
+    color: var(--text-muted);
+  }
+
+  /* Step 1 section dividers */
+  .form-section-divider {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+    margin-top: 28px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--dark-border);
+  }
+  .form-section-divider:first-of-type { margin-top: 8px; }
+
+  /* Report mini-nav */
+  .report-nav {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+    padding: 12px 16px;
+    background: var(--dark-card);
+    border: 1px solid var(--dark-border);
+    border-radius: 10px;
+  }
+  .report-nav a {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--dark-border);
+    transition: all 0.15s;
+  }
+  .report-nav a:hover {
+    color: var(--green);
+    border-color: var(--green);
+  }
+
   /* Print */
   @media print {
     body { background: white; color: #111; }
@@ -1184,9 +1257,10 @@
   @media print {
     .example-modal-overlay { display: none !important; }
     .example-report-btn { display: none !important; }
-    .a11y-toolbar, .save-indicator, .bench-bar-legend, .methodology-section,
+    .a11y-toolbar, .save-indicator, .bench-bar-legend,
     .progress-bar-container, .btn-row, .email-section, .cta-section,
-    .explainer-body, .explainer-arrow { display: none !important; }
+    .explainer-body, .explainer-arrow, .report-nav { display: none !important; }
+    .pillar-group { max-height: none !important; opacity: 1 !important; }
     .section-summary { page-break-inside: avoid; }
     .roadmap-phase { page-break-inside: avoid; }
     .card-tip-content { display: block !important; }
@@ -1249,15 +1323,16 @@
     </div>
     <h1>Funding Readiness<br>Self Assessment</h1>
     <div style="display:inline-block;font-size:11px;font-weight:700;color:var(--purple);text-transform:uppercase;letter-spacing:1.5px;padding:4px 12px;border:1px solid var(--purple);border-radius:20px;margin-bottom:12px;">Early Pre-Seed Edition</div>
-    <p>Evaluate your startup's readiness to raise your first institutional capital. Designed for companies at the earliest stage — idea through first revenue. Takes about 15 minutes. You'll receive your personalized report and 90-day roadmap by email.</p>
-    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Future editions will cover Late Pre-Seed, Early Seed, and Late Seed stages with criteria tailored to each milestone.</p>
+    <p>Evaluate your startup's readiness to raise your first institutional capital. Designed for companies at the earliest stage — idea through first revenue. Takes about 15 minutes.</p>
+    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;"><a href="#" onclick="event.preventDefault();showExampleReport()" style="color:var(--green);text-decoration:none;">See an example report</a> &middot; Future editions will cover Late Pre-Seed, Early Seed, and Late Seed stages.</p>
   </div>
 
-  <!-- VC-Backable Explainer -->
+  <!-- Before You Begin (merged VC-backable + methodology) -->
   <div class="vc-explainer" style="background:var(--dark-card);border:1px solid var(--dark-border);border-radius:12px;padding:24px 28px;margin-bottom:28px;">
     <div style="cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="this.parentElement.classList.toggle('explainer-open'); this.querySelector('.explainer-arrow').classList.toggle('open');">
-      <span class="explainer-arrow" style="color:var(--green);font-size:14px;transition:transform 0.2s;">&#x25B6;</span>
-      <h3 style="font-size:16px;font-weight:700;color:var(--green);margin:0;">Before You Start: Is Your Company VC-Backable?</h3>
+      <span class="explainer-arrow" style="color:var(--text-secondary);font-size:14px;transition:transform 0.2s;">&#x25B6;</span>
+      <h3 style="font-size:15px;font-weight:700;color:var(--text-primary);margin:0;">Before You Begin</h3>
+      <span style="font-size:12px;color:var(--text-muted);margin-left:4px;">VC fit, scoring methodology &amp; weights</span>
     </div>
     <div class="explainer-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease;">
       <div style="padding-top:16px;font-size:14px;color:var(--text-secondary);line-height:1.7;">
@@ -1283,46 +1358,33 @@
         <p style="margin-bottom:14px;">Think of this tool as a mirror, not a gate. A strong score means you're ready to have productive conversations with investors. A lower score means you have a roadmap for what to work on next — and that roadmap is often more valuable than the score itself.</p>
 
         <p style="margin-bottom:0;font-size:13px;color:var(--text-muted);font-style:italic;">"We screen 100 investments to invest in 3. The companies that get funded aren't just good ideas — they're well-prepared teams solving urgent problems with evidence that customers care. This assessment helps you become one of those 3."</p>
+
+        <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--dark-border);">
+          <p style="margin-bottom:12px;font-weight:700;color:var(--text-primary);font-size:15px;">How This Assessment Works</p>
+          <p style="margin-bottom:12px;font-size:13px;">No hocus pocus. Here's exactly how we score your readiness:</p>
+          <p style="margin-bottom:12px;font-size:13px;"><strong style="color:var(--text-primary);">Two dimensions, weighted 60/40:</strong> Business Readiness (60%) evaluates 14 items across three pillars. Materials Readiness (40%) checks 17 deliverables investors expect to see.</p>
+          <p style="margin-bottom:12px;font-size:13px;"><strong style="color:var(--text-primary);">Pillar weights reflect what early-stage investors prioritize:</strong></p>
+          <div id="weight-tune-toggle" style="margin-bottom:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
+            <button onclick="toggleWeightTuning()" class="btn-customize-weights" style="font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(74,222,128,0.3);border-radius:6px;padding:5px 14px;cursor:pointer;font-family:inherit;-webkit-appearance:none;">&#x2699; Customize Weights</button>
+            <button id="btn-reset-inline" class="btn-reset" onclick="resetWeights()" style="display:none;">&#x21BA; Reset to Defaults</button>
+            <span class="weight-hint-text" style="font-size:11px;color:var(--text-muted);">Use &minus;/+ buttons to adjust how weightings affect your score</span>
+          </div>
+          <div class="methodology-section" style="background:none;border:none;padding:0;margin:0;">
+          <table class="weight-table" id="methodology-table">
+            <thead>
+              <tr><th>Item</th><th>Weight</th><th style="width:40%">Share</th></tr>
+            </thead>
+            <tbody id="methodology-tbody"></tbody>
+          </table>
+          <div class="weight-controls" id="weight-controls" style="display:none;">
+            <span class="weight-status" id="weight-status">Using default weights</span>
+          </div>
+          </div>
+          <p style="margin-top:12px;margin-bottom:8px;font-size:12px;color:var(--text-muted);">Weights derived from: Angel Capital Association Scorecard Method, Precursor Ventures, Hustle Fund, YC application criteria, and Evolution Accelerator&#39;s investment philosophy. The specific numbers are judgment calls &mdash; they&#39;re transparent so you can evaluate the methodology yourself.</p>
+          <p style="margin-bottom:0;font-size:12px;color:var(--text-muted);">Benchmark data sourced from Carta State of Pre-Seed Q3 2025, SEC investor type guidelines, and industry surveys.</p>
+        </div>
       </div>
     </div>
-  </div>
-
-
-  <!-- Methodology & Weights Transparency -->
-  <div class="methodology-section">
-    <div style="cursor:pointer;display:flex;align-items:center;gap:10px;" onclick="this.parentElement.classList.toggle('explainer-open'); this.querySelector('.explainer-arrow').classList.toggle('open');">
-      <span class="explainer-arrow" style="color:var(--text-secondary);font-size:14px;transition:transform 0.2s;">&#x25B6;</span>
-      <h3 style="margin:0;">How This Assessment Works</h3>
-    </div>
-    <div class="explainer-body" style="max-height:0;overflow:hidden;transition:max-height 0.4s ease;">
-      <div style="padding-top:16px;font-size:13px;color:var(--text-secondary);line-height:1.7;">
-        <p style="margin-bottom:12px;">No hocus pocus. Here's exactly how we score your readiness:</p>
-        <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Two dimensions, weighted 60/40:</strong> Business Readiness (60%) evaluates 14 items across three pillars. Materials Readiness (40%) checks 17 deliverables investors expect to see.</p>
-        <p style="margin-bottom:12px;"><strong style="color:var(--text-primary);">Pillar weights reflect what early-stage investors prioritize:</strong></p>
-        <div id="weight-tune-toggle" style="margin-bottom:12px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;">
-          <button onclick="toggleWeightTuning()" class="btn-customize-weights" style="font-size:12px;color:var(--green);background:transparent;border:1px solid rgba(74,222,128,0.3);border-radius:6px;padding:5px 14px;cursor:pointer;font-family:inherit;-webkit-appearance:none;">&#x2699; Customize Weights</button>
-          <button id="btn-reset-inline" class="btn-reset" onclick="resetWeights()" style="display:none;">&#x21BA; Reset to Defaults</button>
-          <span class="weight-hint-text" style="font-size:11px;color:var(--text-muted);">Use &minus;/+ buttons to adjust how weightings affect your score</span>
-        </div>
-        <table class="weight-table" id="methodology-table">
-          <thead>
-            <tr><th>Item</th><th>Weight</th><th style="width:40%">Share</th></tr>
-          </thead>
-          <tbody id="methodology-tbody"></tbody>
-        </table>
-        <div class="weight-controls" id="weight-controls" style="display:none;">
-          <span class="weight-status" id="weight-status">Using default weights</span>
-        </div>
-        <p style="margin-top:12px;margin-bottom:8px;font-size:12px;color:var(--text-muted);">Weights derived from: Angel Capital Association Scorecard Method, Precursor Ventures, Hustle Fund, YC application criteria, and Evolution Accelerator&#39;s investment philosophy. The specific numbers are judgment calls &mdash; they&#39;re transparent so you can evaluate the methodology yourself.</p>
-        <p style="margin-bottom:0;font-size:12px;color:var(--text-muted);">Benchmark data sourced from Carta State of Pre-Seed Q3 2025, SEC investor type guidelines, and industry surveys.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Example Report CTA -->
-  <div class="example-report-btn" style="text-align:center;margin-bottom:28px;">
-    <button onclick="showExampleReport()" class="btn btn-outline-green" style="font-size:14px;padding:12px 28px;">See an Example Report</button>
-    <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Preview what your personalized report will look like</p>
   </div>
 
   <!-- Progress -->
@@ -1350,7 +1412,7 @@
     </div>
 
     <!-- Company Basics -->
-    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:8px;">Company Basics</div>
+    <div class="form-section-divider">Company Basics</div>
     <div class="form-group">
       <label>Company Name *</label>
       <input type="text" id="company_name" placeholder="Acme Technologies, Inc." required oninput="clearFieldError(this)">
@@ -1390,7 +1452,7 @@
     </div>
 
     <!-- Founder Info -->
-    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;">Founder Information</div>
+    <div class="form-section-divider">Founder Information</div>
     <div class="form-row">
       <div class="form-group">
         <label>CEO / Lead Founder Name *</label>
@@ -1445,7 +1507,7 @@
     </div>
 
     <!-- Corporate Structure -->
-    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;">Corporate Structure</div>
+    <div class="form-section-divider">Corporate Structure</div>
     <div class="form-row">
       <div class="form-group">
         <label>Form of Organization</label>
@@ -1467,7 +1529,7 @@
     </div>
 
     <!-- Fundraise Details -->
-    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;">Current Fundraise</div>
+    <div class="form-section-divider">Current Fundraise</div>
     <div class="form-row">
       <div class="form-group">
         <label>Amount Being Raised ($) *</label>
@@ -1590,7 +1652,7 @@
     </div>
 
     <!-- Has raised before? -->
-    <div style="font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;margin-top:24px;">Prior Fundraising</div>
+    <div class="form-section-divider">Prior Fundraising</div>
     <div class="form-row">
       <div class="form-group">
         <label>Total Previously Raised ($)</label>
@@ -1688,8 +1750,18 @@
       <p>Here's where you stand — and what to do next.</p>
     </div>
 
+    <!-- Report Navigation -->
+    <nav class="report-nav" id="report-nav">
+      <a href="#overall-score-card" onclick="event.preventDefault();document.getElementById('overall-score-card').scrollIntoView({behavior:'smooth'})">Score</a>
+      <a href="#summary-company" onclick="event.preventDefault();document.getElementById('summary-company').scrollIntoView({behavior:'smooth'})">Company</a>
+      <a href="#summary-fundraising" onclick="event.preventDefault();document.getElementById('summary-fundraising').scrollIntoView({behavior:'smooth'})">Business</a>
+      <a href="#summary-materials" onclick="event.preventDefault();document.getElementById('summary-materials').scrollIntoView({behavior:'smooth'})">Materials</a>
+      <a href="#strengths-section" onclick="event.preventDefault();document.getElementById('strengths-section').scrollIntoView({behavior:'smooth'})">Strengths</a>
+      <a href="#roadmap-section" onclick="event.preventDefault();document.getElementById('roadmap-section').scrollIntoView({behavior:'smooth'})">Roadmap</a>
+    </nav>
+
     <!-- Overall Score -->
-    <div class="overall-score-card">
+    <div class="overall-score-card" id="overall-score-card">
       <div class="big-score" id="overall-score-big">0%</div>
       <div class="big-label">Overall Funding Readiness</div>
       <div class="overall-sub-scores">
@@ -1753,7 +1825,7 @@
   </div>
 
   <div class="footer">
-    <p>&copy; 2026 Evolution Accelerator &middot; <a href="https://www.evolutionacceleration.com" target="_blank">evolutionacceleration.com</a> &middot; <a href="mailto:info@evolutionacceleration.com">info@evolutionacceleration.com</a></p>
+    <p>&copy; 2026 Evolution Accelerator &middot; <a href="https://www.evolutionacceleration.com" target="_blank">evolutionacceleration.com</a> &middot; <a href="mailto:lead@evfm.co">lead@evfm.co</a></p>
     <p style="margin-top:6px;">Capital. Community. Culture.</p>
     <p style="margin-top:8px;font-size:11px;color:var(--text-muted);">v2.1 &middot; Benchmarks: Carta Q3 2025, Arc 2025, Zeni 2026</p>
     <p style="margin-top:8px;"><button onclick="if(confirm('Clear all saved assessment data? This cannot be undone.')){localStorage.removeItem('fra_v2_state');location.reload();}" style="font-size:11px;color:var(--text-muted);background:transparent;border:1px solid var(--dark-border);border-radius:4px;padding:4px 10px;cursor:pointer;font-family:inherit;">Clear Saved Data</button></p>
@@ -2131,22 +2203,36 @@ function buildFundraisingCards() {
   const container = document.getElementById('fundraising-cards');
   const totalWeight = FUNDRAISING_ITEMS.reduce((s, i) => s + i.weight, 0);
   let currentPillar = null;
+  let groupDiv = null;
 
   FUNDRAISING_ITEMS.forEach(item => {
-    // Insert pillar header
+    // Insert pillar header + collapsible group
     if (item.pillar !== currentPillar) {
       currentPillar = item.pillar;
       const pillar = PILLARS.find(p => p.id === currentPillar);
+      const isFirst = !groupDiv;
+      const pillarItems = FUNDRAISING_ITEMS.filter(i => i.pillar === currentPillar);
+
       const header = document.createElement('div');
-      header.className = `pillar-header ${pillar.cls}`;
+      header.className = `pillar-header ${pillar.cls} ${isFirst ? 'expanded' : ''}`;
+      header.dataset.pillarId = currentPillar;
+      header.dataset.pillarType = 'fund';
       header.innerHTML = `
         <div class="pillar-icon">${pillar.icon}</div>
         <div class="pillar-info">
-          <h3>${pillar.label} <span style="font-weight:400;font-size:12px;opacity:0.7">(${pillar.weightLabel})</span></h3>
+          <h3>${pillar.label}</h3>
           <p>${pillar.desc}</p>
         </div>
+        <span class="pillar-completion partial" data-pillar-badge="${currentPillar}-fund">0/${pillarItems.length}</span>
+        <span class="pillar-chevron">${isFirst ? '&#x25BC;' : '&#x25B6;'}</span>
       `;
+      header.addEventListener('click', function() { togglePillarGroup(this); });
       container.appendChild(header);
+
+      groupDiv = document.createElement('div');
+      groupDiv.className = 'pillar-group' + (isFirst ? '' : ' collapsed');
+      groupDiv.id = 'pillar-group-' + currentPillar + '-fund';
+      container.appendChild(groupDiv);
     }
 
     const card = document.createElement('div');
@@ -2183,7 +2269,7 @@ function buildFundraisingCards() {
       <div class="card-options" role="radiogroup" aria-label="${item.label}">${optionsHtml}</div>
       ${tipHtml}
     `;
-    container.appendChild(card);
+    groupDiv.appendChild(card);
 
     card.querySelectorAll('.option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -2195,6 +2281,7 @@ function buildFundraisingCards() {
           score: parseInt(btn.dataset.score)
         };
         updateFundScore();
+        updatePillarBadges('fund');
       });
     });
   });
@@ -2204,24 +2291,38 @@ function buildMaterialsCards() {
   const container = document.getElementById('materials-cards');
   const totalWeight = MATERIALS_ITEMS.reduce((s, i) => s + i.weight, 0);
   let currentGroup = null;
+  let groupDiv = null;
 
   MATERIALS_ITEMS.forEach(item => {
-    // Insert group header
+    // Insert group header + collapsible group
     if (item.group !== currentGroup) {
       currentGroup = item.group;
       const grp = MAT_GROUPS.find(g => g.id === currentGroup);
+      const isFirst = !groupDiv;
+      const groupItems = MATERIALS_ITEMS.filter(i => i.group === currentGroup);
+
       if (grp) {
         const header = document.createElement('div');
-        header.className = 'pillar-header pillar-business';
+        header.className = 'pillar-header pillar-business ' + (isFirst ? 'expanded' : '');
         header.style.background = 'rgba(245, 158, 11, 0.04)';
+        header.dataset.pillarId = currentGroup;
+        header.dataset.pillarType = 'mat';
         header.innerHTML = `
           <div class="pillar-icon" style="background:var(--amber-muted);color:var(--amber);">${currentGroup === 'pitch' ? '&#x1F3AF;' : currentGroup === 'proof' ? '&#x1F4CA;' : '&#x2696;'}</div>
           <div class="pillar-info">
             <h3 style="color:var(--amber);">${grp.label}</h3>
             <p>${grp.desc}</p>
           </div>
+          <span class="pillar-completion partial" data-pillar-badge="${currentGroup}-mat">0/${groupItems.length}</span>
+          <span class="pillar-chevron">${isFirst ? '&#x25BC;' : '&#x25B6;'}</span>
         `;
+        header.addEventListener('click', function() { togglePillarGroup(this); });
         container.appendChild(header);
+
+        groupDiv = document.createElement('div');
+        groupDiv.className = 'pillar-group' + (isFirst ? '' : ' collapsed');
+        groupDiv.id = 'pillar-group-' + currentGroup + '-mat';
+        container.appendChild(groupDiv);
       }
     }
 
@@ -2279,7 +2380,7 @@ function buildMaterialsCards() {
       <div class="card-options card-options--three" role="radiogroup" aria-label="${item.label}">${optionsHtml}</div>
       ${tipHtml}
     `;
-    container.appendChild(card);
+    groupDiv.appendChild(card);
 
     card.querySelectorAll('.option-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -2291,6 +2392,7 @@ function buildMaterialsCards() {
           score: parseInt(btn.dataset.score)
         };
         updateMatScore();
+        updatePillarBadges('mat');
       });
     });
   });
@@ -2300,6 +2402,77 @@ function toggleTip(el) {
   el.classList.toggle('open');
   const content = el.nextElementSibling;
   content.classList.toggle('open');
+}
+
+function togglePillarGroup(headerEl) {
+  const pillarId = headerEl.dataset.pillarId;
+  const pillarType = headerEl.dataset.pillarType;
+  const groupEl = document.getElementById('pillar-group-' + pillarId + '-' + pillarType);
+  if (!groupEl) return;
+
+  const isCollapsed = groupEl.classList.contains('collapsed');
+  if (isCollapsed) {
+    groupEl.classList.remove('collapsed');
+    headerEl.classList.add('expanded');
+    headerEl.querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
+  } else {
+    groupEl.classList.add('collapsed');
+    headerEl.classList.remove('expanded');
+    headerEl.querySelector('.pillar-chevron').innerHTML = '&#x25B6;';
+  }
+}
+
+function updatePillarBadges(type) {
+  const items = type === 'fund' ? FUNDRAISING_ITEMS : MATERIALS_ITEMS;
+  const answers = type === 'fund' ? fundAnswers : matAnswers;
+  const groupKey = type === 'fund' ? 'pillar' : 'group';
+  const groups = {};
+
+  items.forEach(item => {
+    const gId = item[groupKey];
+    if (!groups[gId]) groups[gId] = { total: 0, answered: 0 };
+    groups[gId].total++;
+    if (answers[item.id]) groups[gId].answered++;
+  });
+
+  Object.keys(groups).forEach(gId => {
+    const badge = document.querySelector('[data-pillar-badge="' + gId + '-' + type + '"]');
+    if (!badge) return;
+    const g = groups[gId];
+    badge.textContent = g.answered + '/' + g.total;
+    if (g.answered === g.total) {
+      badge.className = 'pillar-completion done';
+    } else {
+      badge.className = 'pillar-completion partial';
+    }
+
+    // Auto-expand next group when current is complete
+    if (g.answered === g.total) {
+      const groupEl = document.getElementById('pillar-group-' + gId + '-' + type);
+      const headerEl = document.querySelector('[data-pillar-id="' + gId + '"][data-pillar-type="' + type + '"]');
+      if (groupEl && !groupEl.classList.contains('collapsed')) {
+        // Find next sibling pillar group that's collapsed and has unanswered items
+        const allHeaders = Array.from(document.querySelectorAll('[data-pillar-type="' + type + '"]'));
+        const currentIdx = allHeaders.indexOf(headerEl);
+        for (let i = currentIdx + 1; i < allHeaders.length; i++) {
+          const nextId = allHeaders[i].dataset.pillarId;
+          const nextGroup = document.getElementById('pillar-group-' + nextId + '-' + type);
+          if (nextGroup && nextGroup.classList.contains('collapsed') && groups[nextId] && groups[nextId].answered < groups[nextId].total) {
+            // Collapse current, expand next
+            groupEl.classList.add('collapsed');
+            headerEl.classList.remove('expanded');
+            headerEl.querySelector('.pillar-chevron').innerHTML = '&#x25B6;';
+            nextGroup.classList.remove('collapsed');
+            allHeaders[i].classList.add('expanded');
+            allHeaders[i].querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
+            // Scroll to the next header
+            allHeaders[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            break;
+          }
+        }
+      }
+    }
+  });
 }
 
 // ============================================================
@@ -3182,13 +3355,13 @@ function buildCTA(overallPct) {
     section.innerHTML = `
       <h3>You're Approaching Investor-Ready</h3>
       <p>Your assessment shows strong fundamentals. Let's talk about next steps — Evolution Accelerator works with companies like yours to connect with the right investors.</p>
-      <a class="btn btn-primary" href="mailto:info@evolutionacceleration.com?subject=FRA%20Follow-Up%20%E2%80%93%20${encodeURIComponent(document.getElementById('company_name').value || 'My Company')}" style="display:inline-block">Let's Talk &rarr;</a>
+      <a class="btn btn-primary" href="mailto:lead@evfm.co?subject=FRA%20Follow-Up%20%E2%80%93%20${encodeURIComponent(document.getElementById('company_name').value || 'My Company')}" style="display:inline-block">Let's Talk &rarr;</a>
     `;
   } else {
     section.innerHTML = `
       <h3>Let's Get You Ready</h3>
       <p>Your roadmap above shows a clear path forward. Evolution Accelerator helps founders prepare for investment through advising, community, and connections. We'd love to help.</p>
-      <a class="btn btn-primary" href="mailto:info@evolutionacceleration.com?subject=FRA%20Follow-Up%20%E2%80%93%20${encodeURIComponent(document.getElementById('company_name').value || 'My Company')}" style="display:inline-block">Get in Touch &rarr;</a>
+      <a class="btn btn-primary" href="mailto:lead@evfm.co?subject=FRA%20Follow-Up%20%E2%80%93%20${encodeURIComponent(document.getElementById('company_name').value || 'My Company')}" style="display:inline-block">Get in Touch &rarr;</a>
     `;
   }
 }
@@ -3218,8 +3391,8 @@ function sendEmail() {
       to_name: document.getElementById('ceo_name').value || 'Founder',
       company_name: document.getElementById('company_name').value || 'Your Company',
       report_body: report,
-      reply_to: 'info@evolutionacceleration.com',
-      cc_email: 'info@evolutionacceleration.com'
+      reply_to: 'lead@evfm.co',
+      cc_email: 'lead@evfm.co'
     }).then(() => {
       status.className = 'email-status success';
       status.textContent = 'Report sent! Check your inbox (and spam folder).';
@@ -3234,7 +3407,7 @@ function sendEmail() {
   } else {
     const subject = encodeURIComponent(`Funding Readiness Assessment \u2014 ${document.getElementById('company_name').value || 'My Company'}`);
     const body = encodeURIComponent(report);
-    const mailto = `mailto:${email}?cc=info@evolutionacceleration.com&subject=${subject}&body=${body}`;
+    const mailto = `mailto:${email}?cc=lead@evfm.co&subject=${subject}&body=${body}`;
     window.location.href = mailto;
 
     status.className = 'email-status success';
@@ -3379,7 +3552,7 @@ function buildTextReport() {
   }
 
   r += `${'-'.repeat(55)}\n`;
-  r += `For questions, contact info@evolutionacceleration.com\n`;
+  r += `For questions, contact lead@evfm.co\n`;
   r += `Capital. Community. Culture.\n`;
 
   return r;
@@ -3609,6 +3782,11 @@ function restoreState() {
           }
         });
       });
+    }
+    // Update pillar badges after restore
+    if (typeof updatePillarBadges === 'function') {
+      updatePillarBadges('fund');
+      updatePillarBadges('mat');
     }
     return true;
   } catch(e) { return false; }
