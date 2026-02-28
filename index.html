@@ -2514,8 +2514,8 @@ function updatePillarBadges(type) {
       badge.className = 'pillar-completion partial';
     }
 
-    // Auto-expand next group when current is complete
-    if (g.answered === g.total) {
+    // Auto-expand next group when current is JUST completed (not already done)
+    if (g.answered === g.total && !wasDone) {
       const groupEl = document.getElementById('pillar-group-' + gId + '-' + type);
       const headerEl = document.querySelector('[data-pillar-id="' + gId + '"][data-pillar-type="' + type + '"]');
       if (groupEl && !groupEl.classList.contains('collapsed')) {
