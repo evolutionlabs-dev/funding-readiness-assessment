@@ -2574,6 +2574,7 @@ function updatePillarBadges(type) {
             // Expand next section
             nextGroup.classList.remove('collapsed');
             nextHeader.classList.add('expanded');
+            nextHeader.setAttribute('aria-expanded', 'true');
             nextHeader.querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
 
             // Brief pause, then smooth scroll to the next header
