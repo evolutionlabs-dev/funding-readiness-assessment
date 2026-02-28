@@ -2465,8 +2465,15 @@ function updatePillarBadges(type) {
             nextGroup.classList.remove('collapsed');
             allHeaders[i].classList.add('expanded');
             allHeaders[i].querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
-            // Scroll to the next header
-            allHeaders[i].scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Wait for CSS transition to finish before scrolling,
+            // so the browser calculates the correct layout position
+            var scrollTarget = allHeaders[i];
+            setTimeout(function() {
+              var rect = scrollTarget.getBoundingClientRect();
+              var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+              // Place the header 20px below the top of the viewport
+              window.scrollTo({ top: rect.top + scrollTop - 20, behavior: 'smooth' });
+            }, 420);
             break;
           }
         }
