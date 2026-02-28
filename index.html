@@ -797,12 +797,15 @@
   .pillar-group {
     overflow: hidden;
     max-height: 5000px;
-    transition: max-height 0.4s ease, opacity 0.3s;
+    /* Expanding: slow ease-out for a gentle reveal */
+    transition: max-height 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s ease-out;
   }
   .pillar-group.collapsed {
     max-height: 0 !important;
     opacity: 0;
     pointer-events: none;
+    /* Collapsing: faster ease-in so it gets out of the way quickly */
+    transition: max-height 0.3s cubic-bezier(0.55, 0.06, 0.68, 0.19), opacity 0.2s ease-in;
   }
   .pillar-header {
     cursor: pointer;
@@ -2458,30 +2461,49 @@ function updatePillarBadges(type) {
           const nextId = allHeaders[i].dataset.pillarId;
           const nextGroup = document.getElementById('pillar-group-' + nextId + '-' + type);
           if (nextGroup && nextGroup.classList.contains('collapsed') && groups[nextId] && groups[nextId].answered < groups[nextId].total) {
-            // Staged transition: scroll → expand next → collapse current
-            // This avoids three competing motions happening at once.
+            // Staged transition: brief pause → scroll → expand → collapse
+            // Each step waits for the previous to finish naturally.
             var nextHeader = allHeaders[i];
             var curGroup = groupEl;
             var curHeader = headerEl;
 
-            // Step 1: Scroll to the next header (still collapsed, so no layout shift)
-            var rect = nextHeader.getBoundingClientRect();
-            var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            window.scrollTo({ top: rect.top + scrollTop - 20, behavior: 'smooth' });
-
-            // Step 2: After scroll settles, expand the next section
+            // Step 1: Brief 200ms pause so the user sees their completion
             setTimeout(function() {
-              nextGroup.classList.remove('collapsed');
-              nextHeader.classList.add('expanded');
-              nextHeader.querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
-            }, 450);
+              // Step 2: Scroll to the next header (still collapsed, no layout shift)
+              var rect = nextHeader.getBoundingClientRect();
+              var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+              window.scrollTo({ top: rect.top + scrollTop - 20, behavior: 'smooth' });
 
-            // Step 3: Collapse the completed section (now above viewport, invisible)
-            setTimeout(function() {
-              curGroup.classList.add('collapsed');
-              curHeader.classList.remove('expanded');
-              curHeader.querySelector('.pillar-chevron').innerHTML = '&#x25B6;';
-            }, 550);
+              // Step 3: When scroll finishes, expand next section.
+              // Use scrollend event (widely supported) with timeout fallback.
+              var expanded = false;
+              function expandNext() {
+                if (expanded) return;
+                expanded = true;
+                nextGroup.classList.remove('collapsed');
+                nextHeader.classList.add('expanded');
+                nextHeader.querySelector('.pillar-chevron').innerHTML = '&#x25BC;';
+
+                // Step 4: Collapse completed section after expand transition
+                // finishes. It's above the viewport so the user won't see it.
+                nextGroup.addEventListener('transitionend', function collapseHandler(e) {
+                  if (e.propertyName !== 'max-height') return;
+                  nextGroup.removeEventListener('transitionend', collapseHandler);
+                  curGroup.classList.add('collapsed');
+                  curHeader.classList.remove('expanded');
+                  curHeader.querySelector('.pillar-chevron').innerHTML = '&#x25B6;';
+                }, { once: false });
+              }
+
+              // Prefer scrollend event; fall back to timeout for older browsers
+              if ('onscrollend' in window) {
+                window.addEventListener('scrollend', expandNext, { once: true });
+                // Safety timeout in case scrollend never fires
+                setTimeout(expandNext, 1200);
+              } else {
+                setTimeout(expandNext, 500);
+              }
+            }, 200);
 
             break;
           }
