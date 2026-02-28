@@ -2492,6 +2492,13 @@ function updatePillarBadges(type) {
                   curGroup.classList.add('collapsed');
                   curHeader.classList.remove('expanded');
                   curHeader.querySelector('.pillar-chevron').innerHTML = '&#x25B6;';
+                  // Re-anchor: collapsing the section above shifts everything
+                  // upward, so snap back to the header to compensate.
+                  requestAnimationFrame(function() {
+                    var r = nextHeader.getBoundingClientRect();
+                    var st = window.pageYOffset || document.documentElement.scrollTop;
+                    window.scrollTo({ top: r.top + st - 20, behavior: 'auto' });
+                  });
                 }, { once: false });
               }
 
