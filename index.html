@@ -4169,8 +4169,9 @@ function resetWeights() {
 }
 
 function recalcAllScores() {
-  // Update the fund score ring if answers exist
+  // Update both score rings if answers exist
   if (typeof updateFundScore === 'function') updateFundScore();
+  if (typeof updateMatScore === 'function') updateMatScore();
   // Update pillar bars if on results page
   if (currentStep === 4 && typeof buildSummary === 'function') buildSummary();
 }
