@@ -88,6 +88,13 @@
     animation-duration: 0.01ms !important;
   }
 
+  /* Dyslexia-friendly font */
+  .df-font * {
+    font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+    letter-spacing: 0.05em;
+    word-spacing: 0.12em;
+  }
+
   /* Accessibility toolbar */
   .a11y-toolbar {
     position: fixed;
@@ -3819,14 +3826,23 @@ buildMaterialsCards();
 // ACCESSIBILITY
 // ============================
 
-const a11yState = { cb: false, hc: false, lg: false, rm: false };
+const a11yState = { cb: false, hc: false, lg: false, rm: false, df: false };
 
 function toggleA11y(mode) {
   a11yState[mode] = !a11yState[mode];
   const root = document.getElementById('html-root');
   const btn = document.getElementById('btn-' + mode);
 
-  const classMap = { cb: 'cb-mode', hc: 'hc-mode', lg: 'lg-text', rm: 'reduced-motion' };
+  const classMap = { cb: 'cb-mode', hc: 'hc-mode', lg: 'lg-text', rm: 'reduced-motion', df: 'df-font' };
+
+  // Lazy-load OpenDyslexic font on first use
+  if (mode === 'df' && a11yState.df && !document.getElementById('dyslexic-font-link')) {
+    const link = document.createElement('link');
+    link.id = 'dyslexic-font-link';
+    link.rel = 'stylesheet';
+    link.href = 'https://fonts.cdnfonts.com/css/opendyslexic';
+    document.head.appendChild(link);
+  }
 
   if (a11yState[mode]) {
     root.classList.add(classMap[mode]);
@@ -3845,7 +3861,7 @@ function toggleA11y(mode) {
 // Restore accessibility preferences on load
 document.addEventListener('DOMContentLoaded', function() {
   try {
-    ['cb', 'hc', 'lg', 'rm'].forEach(function(mode) {
+    ['cb', 'hc', 'lg', 'rm', 'df'].forEach(function(mode) {
       if (sessionStorage.getItem('a11y_' + mode) === 'true') toggleA11y(mode);
     });
   } catch(e) {}
@@ -4522,6 +4538,9 @@ function closeExampleReport() {
       </button>
       <button class="a11y-toggle" id="btn-rm" onclick="toggleA11y('rm')" role="switch" aria-checked="false" aria-label="Reduced motion">
         <span style="font-size:14px;">&#x23F8;</span> Reduce Motion
+      </button>
+      <button class="a11y-toggle" id="btn-df" onclick="toggleA11y('df')" role="switch" aria-checked="false" aria-label="Dyslexia-friendly font">
+        <span style="font-size:14px;">&#x1F524;</span> Dyslexic Font
       </button>
     </div>
     <button class="a11y-toggle" onclick="var p=document.getElementById('a11y-panel');p.classList.toggle('open');this.setAttribute('aria-expanded',p.classList.contains('open'))" aria-label="Open accessibility settings" aria-expanded="false" aria-controls="a11y-panel" style="padding:10px 14px;">
